@@ -11,3 +11,8 @@ yarn-error.log*
 pnpm-debug.log*
 .DS_Store
 *.local
+
+.claude/
+.windsurf/
+.agents/
+skills-lock.json
