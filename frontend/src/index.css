@@ -1,111 +1,142 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+@import "tailwindcss";
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Base surfaces */
+  --color-background: #ffffff;
+  --color-foreground: #142030;
+  --color-muted: #eef4fa;
+  --color-muted-foreground: #64809c;
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  /* Pastel section accents — all within the celeste/azul family, no purple. */
+  --color-ice: #eaf1fb;
+  --color-ice-foreground: #33587f;
+  --color-sky: #e3f4fd;
+  --color-sky-foreground: #14789f;
+  --color-pink: #fdedf5;
+  --color-pink-foreground: #b5407a;
+
+  /* Primary CTA color: deep, azure-navy blue (sky despejado -> azul marino suave). */
+  --color-primary: #0369a1;
+  --color-primary-hover: #075985;
+  --color-primary-foreground: #ffffff;
+
+  /* Vivid secondary blue — gradients, badges, highlights. Same family as primary. */
+  --color-accent-sky: #38bdf8;
+  --color-accent-sky-hover: #0ea5e9;
+  --color-accent-sky-foreground: #ffffff;
+
+  /* Cards & surfaces */
+  --color-card: #ffffff;
+  --color-card-foreground: #142030;
+  --color-border: #dde6f0;
+  --color-input: #dde6f0;
+  --color-ring: #0369a1;
+
+  /* Semantic */
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-success: #10b981;
+  --color-success-foreground: #ffffff;
+  --color-warning: #f59e0b;
+
+  --radius-sm: 0.75rem;
+  --radius-md: 1.125rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+/* Dark mode: toggled by adding/removing the `dark` class on <html> (see
+   settingsStore.ts). Every component consumes color via these CSS custom
+   properties, so overriding them here re-themes the whole app with no
+   `dark:` utility classes needed anywhere else. Tones go deeper/more
+   saturated rather than desaturating, so nothing washes out on dark bg. */
+.dark {
+  color-scheme: dark;
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+  --color-background: #071019;
+  --color-foreground: #eaf3fb;
+  --color-muted: #0f1e2c;
+  --color-muted-foreground: #7fa0bd;
+
+  --color-ice: #16283a;
+  --color-ice-foreground: #9dc4ea;
+  --color-sky: #0f2c40;
+  --color-sky-foreground: #7dd3fc;
+  --color-pink: #2a1622;
+  --color-pink-foreground: #f3a8c9;
+
+  --color-primary: #38bdf8;
+  --color-primary-hover: #7dd3fc;
+  --color-primary-foreground: #072033;
+
+  --color-accent-sky: #7dd3fc;
+  --color-accent-sky-hover: #0ea5e9;
+  --color-accent-sky-foreground: #072033;
+
+  --color-card: #101f30;
+  --color-card-foreground: #eaf3fb;
+  --color-border: #1c3350;
+  --color-input: #1c3350;
+  --color-ring: #38bdf8;
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+* {
+  border-color: var(--color-border);
+}
+
+html,
+body {
+  height: 100%;
 }
 
 body {
   margin: 0;
+  background: var(--color-muted);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+#root {
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  background: var(--color-muted);
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+/* Mobile-first shell: fills the viewport on phones, becomes a centered
+   phone-width column with soft edges on wider (desktop) viewports. */
+.app-shell {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100dvh;
+  background: var(--color-background);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+@media (min-width: 540px) {
+  .app-shell {
+    min-height: calc(100dvh - 2.5rem);
+    margin: 1.25rem 0;
+    border-radius: 2.5rem;
+    box-shadow: 0 20px 45px -20px rgba(20, 32, 48, 0.25);
+    overflow: hidden;
+  }
+
+  .dark .app-shell {
+    box-shadow: 0 20px 45px -20px rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--color-border);
   }
 }
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
-}
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+input,
+button,
+textarea,
+select {
+  font-family: inherit;
 }
