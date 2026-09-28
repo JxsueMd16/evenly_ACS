@@ -11,7 +11,7 @@
     "test": "vitest run",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
-    "db:seed": "prisma db seed",
+    "db:seed": "prisma generate && prisma db seed",
     "test:api": "newman run ../docs/api/evenly.postman_collection.json -e ../docs/api/evenly-local.postman_environment.json --reporters cli,junit --reporter-junit-export ../docs/evidencias/newman-junit.xml"
   },
   "keywords": [],

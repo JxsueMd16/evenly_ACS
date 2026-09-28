@@ -92,13 +92,15 @@ jobs:
       - name: Generar JWT_SECRET temporal
         run: echo "JWT_SECRET=$(openssl rand -base64 48)" >> "$GITHUB_ENV"
 
-      - name: Backend - instalar, migrar, seed y compilar
+      # El build corre "prisma generate": el seed importa el cliente generado,
+      # así que debe compilarse antes de migrar y sembrar datos.
+      - name: Backend - instalar, compilar, migrar y seed
         working-directory: backend
         run: |
           pnpm install --frozen-lockfile
+          pnpm build
           pnpm db:deploy
           pnpm db:seed
-          pnpm build
 
       - name: Backend - levantar servidor
         working-directory: backend

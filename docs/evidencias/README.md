@@ -9,7 +9,7 @@ Salidas reales de las herramientas, sin editar (solo se quitaron los códigos de
 | `newman-ronda2-regresion.txt` | Salida de Newman, ronda 2 tras corregir DEF-002: 199 aserciones, 0 fallas | ídem |
 | `newman-junit-ronda2.xml` | Reporte JUnit de la ronda 2 | ídem |
 | `cypress-ronda1.txt` | Salida de Cypress, ronda 1: 10 pruebas, **2 fallan** (E2E-07, E2E-08) | E2E-01…10 |
-| `cypress-ronda1-screenshots/` | Capturas automáticas de los 2 fallos (muestran "El monto debe ser mayor a 0." con monto 90) | E2E-07, E2E-08 |
+| `cypress-ronda1-screenshots/` | Capturas automáticas de los 2 fallos, `E2E-07-fallo.png` y `E2E-08-fallo.png` (muestran "El monto debe ser mayor a 0." con monto 90) | E2E-07, E2E-08 |
 | `cypress-ronda2-regresion.txt` | Salida de Cypress, ronda 2 tras corregir DEF-003: 10 de 10 pasan | E2E-01…10 |
 | `newman-ronda3-interfaz-completa.txt` | Salida de Newman, ronda 3 (se agrega la gestión de integrantes): 61 peticiones, 227 aserciones, 0 fallas | API-01…47, SEC-01…14, RNF-01, RNF-02 |
 | `newman-junit-ronda3.xml` | Reporte JUnit de la ronda 3 | ídem |
