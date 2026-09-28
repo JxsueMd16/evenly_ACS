@@ -1,0 +1,28 @@
+# Blueprint de Render para el backend (Dashboard > New > Blueprint).
+# Las variables con sync: false se piden al crear el servicio.
+services:
+  - type: web
+    name: evenly-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    # --prod=false: NODE_ENV=production haría que pnpm omita prisma y typescript (devDependencies).
+    buildCommand: pnpm install --frozen-lockfile --prod=false && pnpm build && pnpm db:deploy
+    startCommand: pnpm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "24"
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 1d
+      - key: CORS_ORIGIN
+        sync: false
+      - key: AUTH_RATE_LIMIT
+        value: "50"

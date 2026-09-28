@@ -1,0 +1,149 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (typecheck, unit tests, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      # prisma generate lee la config; no se conecta a ninguna base de datos.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: backend/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: backend/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+
+  frontend:
+    name: Frontend (lint, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    env:
+      CYPRESS_INSTALL_BINARY: 0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: frontend/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm build
+
+  e2e:
+    name: Pruebas de API (Newman) y E2E (Cypress)
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: evenly
+          POSTGRES_PASSWORD: evenly
+          POSTGRES_DB: evenly_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U evenly"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://evenly:evenly@localhost:5432/evenly_ci
+      CORS_ORIGIN: http://localhost:4173
+      AUTH_RATE_LIMIT: 1000
+      NODE_ENV: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: backend/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Generar JWT_SECRET temporal
+        run: echo "JWT_SECRET=$(openssl rand -base64 48)" >> "$GITHUB_ENV"
+
+      - name: Backend - instalar, migrar, seed y compilar
+        working-directory: backend
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm db:deploy
+          pnpm db:seed
+          pnpm build
+
+      - name: Backend - levantar servidor
+        working-directory: backend
+        run: |
+          nohup node dist/index.js > server.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:3000/health && exit 0
+            sleep 1
+          done
+          cat server.log
+          exit 1
+
+      - name: Pruebas de API con Newman
+        working-directory: backend
+        run: pnpm test:api
+
+      - name: Frontend - instalar, compilar y servir
+        working-directory: frontend
+        env:
+          VITE_API_URL: http://localhost:3000
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec cypress install
+          pnpm build
+          nohup pnpm exec vite preview --port 4173 --strictPort > preview.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:4173 > /dev/null && exit 0
+            sleep 1
+          done
+          exit 1
+
+      - name: Pruebas E2E con Cypress
+        working-directory: frontend
+        env:
+          CYPRESS_BASE_URL: http://localhost:4173
+          CYPRESS_API_URL: http://localhost:3000
+        run: pnpm exec cypress run
+
+      - name: Guardar evidencias
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-pruebas
+          path: |
+            docs/evidencias/newman-junit.xml
+            frontend/cypress/screenshots
+            backend/server.log
+          if-no-files-found: ignore
