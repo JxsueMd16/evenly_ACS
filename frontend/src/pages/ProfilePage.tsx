@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button"
 import { UserAvatar } from "@/components/UserAvatar"
 import { CategoryIcon } from "@/components/CategoryIcon"
 import { SettingsDialog } from "@/pages/SettingsDialog"
-import { computeUserOverallBalance, getPaymentHistory, type ActivityItem } from "@/lib/mockApi"
+import { PaymentProfileSection } from "@/components/payments/PaymentProfileSection"
+import { getGroups, getPaymentHistory, overallBalance as sumBalances } from "@/lib/api"
+import type { ActivityItem } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { useAuthStore } from "@/store/authStore"
 import { useFormatCurrency } from "@/store/settingsStore"
@@ -16,15 +18,23 @@ export function ProfilePage() {
   const logout = useAuthStore((s) => s.logout)
   const formatCurrency = useFormatCurrency()
   const [history, setHistory] = useState<ActivityItem[] | null>(null)
+  const [historyError, setHistoryError] = useState<string | null>(null)
+  const [overallBalance, setOverallBalance] = useState(0)
   const [settingsOpen, setSettingsOpen] = useState(false)
 
   useEffect(() => {
-    getPaymentHistory(user.id)
+    getPaymentHistory()
       .then(setHistory)
-      .catch(() => toast.error("No se pudo cargar tu historial."))
-  }, [user.id])
-
-  const overallBalance = computeUserOverallBalance(user.id)
+      .catch((err: Error) => {
+        setHistoryError(err.message)
+        toast.error(err.message)
+      })
+    getGroups()
+      .then((groups) => setOverallBalance(sumBalances(groups)))
+      .catch(() => {
+        // El historial ya muestra el error; el balance queda en 0.
+      })
+  }, [])
 
   function handleLogout() {
     // Don't navigate here: clearing `user` makes ProtectedRoute redirect to
@@ -60,10 +70,14 @@ export function ProfilePage() {
         </span>
       </div>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-base font-semibold text-foreground">Historial de pagos</h2>
+      <PaymentProfileSection />
 
-        {!history && (
+      <section className="flex flex-col gap-3">
+        <h2 className="text-base font-semibold text-foreground">Cuentas que pagaste</h2>
+
+        {historyError && <p className="text-sm text-destructive">{historyError}</p>}
+
+        {!history && !historyError && (
           <div className="flex justify-center py-8 text-muted-foreground">
             <Loader2 className="size-6 animate-spin" />
           </div>

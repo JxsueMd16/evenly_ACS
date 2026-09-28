@@ -10,9 +10,9 @@ export interface Category {
 }
 
 export const CATEGORIES: Category[] = [
-  { id: "grupo", label: "Cuentas", icon: Wallet, theme: "ice" },
+  { id: "grupo", label: "General", icon: Wallet, theme: "ice" },
   { id: "comida", label: "Comida", icon: UtensilsCrossed, theme: "pink" },
-  { id: "amigos", label: "Amigos", icon: Users, theme: "sky" },
+  { id: "amigos", label: "Salidas", icon: Users, theme: "sky" },
   { id: "transporte", label: "Transporte", icon: Car, theme: "ice" },
   { id: "entretenimiento", label: "Entretenimiento", icon: Clapperboard, theme: "pink" },
 ]

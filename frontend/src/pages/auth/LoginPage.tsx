@@ -6,6 +6,7 @@ import { AuthLayout } from "./AuthLayout"
 import { Button } from "@/components/ui/button"
 import { UnderlineInput } from "@/components/ui/underline-input"
 import { Label } from "@/components/ui/label"
+import { PasswordInput } from "@/components/PasswordInput"
 import { useAuthStore } from "@/store/authStore"
 
 export function LoginPage() {
@@ -21,7 +22,7 @@ export function LoginPage() {
   function validate() {
     const errors: typeof fieldErrors = {}
     if (!/^\S+@\S+\.\S+$/.test(email)) errors.email = "Ingresa un correo válido."
-    if (password.length < 4) errors.password = "Mínimo 4 caracteres."
+    if (!password) errors.password = "Ingresa tu contraseña."
     setFieldErrors(errors)
     return Object.keys(errors).length === 0
   }
@@ -40,7 +41,7 @@ export function LoginPage() {
 
   function useDemoAccount() {
     setEmail("paul@evenly.app")
-    setPassword("demo1234")
+    setPassword("Evenly2026!")
   }
 
   return (
@@ -50,7 +51,7 @@ export function LoginPage() {
       footer={
         <>
           ¿No tienes cuenta?{" "}
-          <Link to="/register" className="font-semibold text-primary">
+          <Link to="/register" state={location.state} className="font-semibold text-primary">
             Regístrate
           </Link>
         </>
@@ -73,9 +74,8 @@ export function LoginPage() {
 
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="password">Contraseña</Label>
-          <UnderlineInput
+          <PasswordInput
             id="password"
-            type="password"
             placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

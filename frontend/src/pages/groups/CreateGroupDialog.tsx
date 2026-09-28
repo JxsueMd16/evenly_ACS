@@ -12,11 +12,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { UserAvatar } from "@/components/UserAvatar"
-import { CategoryIcon } from "@/components/CategoryIcon"
+import { UserSearchField } from "@/components/UserSearchField"
 import { cn } from "@/lib/utils"
-import { createGroup, getAllUsers } from "@/lib/mockApi"
-import { CATEGORIES, type CategoryId } from "@/lib/categories"
-import { useAuthStore } from "@/store/authStore"
+import { createGroup } from "@/lib/api"
+import { useUserSearch } from "@/lib/useUserSearch"
+import { useFriends } from "@/lib/useFriends"
+import type { User } from "@/lib/types"
 
 export function CreateGroupDialog({
   open,
@@ -25,20 +26,26 @@ export function CreateGroupDialog({
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onCreated: () => void
+  /** Recibe el id del grupo creado (la pantalla navega a él). */
+  onCreated: (groupId: string) => void
 }) {
-  const user = useAuthStore((s) => s.user)!
-  const others = getAllUsers().filter((u) => u.id !== user.id)
-
   const [name, setName] = useState("")
-  const [category, setCategory] = useState<CategoryId>(CATEGORIES[0].id)
-  const [memberIds, setMemberIds] = useState<string[]>([])
+  const [selected, setSelected] = useState<User[]>([])
+  const [query, setQuery] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const search = useUserSearch(query)
+  const friends = useFriends(open)
 
-  function toggleMember(id: string) {
-    setMemberIds((prev) => (prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id]))
+  function toggleMember(member: User) {
+    setSelected((prev) =>
+      prev.some((m) => m.id === member.id) ? prev.filter((m) => m.id !== member.id) : [...prev, member],
+    )
   }
+
+  // Seleccionados primero; después, si hay búsqueda, sus resultados, y si no, tus amigos.
+  const suggestions: User[] = search.canSearch ? search.results : friends
+  const options = [...selected, ...suggestions.filter((r) => !selected.some((m) => m.id === r.id))]
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -49,12 +56,12 @@ export function CreateGroupDialog({
     }
     setIsSubmitting(true)
     try {
-      await createGroup(name, category, [user.id, ...memberIds])
+      const group = await createGroup(name, "grupo", selected.map((m) => m.id))
       setName("")
-      setCategory(CATEGORIES[0].id)
-      setMemberIds([])
+      setSelected([])
+      setQuery("")
       onOpenChange(false)
-      onCreated()
+      onCreated(group.id)
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo crear el grupo.")
     } finally {
@@ -67,7 +74,9 @@ export function CreateGroupDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Nuevo grupo</DialogTitle>
-          <DialogDescription>Crea un grupo para empezar a compartir gastos.</DialogDescription>
+          <DialogDescription>
+            Un grupo reúne a las mismas personas para varias cuentas (almuerzos, transporte, servicios…).
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
@@ -75,50 +84,46 @@ export function CreateGroupDialog({
             <Label htmlFor="group-name">Nombre</Label>
             <Input
               id="group-name"
-              placeholder="Ej. Viaje a la montaña"
+              placeholder="Ej. Universidad, Depa, Viaje a Antigua"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              maxLength={60}
               autoFocus
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label>Categoría</Label>
-            <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map((option) => (
-                <button
-                  key={option.id}
-                  type="button"
-                  onClick={() => setCategory(option.id)}
-                  className={cn(
-                    "flex flex-col items-center gap-1 rounded-2xl p-1.5 transition-colors",
-                    category === option.id && "ring-2 ring-primary",
-                  )}
-                >
-                  <CategoryIcon category={option.id} className="size-10" />
-                  <span className="text-[10px] text-muted-foreground">{option.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <Label>Integrantes</Label>
-            <div className="flex flex-col gap-2">
-              {others.map((member) => {
-                const checked = memberIds.includes(member.id)
+            <Label htmlFor="member-search">Integrantes</Label>
+            <p className="text-xs text-muted-foreground">
+              {friends.length > 0 && !search.canSearch
+                ? "Elige entre tus amigos o busca a cualquier persona por nombre o correo."
+                : "Busca por nombre o correo. También podrás invitar con un enlace después de crear el grupo."}
+            </p>
+            <UserSearchField
+              id="member-search"
+              value={query}
+              onChange={setQuery}
+              isSearching={search.isSearching}
+              noResults={search.canSearch && !search.isSearching && search.results.length === 0}
+            />
+            <div className="flex max-h-56 flex-col gap-2 overflow-y-auto">
+              {options.map((member) => {
+                const checked = selected.some((m) => m.id === member.id)
                 return (
                   <button
                     type="button"
                     key={member.id}
-                    onClick={() => toggleMember(member.id)}
+                    onClick={() => toggleMember(member)}
                     className={cn(
                       "flex items-center gap-3 rounded-2xl border border-border p-2.5 text-left transition-colors",
                       checked && "border-primary bg-primary/5",
                     )}
                   >
                     <UserAvatar user={member} className="size-9" />
-                    <span className="flex-1 text-sm font-medium text-foreground">{member.name}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-medium text-foreground">{member.name}</span>
+                      <span className="block truncate text-xs text-muted-foreground">{member.email}</span>
+                    </span>
                     <span
                       className={cn(
                         "flex size-5 items-center justify-center rounded-full border-2 border-border text-primary-foreground",
@@ -133,7 +138,7 @@ export function CreateGroupDialog({
             </div>
           </div>
 
-          {error && <p className="text-xs text-destructive">{error}</p>}
+          {(error ?? search.error) && <p className="text-xs text-destructive">{error ?? search.error}</p>}
 
           <DialogFooter>
             <Button type="submit" disabled={isSubmitting} className="w-full">
