@@ -1,12 +1,6 @@
-import express from "express";
+import { config } from "./config.js";
+import { app } from "./app.js";
 
-const app = express();
-const PORT = 3000;
-
-app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
-});
-
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+app.listen(config.PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${config.PORT}`);
 });
