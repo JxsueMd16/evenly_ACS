@@ -1,7 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// Modelo de datos de Evenly.
+// Los montos se guardan en centavos (Int) para evitar errores de redondeo
+// de punto flotante; la API los expone como números decimales (12.50).
 
 generator client {
   provider = "prisma-client"
@@ -12,9 +11,252 @@ datasource db {
   provider = "postgresql"
 }
 
+// Los valores de los enums coinciden con los que usa el frontend
+// (src/lib/categories.tsx y src/lib/types.ts) para no tener que mapearlos.
+
+enum Categoria {
+  grupo
+  comida
+  amigos
+  transporte
+  entretenimiento
+}
+
+enum ColorTema {
+  ice
+  sky
+  pink
+}
+
+enum RolMiembro {
+  ADMIN
+  MIEMBRO
+}
+
+/// equal: partes iguales · items: cada quien paga lo que consumió (según las
+/// líneas de la cuenta) · itemized: montos manuales por persona.
+enum TipoDivision {
+  equal
+  items
+  itemized
+}
+
+/// Cómo prefiere el usuario que le paguen.
+enum PreferenciaPago {
+  EFECTIVO
+  TRANSFERENCIA
+  AMBOS
+}
+
+enum TipoCuentaBancaria {
+  MONETARIA
+  AHORRO
+}
+
+enum MetodoPago {
+  EFECTIVO
+  TRANSFERENCIA
+}
+
+/// PENDIENTE: el deudor lo registró · CONFIRMADO: quien recibe confirmó el
+/// monto completo (solo estos afectan los balances) · RECHAZADO: no lo recibió.
+enum EstadoPago {
+  PENDIENTE
+  CONFIRMADO
+  RECHAZADO
+}
+
+enum EstadoAmistad {
+  PENDIENTE
+  ACEPTADA
+}
+
 model Usuario {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  nombre    String
-  createdAt DateTime @default(now())
+  id              String          @id @default(cuid())
+  email           String          @unique
+  nombre          String
+  /// Hash bcrypt. Nunca se devuelve en respuestas ni se escribe en logs.
+  passwordHash    String
+  avatarColor     ColorTema       @default(sky)
+  preferenciaPago PreferenciaPago @default(AMBOS)
+  createdAt       DateTime        @default(now())
+
+  cuentasBancarias CuentaBancaria[]
+  pagosEnviados    Pago[]           @relation("PagoDeudor")
+  pagosRecibidos   Pago[]           @relation("PagoAcreedor")
+
+  membresias    MiembroGrupo[]
+  gruposCreados Grupo[]        @relation("GrupoCreador")
+  gastosPagados Gasto[]        @relation("GastoPagador")
+  gastosCreados Gasto[]        @relation("GastoCreador")
+  itemsGasto    ItemGasto[]
+
+  asignacionesLinea AsignacionLinea[]
+
+  amistadesEnviadas  Amistad[] @relation("AmistadSolicitante")
+  amistadesRecibidas Amistad[] @relation("AmistadDestinatario")
+}
+
+/// Solicitud de amistad. Una sola fila por par de usuarios: quien la envió es
+/// el solicitante; al aceptarse pasa a ACEPTADA (la amistad es mutua).
+model Amistad {
+  id             String        @id @default(cuid())
+  solicitanteId  String
+  destinatarioId String
+  estado         EstadoAmistad @default(PENDIENTE)
+  createdAt      DateTime      @default(now())
+  respondedAt    DateTime?
+
+  solicitante  Usuario @relation("AmistadSolicitante", fields: [solicitanteId], references: [id], onDelete: Cascade)
+  destinatario Usuario @relation("AmistadDestinatario", fields: [destinatarioId], references: [id], onDelete: Cascade)
+
+  @@unique([solicitanteId, destinatarioId])
+  @@index([destinatarioId, estado])
+}
+
+model Grupo {
+  id               String    @id @default(cuid())
+  nombre           String
+  categoria        Categoria @default(grupo)
+  tema             ColorTema @default(sky)
+  /// Código del enlace de invitación (/join/<código>). Se crea la primera vez
+  /// que alguien pide el enlace; el admin puede regenerarlo para invalidar el anterior.
+  codigoInvitacion String?   @unique
+  /// Cuenta rápida: grupo creado automáticamente para una sola cuenta, sin
+  /// que el usuario tenga que armar un grupo. Se lista aparte en la app.
+  esRapida         Boolean   @default(false)
+  creadoPorId      String
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  creadoPor Usuario        @relation("GrupoCreador", fields: [creadoPorId], references: [id])
+  miembros  MiembroGrupo[]
+  gastos    Gasto[]
+  pagos     Pago[]
+
+  @@index([creadoPorId])
+}
+
+model MiembroGrupo {
+  id        String     @id @default(cuid())
+  grupoId   String
+  usuarioId String
+  rol       RolMiembro @default(MIEMBRO)
+  joinedAt  DateTime   @default(now())
+
+  grupo   Grupo   @relation(fields: [grupoId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@unique([grupoId, usuarioId])
+  @@index([usuarioId])
+}
+
+model Gasto {
+  id            String       @id @default(cuid())
+  grupoId       String
+  descripcion   String
+  montoCentavos Int
+  categoria     Categoria    @default(grupo)
+  tipoDivision  TipoDivision @default(equal)
+  pagadoPorId   String
+  creadoPorId   String
+  createdAt     DateTime     @default(now())
+
+  grupo     Grupo        @relation(fields: [grupoId], references: [id], onDelete: Cascade)
+  pagadoPor Usuario      @relation("GastoPagador", fields: [pagadoPorId], references: [id])
+  creadoPor Usuario      @relation("GastoCreador", fields: [creadoPorId], references: [id])
+  items     ItemGasto[]
+  lineas    LineaGasto[]
+
+  @@index([grupoId, createdAt])
+  @@index([pagadoPorId])
+}
+
+/// La parte que le toca a cada integrante de un gasto.
+/// La suma de montoCentavos de los items es igual a Gasto.montoCentavos.
+model ItemGasto {
+  id            String @id @default(cuid())
+  gastoId       String
+  usuarioId     String
+  montoCentavos Int
+
+  gasto   Gasto   @relation(fields: [gastoId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@unique([gastoId, usuarioId])
+  @@index([usuarioId])
+}
+
+/// Línea del detalle de una cuenta: "2 × Churrasco a 25.00".
+model LineaGasto {
+  id                     String  @id @default(cuid())
+  gastoId                String
+  orden                  Int
+  descripcion            String
+  cantidad               Int
+  precioUnitarioCentavos Int
+  /// Compartido: el subtotal se divide en partes iguales entre quienes lo
+  /// consumieron (una pizza, una jarra). Si no, cada quien paga sus unidades.
+  compartido             Boolean @default(false)
+
+  gasto        Gasto             @relation(fields: [gastoId], references: [id], onDelete: Cascade)
+  asignaciones AsignacionLinea[]
+
+  @@index([gastoId])
+}
+
+/// Cuántas unidades de una línea consumió cada participante (división por ítems).
+model AsignacionLinea {
+  id        String @id @default(cuid())
+  lineaId   String
+  usuarioId String
+  cantidad  Int
+
+  linea   LineaGasto @relation(fields: [lineaId], references: [id], onDelete: Cascade)
+  usuario Usuario    @relation(fields: [usuarioId], references: [id])
+
+  @@unique([lineaId, usuarioId])
+  @@index([usuarioId])
+}
+
+/// Cuenta bancaria para recibir transferencias. Si es visible, la ven las
+/// personas con las que el usuario comparte algún grupo o amistad.
+model CuentaBancaria {
+  id        String             @id @default(cuid())
+  usuarioId String
+  banco     String
+  tipo      TipoCuentaBancaria
+  numero    String
+  titular   String
+  visible   Boolean            @default(true)
+  createdAt DateTime           @default(now())
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([usuarioId])
+}
+
+/// Pago de una deuda dentro de un grupo. Lo registra quien debe (deudor) y lo
+/// confirma quien recibe (acreedor). Solo los CONFIRMADOS cuentan en los balances.
+model Pago {
+  id            String     @id @default(cuid())
+  grupoId       String
+  deudorId      String
+  acreedorId    String
+  montoCentavos Int
+  metodo        MetodoPago
+  nota          String?
+  /// Comprobante opcional (imagen comprimida en el navegador, máx. 3 MB).
+  evidencia     Bytes?
+  evidenciaTipo String?
+  estado        EstadoPago @default(PENDIENTE)
+  createdAt     DateTime   @default(now())
+  respondidoAt  DateTime?
+
+  grupo    Grupo   @relation(fields: [grupoId], references: [id], onDelete: Cascade)
+  deudor   Usuario @relation("PagoDeudor", fields: [deudorId], references: [id])
+  acreedor Usuario @relation("PagoAcreedor", fields: [acreedorId], references: [id])
+
+  @@index([grupoId, estado])
+  @@index([acreedorId, estado])
 }
