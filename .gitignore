@@ -16,3 +16,6 @@ pnpm-debug.log*
 .windsurf/
 .agents/
 skills-lock.json
+
+# Reporte que regenera cada "pnpm test:api" (las evidencias versionadas tienen nombre por ronda)
+docs/evidencias/newman-junit.xml
