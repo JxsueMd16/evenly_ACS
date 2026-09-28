@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import { loginRequest, registerRequest } from "@/lib/mockApi"
+import { loginRequest, registerRequest } from "@/lib/api"
 import type { User } from "@/lib/types"
 
 /**
@@ -11,9 +11,13 @@ import type { User } from "@/lib/types"
  *   for free, which plain Context would need extra plumbing for.
  * - Selectors avoid the "every consumer re-renders on any change"
  *   problem Context has when the value is a single object.
+ *
+ * The JWT lives here too; lib/api.ts reads it for every request and calls
+ * logout() when the backend answers 401.
  */
 interface AuthState {
   user: User | null
+  token: string | null
   isLoading: boolean
   error: string | null
   login: (email: string, password: string) => Promise<void>
@@ -26,13 +30,14 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
+      token: null,
       isLoading: false,
       error: null,
       async login(email, password) {
         set({ isLoading: true, error: null })
         try {
-          const user = await loginRequest(email, password)
-          set({ user, isLoading: false })
+          const { user, token } = await loginRequest(email, password)
+          set({ user, token, isLoading: false })
         } catch (err) {
           const message = err instanceof Error ? err.message : "No se pudo iniciar sesión."
           set({ isLoading: false, error: message })
@@ -42,8 +47,8 @@ export const useAuthStore = create<AuthState>()(
       async register(name, email, password) {
         set({ isLoading: true, error: null })
         try {
-          const user = await registerRequest(name, email, password)
-          set({ user, isLoading: false })
+          const { user, token } = await registerRequest(name, email, password)
+          set({ user, token, isLoading: false })
         } catch (err) {
           const message = err instanceof Error ? err.message : "No se pudo crear la cuenta."
           set({ isLoading: false, error: message })
@@ -51,7 +56,7 @@ export const useAuthStore = create<AuthState>()(
         }
       },
       logout() {
-        set({ user: null, error: null })
+        set({ user: null, token: null, error: null })
       },
       clearError() {
         set({ error: null })
@@ -59,7 +64,10 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "evenly-auth",
-      partialize: (state) => ({ user: state.user }),
+      version: 1,
+      partialize: (state) => ({ user: state.user, token: state.token }),
+      // Sessions saved by the old mock-store have a user but no token: drop them.
+      migrate: () => ({ user: null, token: null }),
     },
   ),
 )

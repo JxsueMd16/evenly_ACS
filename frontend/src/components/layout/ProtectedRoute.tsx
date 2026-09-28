@@ -3,7 +3,7 @@ import { useAuthStore } from "@/store/authStore"
 import { AppShell } from "./AppShell"
 
 export function ProtectedRoute() {
-  const user = useAuthStore((s) => s.user)
+  const user = useAuthStore((s) => (s.token ? s.user : null))
   const location = useLocation()
 
   if (!user) {

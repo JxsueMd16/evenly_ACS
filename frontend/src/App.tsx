@@ -11,6 +11,9 @@ import { AddExpenseEntryPage } from "@/pages/groups/AddExpenseEntryPage"
 import { AddExpensePage } from "@/pages/groups/AddExpensePage"
 import { ActivityPage } from "@/pages/ActivityPage"
 import { ProfilePage } from "@/pages/ProfilePage"
+import { FriendsPage } from "@/pages/FriendsPage"
+import { JoinGroupPage } from "@/pages/groups/JoinGroupPage"
+import { QuickBillPage } from "@/pages/groups/QuickBillPage"
 import { useSettingsStore } from "@/store/settingsStore"
 
 function App() {
@@ -32,8 +35,11 @@ function App() {
           <Route path="/groups/:groupId" element={<GroupDetailPage />} />
           <Route path="/groups/:groupId/add-expense" element={<AddExpensePage />} />
           <Route path="/add-expense" element={<AddExpenseEntryPage />} />
+          <Route path="/quick-bill" element={<QuickBillPage />} />
           <Route path="/activity" element={<ActivityPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/friends" element={<FriendsPage />} />
+          <Route path="/join/:code" element={<JoinGroupPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
