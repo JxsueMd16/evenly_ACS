@@ -6,11 +6,14 @@ services:
     runtime: node
     plan: free
     rootDir: backend
+    # Solo la rama estable, y solo cuando el pipeline de GitHub Actions pasa completo.
+    branch: main
+    autoDeployTrigger: checksPass
     # --prod=false: NODE_ENV=production haría que pnpm omita prisma y typescript (devDependencies).
+    # Las migraciones van en el build porque el pre-deploy command no existe en el plan gratis.
     buildCommand: pnpm install --frozen-lockfile --prod=false && pnpm build && pnpm db:deploy
     startCommand: pnpm start
     healthCheckPath: /health
-    autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production

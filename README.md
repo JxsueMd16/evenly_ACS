@@ -10,6 +10,8 @@ Gestor de gastos compartidos para grupos. Proyecto Final — Aseguramiento de la
 | [.github/workflows/](.github/workflows/) | CI: typecheck, pruebas unitarias, build, Newman y Cypress contra un PostgreSQL limpio |
 | [render.yaml](render.yaml) | Blueprint de despliegue del backend en Render |
 
+**Despliegue:** frontend en Vercel y backend en Render, solo desde `main` y solo si el pipeline pasa completo. Guía paso a paso en [docs/despliegue.md](docs/despliegue.md).
+
 ## Arranque rápido
 
 ```bash

@@ -10,6 +10,7 @@ Proyecto Final — Aseguramiento de la Calidad del Software (UMG). Avance 2: ava
 | [registro-defectos.md](registro-defectos.md) | Defectos con severidad, prioridad, pasos de reproducción, estado y regresión |
 | [metricas.md](metricas.md) | Resumen de ejecución, tasa de éxito por ronda, defectos por severidad, tiempos de respuesta |
 | [api/](api/) | Colección Postman (Apidog/Newman), environments y especificación OpenAPI |
+| [despliegue.md](despliegue.md) | Cómo se despliega (Render + Vercel + Neon) y configuración inicial |
 | [evidencias/](evidencias/) | Salidas reales de Newman, Cypress, reportes JUnit y capturas |
 
 ## Estrategia de pruebas
