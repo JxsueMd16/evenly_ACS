@@ -1,0 +1,12 @@
+SEC-15 Límite de intentos de login (AUTH_RATE_LIMIT=50 por IP cada 15 min)
+Fecha: 2026-09-28T00:23:01Z - servidor recién iniciado (contador en 0)
+Se envían 52 intentos de login con contraseña incorrecta desde la misma IP:
+  intento 1 -> HTTP 401 {"error":{"code":"UNAUTHORIZED","message":"Correo o contraseña incorrectos."}}
+  intento 2 -> HTTP 401 {"error":{"code":"UNAUTHORIZED","message":"Correo o contraseña incorrectos."}}
+  ... (intentos 3 a 48 -> HTTP 401)
+  intento 49 -> HTTP 401 {"error":{"code":"UNAUTHORIZED","message":"Correo o contraseña incorrectos."}}
+  intento 50 -> HTTP 401 {"error":{"code":"UNAUTHORIZED","message":"Correo o contraseña incorrectos."}}
+  intento 51 -> HTTP 429 {"error":{"code":"TOO_MANY_REQUESTS","message":"Demasiados intentos. Espera unos minutos."}}
+  intento 52 -> HTTP 429 {"error":{"code":"TOO_MANY_REQUESTS","message":"Demasiados intentos. Espera unos minutos."}}
+Intento 53 con la contraseña CORRECTA (también bloqueado hasta que pase la ventana):
+  -> HTTP 429 {"error":{"code":"TOO_MANY_REQUESTS","message":"Demasiados intentos. Espera unos minutos."}}

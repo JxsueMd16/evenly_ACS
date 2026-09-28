@@ -1,0 +1,385 @@
+(node:11916) [DEP0176] DeprecationWarning: fs.F_OK is deprecated, use fs.constants.F_OK instead
+(Use `node --trace-deprecation ...` to show where the warning was created)
+newman
+Evenly API
+□ 00 Salud
+└ API-01 Health check con base de datos
+  GET http://localhost:3000/health [200 OK, 914B, 1222ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 200
+  √  Servicio y BD disponibles
+□ 01 Autenticación
+└ API-02 Registro usuario A (admin del grupo)
+  POST http://localhost:3000/auth/register [201 Created, 1.32kB, 296ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 201
+  √  Devuelve token y usuario
+  √  No devuelve la contraseña ni su hash
+└ API-03 Registro usuario B (integrante)
+  POST http://localhost:3000/auth/register [201 Created, 1.32kB, 225ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 201
+  √  Devuelve token y usuario
+  √  No devuelve la contraseña ni su hash
+└ API-04 Registro usuario C (ajeno al grupo)
+  POST http://localhost:3000/auth/register [201 Created, 1.32kB, 230ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 201
+  √  Devuelve token y usuario
+  √  No devuelve la contraseña ni su hash
+└ API-05 Registro usuario D (integrante)
+  POST http://localhost:3000/auth/register [201 Created, 1.32kB, 234ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 201
+  √  Devuelve token y usuario
+  √  No devuelve la contraseña ni su hash
+└ API-06 Registro con correo duplicado
+  POST http://localhost:3000/auth/register [409 Conflict, 1.09kB, 90ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 409
+  √  Código de error EMAIL_TAKEN
+└ API-07 Registro con contraseña débil
+  POST http://localhost:3000/auth/register [400 Bad Request, 1.29kB, 8ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 400
+  √  Código de error VALIDATION_ERROR
+└ API-08 Registro con correo inválido
+  POST http://localhost:3000/auth/register [400 Bad Request, 1.16kB, 6ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 400
+  √  Código de error VALIDATION_ERROR
+└ API-09 Registro con campo no permitido (asignación masiva)
+  POST http://localhost:3000/auth/register [400 Bad Request, 1.19kB, 5ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 400
+  √  Código de error VALIDATION_ERROR
+└ API-10 Login correcto
+  POST http://localhost:3000/auth/login [200 OK, 1.31kB, 145ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 200
+  √  Devuelve un JWT
+  √  La respuesta no expone hash, stack ni SQL
+└ API-11 Login con contraseña incorrecta
+  POST http://localhost:3000/auth/login [401 Unauthorized, 1.09kB, 135ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 401
+  √  Mensaje genérico
+  √  La respuesta no expone hash, stack ni SQL
+└ API-12 Login con correo inexistente (mismo mensaje)
+  POST http://localhost:3000/auth/login [401 Unauthorized, 1.09kB, 147ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 401
+  √  No revela si la cuenta existe
+└ SEC-01 Login con inyección SQL en el correo
+  POST http://localhost:3000/auth/login [400 Bad Request, 1.16kB, 5ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 400
+  √  No hay token
+  √  La respuesta no expone hash, stack ni SQL
+└ API-13 Perfil sin token
+  GET http://localhost:3000/auth/me [401 Unauthorized, 971B, 5ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 401
+  √  Código de error UNAUTHORIZED
+└ SEC-02 Perfil con token manipulado
+  ┌
+  │ `Using "btoa" is deprecated. Use "require('btoa')" ins
+  │ tead.`
+  └
+  GET http://localhost:3000/auth/me [401 Unauthorized, 1.01kB, 5ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 401
+  √  Código de error UNAUTHORIZED
+└ API-14 Perfil con token válido
+  GET http://localhost:3000/auth/me [200 OK, 1.01kB, 89ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 200
+  √  Es el usuario A
+  √  La respuesta no expone hash, stack ni SQL
+□ 02 Usuarios
+└ API-15 Buscar usuario por correo
+  GET http://localhost:3000/users?search=qa.b.mukikyg4@evenly.test [200 OK, 1.01kB, 199ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 200
+  √  Encuentra a B
+└ SEC-03 Búsqueda con inyección SQL
+  GET http://localhost:3000/users?search=%25'%20OR%201%3D1%20-- [200 OK, 900B, 175ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 200
+  √  No devuelve toda la tabla de usuarios
+  √  La respuesta no expone hash, stack ni SQL
+└ SEC-14 Búsqueda con comodines LIKE (enumeración de usuarios)
+  GET http://localhost:3000/users?search=%25%25 [200 OK, 900B, 174ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 200
+  √  Los comodines se tratan como texto literal (DEF-002)
+□ 03 Grupos
+└ API-16 Crear grupo sin nombre
+  POST http://localhost:3000/groups [400 Bad Request, 1.06kB, 94ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 400
+  √  Código de error VALIDATION_ERROR
+└ API-17 Crear grupo con integrantes
+  POST http://localhost:3000/groups [201 Created, 1.8kB, 1782ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 201
+  √  Tiene 3 integrantes y A es ADMIN
+  √  Balance inicial en 0
+└ API-18 Listar mis grupos
+  GET http://localhost:3000/groups [200 OK, 1.63kB, 396ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 200
+  √  B ve el grupo donde lo agregaron
+└ SEC-04 Usuario ajeno intenta ver el grupo
+  GET http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr [404 Not Found, 959B, 178ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 404
+  √  Código de error NOT_FOUND
+  √  No filtra datos del grupo
+└ SEC-05 Usuario ajeno intenta editar el grupo
+  PATCH http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr [404 Not Found, 959B, 190ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 404
+  √  Código de error NOT_FOUND
+└ SEC-06 Integrante no admin intenta editar el grupo
+  PATCH http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr [403 Forbidden, 1kB, 179ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 403
+  √  Código de error FORBIDDEN
+└ API-19 Admin renombra el grupo
+  PATCH http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr [200 OK, 1.8kB, 535ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 200
+  √  Nombre actualizado
+□ 04 Gastos
+└ API-20 Gasto equitativo 100.00 entre 3 (redondeo)
+  POST http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses [201 Created, 1.48kB, 870ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 201
+  √  Las partes suman exactamente el total (DEF-001)
+  √  Reparto 33.34 / 33.33 / 33.33
+└ API-21 Gasto por ítem que cuadra
+  POST http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses [201 Created, 1.43kB, 860ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 201
+  √  Tipo itemized
+└ API-22 Gasto por ítem que no cuadra
+  POST http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses [400 Bad Request, 999B, 262ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 400
+  √  Código de error SPLIT_MISMATCH
+└ API-23 Monto 0 (límite inferior)
+  POST http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses [400 Bad Request, 1.05kB, 173ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 400
+  √  Código de error VALIDATION_ERROR
+└ API-24 Monto negativo
+  POST http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses [400 Bad Request, 1.05kB, 174ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 400
+  √  Código de error VALIDATION_ERROR
+└ API-25 Monto mínimo 0.01 (límite válido)
+  POST http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses [201 Created, 1.37kB, 858ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 201
+└ API-26 Monto máximo 1,000,000 (límite válido)
+  POST http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses [201 Created, 1.38kB, 856ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 201
+└ API-27 Monto 1,000,000.01 (sobre el límite)
+  POST http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses [400 Bad Request, 1.07kB, 178ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 400
+  √  Código de error VALIDATION_ERROR
+└ API-28 Monto con 3 decimales
+  POST http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses [400 Bad Request, 1.08kB, 173ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 400
+  √  Código de error VALIDATION_ERROR
+└ SEC-07 Inyección en el monto
+  POST http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses [400 Bad Request, 1.05kB, 178ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 400
+  √  Código de error VALIDATION_ERROR
+  √  La respuesta no expone hash, stack ni SQL
+└ API-29 Participante que no es del grupo
+  POST http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses [400 Bad Request, 1kB, 260ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 400
+  √  Código de error NOT_A_MEMBER
+└ SEC-08 Usuario ajeno intenta registrar un gasto
+  POST http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses [404 Not Found, 959B, 176ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 404
+  √  Código de error NOT_FOUND
+└ SEC-09 Usuario ajeno intenta listar los gastos
+  GET http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses [404 Not Found, 959B, 176ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 404
+  √  No filtra montos
+└ SEC-10 Integrante sin permiso intenta borrar un gasto
+  DELETE http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses/cmukil4la0008hcnb3g85ud6s [403 Forbidden, 1.02kB, 348ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 403
+  √  Código de error FORBIDDEN
+└ API-30 Admin elimina el gasto de límite superior
+  DELETE http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses/cmukil7fi000hhcnbrd9276o2 [204 No Content, 788B, 432ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 204
+└ API-31 Admin elimina el gasto de 0.01
+  DELETE http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses/cmukil6pc000fhcnbcokosa2y [204 No Content, 788B, 431ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 204
+└ API-32 Listar gastos del grupo
+  GET http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/expenses [200 OK, 2kB, 348ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 200
+  √  Quedan 2 gastos, del más reciente al más antiguo
+□ 05 Balances y actividad
+└ API-33 Balances del grupo
+  GET http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr [200 OK, 2.02kB, 432ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 200
+  √  La suma de balances es 0
+  √  A: +100 - 33.34 - 10.25 = 56.41
+  √  B: +30.50 - 33.33 - 20.25 = -23.08
+  √  D: -33.33
+  √  Pagos sugeridos saldan el grupo
+└ API-34 Actividad reciente
+  GET http://localhost:3000/activity?limit=5 [200 OK, 2.24kB, 796ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 200
+  √  Incluye los gastos del grupo con su pagador
+└ API-35 Historial de pagos (paidByMe)
+  GET http://localhost:3000/activity?paidByMe=true [200 OK, 1.55kB, 268ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 200
+  √  Solo gastos pagados por B
+□ 05b Integrantes
+└ API-40 Admin agrega a un integrante
+  POST http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/members [201 Created, 2.23kB, 695ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 201
+  √  C ahora es integrante
+└ API-41 Agregar a alguien que ya es integrante
+  POST http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/members [409 Conflict, 982B, 355ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 409
+  √  Código de error ALREADY_MEMBER
+└ API-42 Integrante no admin intenta agregar
+  POST http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/members [403 Forbidden, 1kB, 178ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 403
+  √  Código de error FORBIDDEN
+└ API-43 Quitar a un integrante que participa en gastos
+  DELETE http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/members/cmukikyuq0001hcnbxssoo0bh [409 Conflict, 1.01kB, 433ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 409
+  √  Código de error MEMBER_HAS_EXPENSES
+└ API-44 El admin intenta salir del grupo
+  DELETE http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/members/cmukikymc0000hcnbcmp1w02l [409 Conflict, 1.01kB, 176ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 409
+  √  Código de error ADMIN_CANNOT_LEAVE
+└ API-45 Integrante no admin intenta quitar a otro
+  DELETE http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/members/cmukikz3i0002hcnbhfh5qdqd [403 Forbidden, 993B, 176ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 403
+  √  Código de error FORBIDDEN
+└ API-46 Integrante sin gastos sale del grupo
+  DELETE http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr/members/cmukikz3i0002hcnbhfh5qdqd [204 No Content, 788B, 521ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 204
+└ API-47 Quien salió ya no ve el grupo
+  GET http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr [404 Not Found, 959B, 174ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 404
+□ 06 Robustez y datos sensibles
+└ SEC-11 JSON mal formado
+  POST http://localhost:3000/auth/login [400 Bad Request, 989B, 4ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 400
+  √  Código de error INVALID_JSON
+  √  La respuesta no expone hash, stack ni SQL
+└ SEC-12 Cuerpo mayor a 100 KB
+  POST http://localhost:3000/groups [413 Payload Too Large, 988B, 5ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 413
+  √  Código de error PAYLOAD_TOO_LARGE
+└ SEC-13 Cabeceras de seguridad
+  GET http://localhost:3000/health [200 OK, 914B, 88ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 200
+  √  No expone X-Powered-By
+  √  X-Content-Type-Options: nosniff
+└ API-36 Ruta inexistente
+  GET http://localhost:3000/no-existe [404 Not Found, 968B, 4ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 404
+  √  Código de error NOT_FOUND
+□ 07 Limpieza
+└ API-37 Integrante no admin intenta eliminar el grupo
+  DELETE http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr [403 Forbidden, 1kB, 176ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 403
+└ API-38 Admin elimina el grupo
+  DELETE http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr [204 No Content, 788B, 269ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  Status 204
+└ API-39 El grupo eliminado ya no existe
+  GET http://localhost:3000/groups/cmukil1mp0004hcnb5jjs7hkr [404 Not Found, 959B, 177ms]
+  √  RNF-01 Tiempo de respuesta < 3000 ms
+  √  RNF-02 Error con formato { error: { code, message } }
+  √  Status 404
+┌─────────────────────────┬────────────────────┬────────────────────┐
+│                         │           executed │             failed │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│              iterations │                  1 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│                requests │                 61 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│            test-scripts │                122 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│      prerequest-scripts │                  3 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│              assertions │                227 │                  0 │
+├─────────────────────────┴────────────────────┴────────────────────┤
+│ total run duration: 23.4s                                         │
+├───────────────────────────────────────────────────────────────────┤
+│ total data received: 15.84kB (approx)                             │
+├───────────────────────────────────────────────────────────────────┤
+│ average response time: 302ms [min: 4ms, max: 1782ms, s.d.: 319ms] │
+└───────────────────────────────────────────────────────────────────┘

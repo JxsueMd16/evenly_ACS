@@ -1,0 +1,81 @@
+====================================================================================================
+  (Run Starting)
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Cypress:        16.1.0                                                                         │
+  │ Browser:        Electron 146 (headless) (deprecated)                                           │
+  │ Node Version:   v24.15.0 (C:\Program Files\nodejs\node.exe)                                    │
+  │ Specs:          3 found (01-auth.cy.ts, 02-grupos-gastos.cy.ts, 03-seguridad.cy.ts)            │
+  │ Searched:       cypress/e2e/**/*.cy.{js,jsx,ts,tsx}                                            │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+Warning: The Electron browser is deprecated as a test browser and will be removed in a future version of Cypress.
+Switch to Chrome or another installed browser to avoid a breaking change when you upgrade.
+Read more about supported browsers: https://on.cypress.io/launching-browsers
+────────────────────────────────────────────────────────────────────────────────────────────────────
+  Running:  01-auth.cy.ts                                                                   (1 of 3)
+  Autenticación
+    √ E2E-01 registra una cuenta nueva y entra al inicio (3072ms)
+    √ E2E-02 valida la política de contraseña antes de llamar a la API (1415ms)
+    √ E2E-03 muestra un error claro con credenciales incorrectas y no inicia sesión (1020ms)
+    √ E2E-04 redirige a /login al abrir una ruta protegida sin sesión (270ms)
+    √ E2E-05 cierra la sesión si el token ya no es válido (508ms)
+  5 passing (6s)
+  (Results)
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        5                                                                                │
+  │ Passing:      5                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        false                                                                            │
+  │ Duration:     6 seconds                                                                        │
+  │ Spec Ran:     01-auth.cy.ts                                                                    │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────────
+  Running:  02-grupos-gastos.cy.ts                                                          (2 of 3)
+  Grupos y gastos
+    √ E2E-06 crea un grupo buscando a un integrante por correo (4574ms)
+    √ E2E-07 agrega un gasto equitativo y actualiza el balance (3864ms)
+    √ E2E-08 no permite guardar una división por ítem que no cuadra (2989ms)
+    √ E2E-09 limpia caracteres no numéricos del monto (entrada maliciosa) (2186ms)
+  4 passing (14s)
+  (Results)
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        4                                                                                │
+  │ Passing:      4                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        false                                                                            │
+  │ Duration:     13 seconds                                                                       │
+  │ Spec Ran:     02-grupos-gastos.cy.ts                                                           │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────────
+  Running:  03-seguridad.cy.ts                                                              (3 of 3)
+  Seguridad en la interfaz
+    √ E2E-10 un usuario no puede abrir el grupo de otro cambiando la URL (2330ms)
+  1 passing (2s)
+  (Results)
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        1                                                                                │
+  │ Passing:      1                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        false                                                                            │
+  │ Duration:     2 seconds                                                                        │
+  │ Spec Ran:     03-seguridad.cy.ts                                                               │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+====================================================================================================
+  (Run Finished)
+       Spec                                              Tests  Passing  Failing  Pending  Skipped  
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ ✔  01-auth.cy.ts                            00:06        5        5        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  02-grupos-gastos.cy.ts                   00:13        4        4        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  03-seguridad.cy.ts                       00:02        1        1        -        -        - │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+    ✔  All specs passed!                        00:22       10       10        -        -        -  

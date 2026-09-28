@@ -1,0 +1,8 @@
+Fecha: 2026-09-28T00:12:52.465Z
+Usuarios en la BD: 16
+Con hash bcrypt (cost 10, 60 caracteres): 16
+Contraseña en texto plano "Evenly2026" o "Prueba2026" guardada tal cual: 0
+Muestra (hash truncado):
+  paul@evenly.app  $2b$10$...60 chars
+  ana@evenly.app  $2b$10$...60 chars
+  kevin@evenly.app  $2b$10$...60 chars

@@ -1,0 +1,23 @@
+ RUN  v5.0.2 C:/Users/josue/OneDrive/Escritorio/evenly/backend
+ ✓ src/lib/balances.test.ts > computeNetCents > calcula el balance del grupo 'Viaje a la playa' del seed 1ms
+ ✓ src/lib/balances.test.ts > computeNetCents > la suma de todos los balances es 0 0ms
+ ✓ src/lib/balances.test.ts > computeNetCents > incluye a integrantes sin gastos con balance 0 0ms
+ ✓ src/lib/balances.test.ts > suggestSettlements > salda el grupo con como máximo n-1 pagos 0ms
+ ✓ src/lib/balances.test.ts > suggestSettlements > no sugiere pagos si todos están al día 0ms
+ ✓ src/lib/money.test.ts > toCents > convierte sin errores de punto flotante 1ms
+ ✓ src/lib/money.test.ts > hasAtMostTwoDecimals > acepta 12 0ms
+ ✓ src/lib/money.test.ts > hasAtMostTwoDecimals > acepta 12.5 0ms
+ ✓ src/lib/money.test.ts > hasAtMostTwoDecimals > acepta 12.55 0ms
+ ✓ src/lib/money.test.ts > hasAtMostTwoDecimals > acepta 0.01 0ms
+ ✓ src/lib/money.test.ts > hasAtMostTwoDecimals > acepta 999999.99 0ms
+ ✓ src/lib/money.test.ts > hasAtMostTwoDecimals > rechaza 12.345 0ms
+ ✓ src/lib/money.test.ts > hasAtMostTwoDecimals > rechaza 0.001 0ms
+ ✓ src/lib/money.test.ts > hasAtMostTwoDecimals > rechaza 1.999 0ms
+ ✓ src/lib/money.test.ts > splitEqually > reparte los centavos sobrantes para que la suma sea exacta (DEF-001) 0ms
+ ✓ src/lib/money.test.ts > splitEqually > divide exacto cuando no hay sobrante 0ms
+ ✓ src/lib/money.test.ts > splitEqually > maneja el monto mínimo entre más personas que centavos 0ms
+ ✓ src/lib/money.test.ts > splitEqually > devuelve vacío sin participantes 0ms
+ Test Files  2 passed (2)
+      Tests  18 passed (18)
+   Start at  18:24:54
+   Duration  136ms (transform 57%, import 26%, worker 9%, tests 8%)

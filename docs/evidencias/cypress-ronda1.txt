@@ -1,0 +1,112 @@
+====================================================================================================
+  (Run Starting)
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Cypress:        16.1.0                                                                         │
+  │ Browser:        Electron 146 (headless) (deprecated)                                           │
+  │ Node Version:   v24.15.0 (C:\Program Files\nodejs\node.exe)                                    │
+  │ Specs:          3 found (01-auth.cy.ts, 02-grupos-gastos.cy.ts, 03-seguridad.cy.ts)            │
+  │ Searched:       cypress/e2e/**/*.cy.{js,jsx,ts,tsx}                                            │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+Warning: The Electron browser is deprecated as a test browser and will be removed in a future version of Cypress.
+Switch to Chrome or another installed browser to avoid a breaking change when you upgrade.
+Read more about supported browsers: https://on.cypress.io/launching-browsers
+────────────────────────────────────────────────────────────────────────────────────────────────────
+  Running:  01-auth.cy.ts                                                                   (1 of 3)
+  Autenticación
+    √ E2E-01 registra una cuenta nueva y entra al inicio (3026ms)
+    √ E2E-02 valida la política de contraseña antes de llamar a la API (1366ms)
+    √ E2E-03 muestra un error claro con credenciales incorrectas y no inicia sesión (1147ms)
+    √ E2E-04 redirige a /login al abrir una ruta protegida sin sesión (280ms)
+    √ E2E-05 cierra la sesión si el token ya no es válido (512ms)
+  5 passing (6s)
+  (Results)
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        5                                                                                │
+  │ Passing:      5                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        false                                                                            │
+  │ Duration:     6 seconds                                                                        │
+  │ Spec Ran:     01-auth.cy.ts                                                                    │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────────
+  Running:  02-grupos-gastos.cy.ts                                                          (2 of 3)
+  Grupos y gastos
+    √ E2E-06 crea un grupo buscando a un integrante por correo (4655ms)
+    1) E2E-07 agrega un gasto equitativo y actualiza el balance
+    2) E2E-08 no permite guardar una división por ítem que no cuadra
+    √ E2E-09 limpia caracteres no numéricos del monto (entrada maliciosa) (3290ms)
+  2 passing (35s)
+  2 failing
+  1) Grupos y gastos
+       E2E-07 agrega un gasto equitativo y actualiza el balance:
+      Timed out retrying after 10000ms
+      + expected - actual
+      -'/groups/cmuki3gmg000t3onb45mo2wh5/add-expense'
+      +'/groups/cmuki3gmg000t3onb45mo2wh5'
+      at Context.eval (webpack://frontend/./cypress/e2e/02-grupos-gastos.cy.ts:36:30)
+      at getRet (http://localhost:5173/__cypress/runner/cypress_runner.js:120748:20)
+      at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1780:23)
+      at Promise.attempt.Promise.try (http://localhost:5173/__cypress/runner/cypress_runner.js:4288:29)
+      at Context.thenFn (http://localhost:5173/__cypress/runner/cypress_runner.js:120759:66)
+      at Context.then (http://localhost:5173/__cypress/runner/cypress_runner.js:121010:21)
+      at wrapped (http://localhost:5173/__cypress/runner/cypress_runner.js:146066:19)
+  2) Grupos y gastos
+       E2E-08 no permite guardar una división por ítem que no cuadra:
+     AssertionError: Timed out retrying after 10000ms: Expected to find content: 'La división no cuadra. Faltan' but never did.
+      at Context.eval (webpack://frontend/./cypress/e2e/02-grupos-gastos.cy.ts:59:51)
+      at getRet (http://localhost:5173/__cypress/runner/cypress_runner.js:120748:20)
+      at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1780:23)
+      at Promise.attempt.Promise.try (http://localhost:5173/__cypress/runner/cypress_runner.js:4288:29)
+      at Context.thenFn (http://localhost:5173/__cypress/runner/cypress_runner.js:120759:66)
+      at Context.then (http://localhost:5173/__cypress/runner/cypress_runner.js:121010:21)
+      at wrapped (http://localhost:5173/__cypress/runner/cypress_runner.js:146066:19)
+  (Results)
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        4                                                                                │
+  │ Passing:      2                                                                                │
+  │ Failing:      2                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  2                                                                                │
+  │ Video:        false                                                                            │
+  │ Duration:     35 seconds                                                                       │
+  │ Spec Ran:     02-grupos-gastos.cy.ts                                                           │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+  (Screenshots)
+  -  C:\Users\josue\OneDrive\Escritorio\evenly\frontend\cypress\screenshots\02-grupos     (1280x720)
+     -gastos.cy.ts\Grupos y gastos -- E2E-07 agrega un gasto equitativo y actualiza e               
+     l balance (failed).png                                                                         
+  -  C:\Users\josue\OneDrive\Escritorio\evenly\frontend\cypress\screenshots\02-grupos     (1280x720)
+     -gastos.cy.ts\Grupos y gastos -- E2E-08 no permite guardar una división por ítem               
+      que no cuadra (failed).png                                                                    
+────────────────────────────────────────────────────────────────────────────────────────────────────
+  Running:  03-seguridad.cy.ts                                                              (3 of 3)
+  Seguridad en la interfaz
+    √ E2E-10 un usuario no puede abrir el grupo de otro cambiando la URL (2407ms)
+  1 passing (2s)
+  (Results)
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        1                                                                                │
+  │ Passing:      1                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        false                                                                            │
+  │ Duration:     2 seconds                                                                        │
+  │ Spec Ran:     03-seguridad.cy.ts                                                               │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+====================================================================================================
+  (Run Finished)
+       Spec                                              Tests  Passing  Failing  Pending  Skipped  
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ ✔  01-auth.cy.ts                            00:06        5        5        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✖  02-grupos-gastos.cy.ts                   00:35        4        2        2        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  03-seguridad.cy.ts                       00:02        1        1        -        -        - │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+    ✖  1 of 3 failed (33%)                      00:44       10        8        2        -        -  
