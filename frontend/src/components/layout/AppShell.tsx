@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { connectNotifications } from "@/lib/notificationStream"
 import { useAuthStore } from "@/store/authStore"
@@ -40,9 +40,19 @@ function useRealtimeNotifications() {
 
 export function AppShell({ children }: { children: ReactNode }) {
   useRealtimeNotifications()
+  const { pathname } = useLocation()
+  const contentRef = useRef<HTMLElement>(null)
+
+  // El scroll vive en este contenedor: al cambiar de pantalla se vuelve arriba.
+  useEffect(() => {
+    contentRef.current?.scrollTo({ top: 0 })
+  }, [pathname])
+
   return (
     <div className="app-shell">
-      <div className="flex-1 overflow-y-auto pb-24">{children}</div>
+      <main ref={contentRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        {children}
+      </main>
       <BottomNav />
     </div>
   )
