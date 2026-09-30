@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react"
-import { Banknote, Eye, EyeOff, Landmark, Loader2, Plus, Trash2 } from "lucide-react"
+import { Eye, EyeOff, Landmark, Loader2, Plus, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -76,19 +76,23 @@ export function PaymentProfileSection() {
 
         <div className="flex flex-col gap-2">
           <p className="text-xs font-medium text-muted-foreground">Prefiero recibir pagos en</p>
+          {/* Sin íconos y con menos relleno: las tres opciones deben caber en un teléfono. */}
           <ToggleGroup
             type="single"
             value={preference ?? undefined}
             onValueChange={(v) => v && changePreference(v as PaymentPreference)}
             aria-label="Preferencia de pago"
+            className="w-full"
           >
-            <ToggleGroupItem value="EFECTIVO">
-              <Banknote className="size-4" /> Efectivo
+            <ToggleGroupItem value="EFECTIVO" className="min-w-0 px-2">
+              Efectivo
             </ToggleGroupItem>
-            <ToggleGroupItem value="TRANSFERENCIA">
-              <Landmark className="size-4" /> Transferencia
+            <ToggleGroupItem value="TRANSFERENCIA" className="min-w-0 px-2">
+              Transferencia
             </ToggleGroupItem>
-            <ToggleGroupItem value="AMBOS">Ambos</ToggleGroupItem>
+            <ToggleGroupItem value="AMBOS" className="min-w-0 px-2">
+              Ambos
+            </ToggleGroupItem>
           </ToggleGroup>
         </div>
 

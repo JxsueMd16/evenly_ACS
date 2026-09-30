@@ -47,7 +47,7 @@ export function BottomNav() {
   }
 
   return (
-    <nav data-realtime={connected} className="absolute inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2 backdrop-blur">
+    <nav data-realtime={connected} className="relative z-40 shrink-0 border-t border-border bg-card/95 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2 backdrop-blur">
       <ul className="flex items-center justify-between">
         {NAV_ITEMS.map(({ to, label, icon: Icon, end, isCenter, badge }) => {
           const info = badge ? badges[badge] : null

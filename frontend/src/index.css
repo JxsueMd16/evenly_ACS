@@ -109,10 +109,16 @@ body {
 
 /* Mobile-first shell: fills the viewport on phones, becomes a centered
    phone-width column with soft edges on wider (desktop) viewports. */
+/*
+ * La app ocupa exactamente el alto visible (100dvh descuenta las barras del
+ * navegador, como la barra flotante de Safari en iPhone). Solo el contenido
+ * hace scroll; la barra de navegación queda fija abajo.
+ */
 .app-shell {
   width: 100%;
   max-width: 480px;
-  min-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden;
   background: var(--color-background);
   display: flex;
   flex-direction: column;
@@ -121,7 +127,7 @@ body {
 
 @media (min-width: 540px) {
   .app-shell {
-    min-height: calc(100dvh - 2.5rem);
+    height: calc(100dvh - 2.5rem);
     margin: 1.25rem 0;
     border-radius: 2.5rem;
     box-shadow: 0 20px 45px -20px rgba(20, 32, 48, 0.25);
