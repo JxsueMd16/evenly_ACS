@@ -1,0 +1,11 @@
+$ playwright test --project=seguridad-prod
+
+Running 4 tests using 3 workers
+
+  ok 2 [seguridad-prod] › playwright\tests\seguridad-prod\sec-37-cabeceras.spec.ts:12:5 › SEC-37 cabeceras de seguridad del frontend › SEC-37 /groups/cualquier-id trae CSP, anti-clickjacking, nosniff, Referrer-Policy y Permissions-Policy (307ms)
+  ok 3 [seguridad-prod] › playwright\tests\seguridad-prod\sec-37-cabeceras.spec.ts:12:5 › SEC-37 cabeceras de seguridad del frontend › SEC-37 /login trae CSP, anti-clickjacking, nosniff, Referrer-Policy y Permissions-Policy (316ms)
+  ok 1 [seguridad-prod] › playwright\tests\seguridad-prod\sec-37-cabeceras.spec.ts:12:5 › SEC-37 cabeceras de seguridad del frontend › SEC-37 / trae CSP, anti-clickjacking, nosniff, Referrer-Policy y Permissions-Policy (367ms)
+  ok 4 [seguridad-prod] › playwright\tests\seguridad-prod\sec-37-cabeceras.spec.ts:31:3 › SEC-37 cabeceras de seguridad del frontend › SEC-37 la app carga en producción sin violaciones de la CSP (3.4s)
+
+  4 passed (4.2s)
+Verificación de la CSP en producción → API desde la página: {"status":"ok","db":"ok"} | otro dominio: bloqueado por la CSP | violaciones al cargar: 0

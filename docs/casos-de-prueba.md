@@ -259,7 +259,7 @@ Precondiciones generales: backend en `http://localhost:3000` con migraciones apl
 | SEC-34 | Newman | S | TD | Usuario ajeno envía recordatorio en un grupo que no es suyo | 404 | RNF-05, RF-17 | R8 | Pasa (ronda 9) |
 | SEC-35 | Newman | S | EG | Recordatorio con campos extra o id inválido | 400; VALIDATION_ERROR | RNF-04, RF-17 | R8 | Pasa (ronda 9) |
 | SEC-36 | Newman | S | TE | Segundo recordatorio antes de 24 h (anti-spam) | 429; REMINDER_TOO_SOON | RNF-04, UX-08 | R8 | Pasa (ronda 9) |
-| SEC-37 | Playwright (`seguridad-prod/sec-37-cabeceras.spec.ts`) | S | EG | Cabeceras de seguridad del frontend en producción (DEF-008) | CSP, frame-ancestors / X-Frame-Options, X-Content-Type-Options, Referrer-Policy y Permissions-Policy presentes | RNF-06 | R9 | Pendiente: se ejecuta en producción después del despliegue |
+| SEC-37 | Playwright (`seguridad-prod/sec-37-cabeceras.spec.ts`) | S | EG | Cabeceras de seguridad del frontend en producción (DEF-008) | CSP, frame-ancestors / X-Frame-Options, X-Content-Type-Options, Referrer-Policy y Permissions-Policy presentes | RNF-06 | R9 | Pasa (ronda 9c, producción `c73fe9c`: 4/4; la página llega a la API y la CSP bloquea otros dominios) |
 | E2E-09 | Cypress (`02-grupos-gastos.cy.ts`) | S | EG | Limpia caracteres no numéricos del precio (entrada maliciosa) | Ver aserciones del spec | RNF-04 | R1 | Pasa (ronda 9) |
 | E2E-10 | Cypress (`03-seguridad.cy.ts`) | S | EG | Un usuario no puede abrir el grupo de otro cambiando la URL | Ver aserciones del spec | RNF-05 | R1 | Pasa (ronda 9) |
 | E2E-32 | Cypress (`07-notificaciones.cy.ts`) | S | EG | Recordatorio de cobro: llega al deudor y no se puede repetir en 24 h | Ver aserciones del spec | RF-17, UX-08 | R8 | Pasa (ronda 9) |
@@ -285,9 +285,9 @@ Precondiciones generales: backend en `http://localhost:3000` con migraciones apl
 | Por nivel | Unitarias 14 · API 95 · Seguridad (API + scripts) 37 · E2E 34 · No funcionales y usabilidad 7 |
 | Por tipo | F 87 · N 40 · L 13 · S 40 · NF 6 (F funcional, N negativo, L límite, S seguridad, NF no funcional) |
 | Automatizados | 182 de 186 (97.8 %) |
-| Ejecutados | 184 de 186 (98.9 %) |
-| Aprobados en la última ejecución | 184 de 184 (100 %) |
-| Pendientes | SEC-37, USA-01 |
+| Ejecutados | 185 de 186 (99.5 %) |
+| Aprobados en la última ejecución | 185 de 185 (100 %) |
+| Pendientes | USA-01 |
 
 Los casos E2E, API y unitarios que se agregaron en una ronda se vuelven a ejecutar en todas las rondas siguientes
 (regresión completa). SEC-15, SEC-16 y SEC-17 se ejecutaron una vez con scripts porque verifican configuración que no

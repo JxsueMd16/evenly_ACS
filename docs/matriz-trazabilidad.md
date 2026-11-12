@@ -64,7 +64,7 @@ Los criterios de aceptación de RF-12 a RF-17 están en `plan-de-pruebas.md` (se
 | RNF-03 | E2E-02, E2E-03, E2E-08, E2E-13, E2E-19, E2E-23, E2E-34, USA-01 | 8 | 7 | 7 | Parcial: falta USA-01 |
 | RNF-04 | SEC-01, SEC-03, SEC-07, SEC-11, SEC-12, SEC-14, SEC-15, SEC-23, SEC-25, SEC-26, SEC-29, SEC-35, SEC-36, E2E-09 | 14 | 13 | 14 | Completa |
 | RNF-05 | SEC-02, SEC-04, SEC-05, SEC-06, SEC-08, SEC-09, SEC-10, SEC-18, SEC-19, SEC-20, SEC-21, SEC-22, SEC-24, SEC-30, SEC-31, SEC-32, SEC-33, SEC-34, E2E-10 | 19 | 19 | 19 | Completa |
-| RNF-06 | SEC-13, SEC-14, SEC-16, SEC-17, SEC-27, SEC-28, SEC-37 | 7 | 5 | 6 | Parcial: falta SEC-37 |
+| RNF-06 | SEC-13, SEC-14, SEC-16, SEC-17, SEC-27, SEC-28, SEC-37 | 7 | 5 | 7 | Completa |
 | RNF-07 | CMP-01 | 1 | 1 | 1 | Completa |
 | RNF-08 | ACC-01 | 1 | 1 | 1 | Completa |
 
@@ -87,13 +87,12 @@ Los criterios de aceptación de RF-12 a RF-17 están en `plan-de-pruebas.md` (se
 | --- | --- |
 | Requisitos | 35 (17 funcionales, 10 de UX, 8 no funcionales) |
 | Con al menos un caso diseñado | 35 de 35 (100.0 %) |
-| Con cobertura completa (todos sus casos ejecutados y aprobados) | 33 (94.3 %) |
-| Con cobertura parcial | 2: RNF-03, RNF-06 |
+| Con cobertura completa (todos sus casos ejecutados y aprobados) | 34 (97.1 %) |
+| Con cobertura parcial | 1: RNF-03 |
 | Solo con casos pendientes | 0: — |
 | Sin ningún caso | 0 |
 
-Lo que queda abierto: USA-01 (prueba de usabilidad con compañeros, la ejecuta el equipo) y SEC-37, que verifica las
-cabeceras de seguridad directamente en producción y se ejecuta después de desplegar la corrección de DEF-008.
+Lo único que queda abierto es USA-01 (prueba de usabilidad con compañeros), que ejecuta el equipo.
 
 ## 4. Matriz defecto → casos de regresión
 
@@ -106,6 +105,6 @@ cabeceras de seguridad directamente en producción y se ejecuta después de desp
 | DEF-005 | RF-08, RF-10 | Revisión estática | API-22, E2E-08 | Pasan (R2 a R9) |
 | DEF-006 | RNF-03, UX-10 | Evaluación heurística de UX | E2E-34 | Pasa (R8b, R9) |
 | DEF-007 | RNF-03, UX-02 | Prueba exploratoria en viewport móvil | E2E-27 + revisión visual | Pasa (R8, R9) |
-| DEF-008 | RNF-06 | Revisión de cabeceras HTTP en producción | SEC-37 | Pendiente: se verifica en producción tras el despliegue |
+| DEF-008 | RNF-06 | Revisión de cabeceras HTTP en producción | SEC-37 | Pasa (R9c, en producción) |
 | DEF-009 | RNF-08 | ACC-01 (axe-core, ronda 9) | ACC-01 (axe + Lighthouse), CMP-01, suite E2E | Pasan (R9b) |
 | DEF-010 | RNF-08 | ACC-01 (axe-core, ronda 9) | ACC-01, E2E-24, E2E-14, E2E-26, E2E-31 | Pasan (R9b) |

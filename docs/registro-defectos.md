@@ -28,7 +28,7 @@
 | DEF-005 | La división por ítem acepta hasta 0.05 de diferencia con el total | Media | Media | Prototipo (`AddExpensePage.tsx`, `mockApi.ts`) | Revisión estática | Cerrado |
 | DEF-006 | "Ayuda y preguntas frecuentes" en Perfil no hace nada | Baja | Media | Frontend (`ProfilePage.tsx`) | Evaluación heurística de UX | Cerrado |
 | DEF-007 | Los integrantes de cada grupo son ilegibles en "¿Con quién fue?" | Baja | Media | Frontend (`AddExpenseEntryPage.tsx`, código nuevo de UX) | Prueba exploratoria en móvil | Cerrado |
-| DEF-008 | El frontend en producción no envía cabeceras de seguridad (CSP, anti-clickjacking, nosniff) | Media | Alta | Configuración de Vercel (`frontend/vercel.json`) | Revisión de cabeceras HTTP | Corregido (falta verificar en producción con SEC-37) |
+| DEF-008 | El frontend en producción no envía cabeceras de seguridad (CSP, anti-clickjacking, nosniff) | Media | Alta | Configuración de Vercel (`frontend/vercel.json`) | Revisión de cabeceras HTTP | Cerrado |
 | DEF-009 | Contraste de color insuficiente en textos secundarios, montos y barra de navegación | Media | Alta | Frontend (`index.css`, `BottomNav.tsx`) | ACC-01 (axe-core, automatizado) | Cerrado |
 | DEF-010 | Nombres accesibles que no coinciden con el texto visible | Baja | Media | Frontend (`BottomNav.tsx`, `HomePage.tsx`, `GroupDetailPage.tsx`) | ACC-01 (axe-core, automatizado) | Cerrado |
 
@@ -259,7 +259,9 @@ revisión visual en el tamaño real del dispositivo sigue siendo necesaria.
 
 **Regresión:** SEC-37 (Playwright, proyecto `seguridad-prod`) revisa las cabeceras en `/login`, `/` y una ruta
 interna, y que la app cargue sin violaciones de la CSP. Se ejecuta contra producción después de desplegar:
-`pnpm pw:prod`. Estado: **pendiente de despliegue**.
+`pnpm pw:prod`. **Pasa 4/4** en producción (commit `c73fe9c`, 2026-11-12). Además se comprobó desde la página
+desplegada que la app sí llega a la API (`/health` → `ok`) y que la CSP bloquea peticiones a cualquier otro dominio
+(`evidencias/playwright-ronda9-sec37-produccion.txt`).
 
 ---
 
