@@ -70,14 +70,14 @@ describe("Gestión del grupo", () => {
       // El amigo no creó ni pagó la cuenta y no es admin: ve el detalle pero no el botón de eliminar.
       cy.loginAs(friend)
       cy.visit(`/groups/${group.id}`)
-      cy.get('[aria-label="Ver cuenta Hotel"]').click()
+      cy.get('[data-testid="bill-Hotel"]').click()
       cy.contains("Cuánto le toca a cada quien").should("be.visible")
       cy.contains("button", "Eliminar cuenta").should("not.exist")
 
       cy.loginAs(owner)
       cy.visit(`/groups/${group.id}`)
       cy.contains("p", /^Tú$/).parent().should("contain.text", "+").and("contain.text", "50.00")
-      cy.get('[aria-label="Ver cuenta Hotel"]').click()
+      cy.get('[data-testid="bill-Hotel"]').click()
       cy.contains("button", "Eliminar cuenta").click()
       cy.contains("button", /^Eliminar$/).click()
 

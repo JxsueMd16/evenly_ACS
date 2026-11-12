@@ -50,6 +50,21 @@ pnpm dev            # http://localhost:5173
 # 5. Pruebas E2E con Cypress (backend y frontend corriendo)
 cd frontend && pnpm cy:run       # headless
 cd frontend && pnpm cy:open      # interfaz gráfica
+
+# 6. Compatibilidad (CMP-01) y accesibilidad con axe (ACC-01) en Playwright
+cd frontend && pnpm exec playwright install chromium firefox webkit   # solo la primera vez
+cd frontend && pnpm pw:test      # Chromium, Firefox, WebKit, Pixel 5 e iPhone 13
+cd frontend && pnpm pw:report    # reporte HTML
+
+# 7. Lighthouse con sesión iniciada (ACC-01): build de producción servido en 4173
+cd frontend && pnpm build && pnpm preview --port 4173   # otra terminal
+cd frontend && pnpm lighthouse   # guarda los reportes en docs/evidencias/lighthouse-ronda9/
+
+# 8. Prueba de carga (PERF-01): 20 conexiones durante 30 s, solo lecturas (no usar contra producción)
+cd backend && pnpm test:load
+
+# 9. Cabeceras de seguridad en producción (SEC-37), después de desplegar
+cd frontend && pnpm pw:prod
 ```
 
 > **Cypress desde la terminal de VS Code:** VS Code define `ELECTRON_RUN_AS_NODE=1` y Cypress falla con

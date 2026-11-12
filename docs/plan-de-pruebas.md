@@ -5,7 +5,7 @@
 | Campo | Valor |
 | --- | --- |
 | Documento | Plan de pruebas (basado en la estructura de IEEE 829 / ISO/IEC/IEEE 29119-3) |
-| Versión | 1.0 |
+| Versión | 1.1 |
 | Fecha | 2026-11-11 |
 | Sistema bajo prueba | Evenly — gestor de gastos compartidos para universitarios |
 | Repositorio | `github.com/JxsueMd16/evenly_ACS` (ramas `main`, `develop`, `feature/*`) |
@@ -17,6 +17,7 @@
 | Versión | Fecha | Cambio |
 | --- | --- | --- |
 | 0.1 | 2026-09-27 | Estrategia inicial dentro de `docs/README.md` (Avance 2) |
+| 1.1 | 2026-11-12 | Herramientas reales de la ronda 9 (autocannon en lugar de k6, axe-core) y cronograma actualizado |
 | 1.0 | 2026-11-11 | Plan formal completo: alcance con todos los módulos, requisitos RF-12 a RF-17 y UX, criterios de entrada/salida, métricas y cronograma hasta el cierre |
 
 ---
@@ -154,7 +155,7 @@ deben", "Tu situación", recordatorios, confirmación de pagos y bienvenida). De
 | Negativa | Entradas inválidas, estados no permitidos, usuarios sin permiso | API-06 correo duplicado, API-91 montos que no cuadran |
 | Valores límite | Mínimos, máximos y justo fuera de rango | API-89 propina 31 %, montos de 0.01 y 1,000,000 |
 | Seguridad | Inyección, control de acceso, datos sensibles, fuerza bruta, anti-spam | SEC-01 a SEC-37 (ver `pruebas-seguridad.md`) |
-| Rendimiento | Tiempo de respuesta en cada petición de Newman; prueba de carga con k6 | RNF-01 |
+| Rendimiento | Tiempo de respuesta en cada petición de Newman; prueba de carga con autocannon (20 conexiones, 30 s) | RNF-01 |
 | Usabilidad | Tareas guiadas y cuestionario SUS | USA-01 |
 | Compatibilidad | Smoke E2E en tres motores de navegador | RNF-07 (Playwright) |
 | Accesibilidad | Auditoría Lighthouse | RNF-08 |
@@ -196,9 +197,10 @@ deben", "Tu situación", recordatorios, confirmación de pagos y bienvenida). De
 | Vitest | 5.0 | Pruebas unitarias |
 | Newman / Postman / Apidog | Newman 6.2 | Pruebas de API, reportes CLI y JUnit |
 | Cypress | 16.1 | Pruebas E2E |
-| Playwright | 1.x | Compatibilidad entre navegadores (planificado) |
-| k6 | 1.x | Prueba de carga (planificado) |
-| Lighthouse | Incluido en Chrome | Accesibilidad y buenas prácticas |
+| Playwright | 1.65 | Compatibilidad entre navegadores (5 proyectos), cabeceras en producción |
+| axe-core | 4.14 | Auditoría automática de accesibilidad (WCAG 2.1 AA) dentro de Playwright |
+| autocannon | 8 | Prueba de carga (reemplaza a k6: corre con Node, sin instalar binarios) |
+| Lighthouse | 12 | Accesibilidad y buenas prácticas (script con sesión iniciada) |
 | GitHub Actions | — | Integración continua y despliegue |
 | Git / GitHub | — | Control de versiones, ramas y pull requests |
 
@@ -322,7 +324,7 @@ Las métricas se reportan por ronda en `metricas.md` y se resumen en el informe 
 | Avance 2 | 2026-09-29 | Presentación del proyecto funcionando | `docs/presentacion/` |
 | Ronda 7 — regresión final | 2026-11-11 | Suite completa sobre la versión del Avance 2 | `newman-ronda7-final.txt`, `cypress-ronda6-final.txt` |
 | Ronda 8 — UX | 2026-11-11 | UX-01 a UX-10: propina, montos exactos, deudas y recordatorios | `*-ronda8-ux.*`, `cypress-ronda7-ux.txt` |
-| Ronda 9 — seguridad y no funcionales | Próxima | Headers de seguridad del frontend, carga con k6, compatibilidad con Playwright, Lighthouse | Pendiente |
+| Ronda 9 — seguridad y no funcionales | 2026-11-12 | Cabeceras del frontend (DEF-008), carga (autocannon), compatibilidad (Playwright), accesibilidad (axe + Lighthouse); DEF-009 y DEF-010 corregidos; regresión completa | `playwright-ronda9-compat-a11y.txt`, `carga-ronda9-perf01.txt`, `lighthouse-ronda9/`, `*-ronda9*.txt` |
 | USA-01 | Próxima | Prueba de usabilidad con 5 compañeros + SUS | Pendiente |
 | Regresión de cierre | Antes de la entrega | Suite completa en CI sobre `main` | Pendiente |
 | Informe de cierre y video | Entrega final | Test Summary Report y demostración | Pendiente |

@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'playwright/report', 'playwright/test-results']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -18,5 +18,10 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
+  },
+  {
+    // Los fixtures de Playwright usan una función llamada `use` que no es un hook de React.
+    files: ['playwright/**/*.ts', 'playwright.config.ts'],
+    rules: { 'react-hooks/rules-of-hooks': 'off' },
   },
 ])

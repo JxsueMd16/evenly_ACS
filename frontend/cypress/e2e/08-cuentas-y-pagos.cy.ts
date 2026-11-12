@@ -50,7 +50,7 @@ describe("Cuentas por ítems y cuenta rápida", () => {
       cy.contains("button", "Guardar cuenta").click()
 
       cy.contains("Cuenta guardada").should("be.visible")
-      cy.get('[aria-label="Ver cuenta Almuerzo sábado"]').click()
+      cy.get('[data-testid="bill-Almuerzo sábado"]').click()
       cy.get(`[data-testid="detail-share-${alexis.id}"]`)
         .should("contain.text", "1 × Churrasco 25, 2 × Bebida")
         .and("contain.text", "35.00")

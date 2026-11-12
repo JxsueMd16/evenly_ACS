@@ -257,13 +257,17 @@ export function GroupDetailPage() {
                 key={expense.id}
                 type="button"
                 onClick={() => setOpenBill(expense)}
-                aria-label={`Ver cuenta ${expense.description}`}
+                data-testid={`bill-${expense.description}`}
                 className="text-left"
               >
                 <Card className="flex items-center gap-3 p-3.5">
                   <CategoryIcon category={expense.category} className="size-10" />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-foreground">{expense.description}</p>
+                    {/* DEF-010: el nombre accesible sale del texto visible ("Ver cuenta" solo para lectores de pantalla). */}
+                    <p className="truncate text-sm font-semibold text-foreground">
+                      <span className="sr-only">Ver cuenta </span>
+                      {expense.description}
+                    </p>
                     <p className="text-xs text-muted-foreground">
                       {payer.id === currentUser.id ? "Tú pagaste" : `${payer.name.split(" ")[0]} pagó`}
                       {expense.lines.length > 0 && ` · ${expense.lines.length} ítems`} ·{" "}

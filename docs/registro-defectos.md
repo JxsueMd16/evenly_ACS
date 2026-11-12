@@ -28,7 +28,9 @@
 | DEF-005 | La división por ítem acepta hasta 0.05 de diferencia con el total | Media | Media | Prototipo (`AddExpensePage.tsx`, `mockApi.ts`) | Revisión estática | Cerrado |
 | DEF-006 | "Ayuda y preguntas frecuentes" en Perfil no hace nada | Baja | Media | Frontend (`ProfilePage.tsx`) | Evaluación heurística de UX | Cerrado |
 | DEF-007 | Los integrantes de cada grupo son ilegibles en "¿Con quién fue?" | Baja | Media | Frontend (`AddExpenseEntryPage.tsx`, código nuevo de UX) | Prueba exploratoria en móvil | Cerrado |
-| DEF-008 | El frontend en producción no envía cabeceras de seguridad (CSP, anti-clickjacking, nosniff) | Media | Alta | Configuración de Vercel (`frontend/vercel.json`) | Revisión de cabeceras HTTP | Abierto |
+| DEF-008 | El frontend en producción no envía cabeceras de seguridad (CSP, anti-clickjacking, nosniff) | Media | Alta | Configuración de Vercel (`frontend/vercel.json`) | Revisión de cabeceras HTTP | Corregido (falta verificar en producción con SEC-37) |
+| DEF-009 | Contraste de color insuficiente en textos secundarios, montos y barra de navegación | Media | Alta | Frontend (`index.css`, `BottomNav.tsx`) | ACC-01 (axe-core, automatizado) | Cerrado |
+| DEF-010 | Nombres accesibles que no coinciden con el texto visible | Baja | Media | Frontend (`BottomNav.tsx`, `HomePage.tsx`, `GroupDetailPage.tsx`) | ACC-01 (axe-core, automatizado) | Cerrado |
 
 ### Defectos por ronda
 
@@ -37,6 +39,7 @@
 | R1 | DEF-001 a DEF-005 | 2 por pruebas automatizadas (SEC-14, E2E-07/08) y 3 por revisión estática del prototipo |
 | R2 a R7 | 0 | Las suites de cada ronda (social, notificaciones, cuentas por ítems y pagos) pasaron al primer intento; ver evidencias |
 | R8 (UX) | DEF-006, DEF-007, DEF-008 | Encontrados con técnicas no automatizadas: evaluación heurística, exploratoria y revisión de cabeceras |
+| R9 (no funcionales) | DEF-009, DEF-010 | Encontrados por la auditoría automática de accesibilidad (ACC-01); corregidos y verificados en R9b |
 
 ---
 
@@ -246,9 +249,73 @@ revisión visual en el tamaño real del dispositivo sigue siendo necesaria.
 
 **Causa raíz:** `vercel.json` solo define la reescritura de rutas de la SPA; no tiene un bloque `headers`.
 
-**Corrección planificada:** agregar las cabeceras en `vercel.json` (CSP limitada al propio sitio y a la API de Render).
+**Corrección (ronda 9):** bloque `headers` en `frontend/vercel.json` con:
 
-**Regresión planificada:** SEC-37 verifica las cabeceras en producción — ronda 9.
+- `Content-Security-Policy`: `default-src 'self'`, scripts solo propios, `connect-src` limitado al propio sitio y a la
+  API de Render (se verificó que el build de producción usa exactamente esa URL), `frame-ancestors 'none'`,
+  `object-src 'none'`, `base-uri` y `form-action` propios. Imágenes `data:`/`blob:` para la vista previa del comprobante.
+- `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`,
+  `Permissions-Policy` (sin cámara, micrófono, ubicación ni pagos) y `Cross-Origin-Opener-Policy: same-origin`.
+
+**Regresión:** SEC-37 (Playwright, proyecto `seguridad-prod`) revisa las cabeceras en `/login`, `/` y una ruta
+interna, y que la app cargue sin violaciones de la CSP. Se ejecuta contra producción después de desplegar:
+`pnpm pw:prod`. Estado: **pendiente de despliegue**.
+
+---
+
+## DEF-009 — Contraste de color insuficiente
+
+| Campo | Valor |
+| --- | --- |
+| Severidad / Prioridad | Media / Alta (texto difícil de leer para personas con baja visión o bajo el sol; incumple WCAG 2.1 AA 1.4.3) |
+| Componente | Tokens de color en `frontend/src/index.css`; etiquetas de `BottomNav.tsx` |
+| Versión | Rama `qa/ronda-9` antes de la corrección (igual a producción `504f26e`) |
+| Detectado | 2026-11-12, ACC-01 (axe-core en Playwright) falló en las 4 pantallas auditadas |
+| Requisito | RNF-08 |
+
+**Pasos para reproducir:** `pnpm exec playwright test --project=chromium playwright/tests/accesibilidad`.
+
+**Resultado esperado:** relación de contraste ≥ 4.5:1 para texto normal.
+**Resultado obtenido (axe):**
+
+| Elemento | Color | Fondo | Contraste |
+| --- | --- | --- | --- |
+| Texto secundario (`muted-foreground`): etiquetas, fechas, "tu parte" | `#64809c` | blanco / pastel | 3.65 – 4.11 |
+| Montos en rojo ("debes", "Le debes") | `#ef4444` | blanco | 3.76 |
+| Montos en verde ("te deben") | `#10b981` | blanco | 2.53 |
+| Etiquetas de la barra inferior (Inicio, Grupos…) | `#72aec5` | blanco | 2.44 |
+| Iniciales del avatar celeste | `#14789f` | `#e3f4fd` | 4.41 |
+
+**Causa raíz:** la paleta se eligió por estética (tonos pastel claros) sin verificar contraste.
+
+**Corrección:** `muted-foreground` `#4d6985` (5.0 – 5.7:1), `destructive` `#c62828` (5.6:1), `success` `#047857`
+(5.5:1), `sky-foreground` `#0f6a8c` (5.4:1) y la barra inferior usa `muted-foreground`. En modo oscuro se definieron
+rojo y verde claros propios para no perder contraste sobre fondo oscuro.
+
+**Regresión:** ACC-01 — axe 0 violaciones en las 4 pantallas y Lighthouse Accesibilidad 100
+(`evidencias/playwright-ronda9-compat-a11y.txt`, `evidencias/lighthouse-ronda9/`). CMP-01 (15/15) y la suite E2E
+(34/34) siguen pasando.
+
+---
+
+## DEF-010 — Nombres accesibles que no coinciden con el texto visible
+
+| Campo | Valor |
+| --- | --- |
+| Severidad / Prioridad | Baja / Media (afecta a quien usa control por voz: dice lo que ve y el botón no responde; WCAG 2.1 2.5.3) |
+| Componente | `BottomNav.tsx` (contadores), `HomePage.tsx` (avatar → Perfil), `GroupDetailPage.tsx` (tarjetas de cuentas) |
+| Versión | Rama `qa/ronda-9` antes de la corrección |
+| Detectado | 2026-11-12, ACC-01 (axe-core, regla `label-content-name-mismatch`) |
+| Requisito | RNF-08 |
+
+**Resultado obtenido:** el `aria-label` reemplazaba el texto visible. Por ejemplo, el avatar mostraba "PW" pero se
+llamaba "Perfil"; la tarjeta de una cuenta mostraba descripción, monto y fecha pero se llamaba solo "Ver cuenta X".
+
+**Corrección:** el nombre accesible sale del texto visible, y la información extra se agrega con texto solo para
+lectores de pantalla (`sr-only`): ", debes en 1 grupo" en la barra, "Perfil" junto al avatar (marcado `aria-hidden`) y
+"Ver cuenta" al inicio de cada tarjeta. Las pruebas de Cypress que usaban esos `aria-label` se actualizaron.
+
+**Regresión:** ACC-01 — 0 violaciones; E2E-14, E2E-24, E2E-26 y E2E-31 — **Pasan** (`evidencias/cypress-ronda9-regresion.txt`).
 
 ---
 

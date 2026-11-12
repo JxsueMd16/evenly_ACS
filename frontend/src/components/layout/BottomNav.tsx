@@ -57,10 +57,9 @@ export function BottomNav() {
               <NavLink
                 to={to}
                 end={end}
-                aria-label={showBadge ? `${label}: ${info.label}` : label}
                 className={({ isActive }) =>
                   cn(
-                    "flex flex-col items-center gap-1 rounded-2xl py-1.5 text-[11px] font-medium text-sky-foreground/60 transition-colors",
+                    "flex flex-col items-center gap-1 rounded-2xl py-1.5 text-[11px] font-medium text-muted-foreground transition-colors",
                     isActive && !isCenter && "text-primary",
                   )
                 }
@@ -79,6 +78,7 @@ export function BottomNav() {
                         <Icon className="size-5" />
                         {showBadge && (
                           <span
+                            aria-hidden="true"
                             data-testid={`badge-${badge}`}
                             className={cn(
                               "absolute -right-2.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold leading-none ring-2 ring-card",
@@ -90,6 +90,8 @@ export function BottomNav() {
                         )}
                       </span>
                       <span>{label}</span>
+                      {/* DEF-010: el nombre accesible empieza con el texto visible y agrega el aviso. */}
+                      {showBadge && <span className="sr-only">, {info.label}</span>}
                     </>
                   )
                 }
