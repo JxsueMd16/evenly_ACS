@@ -1,6 +1,6 @@
 # Registro de defectos — Evenly
 
-**Ciclo:** Avance 2 · **Última actualización:** 2026-09-27
+**Ciclo:** Entrega final · **Última actualización:** 2026-11-11
 
 ## Escalas
 
@@ -26,6 +26,17 @@
 | DEF-003 | "Agregar gasto" rechaza cualquier monto válido | Crítica | Alta | Frontend (`AddExpensePage.tsx`) | E2E-07 y E2E-08 (Cypress) | Cerrado |
 | DEF-004 | Política de contraseña débil (4 caracteres) y distinta entre frontend y backend | Media | Media | Prototipo (`RegisterPage.tsx`, `mockApi.ts`) | Revisión estática | Cerrado |
 | DEF-005 | La división por ítem acepta hasta 0.05 de diferencia con el total | Media | Media | Prototipo (`AddExpensePage.tsx`, `mockApi.ts`) | Revisión estática | Cerrado |
+| DEF-006 | "Ayuda y preguntas frecuentes" en Perfil no hace nada | Baja | Media | Frontend (`ProfilePage.tsx`) | Evaluación heurística de UX | Cerrado |
+| DEF-007 | Los integrantes de cada grupo son ilegibles en "¿Con quién fue?" | Baja | Media | Frontend (`AddExpenseEntryPage.tsx`, código nuevo de UX) | Prueba exploratoria en móvil | Cerrado |
+| DEF-008 | El frontend en producción no envía cabeceras de seguridad (CSP, anti-clickjacking, nosniff) | Media | Alta | Configuración de Vercel (`frontend/vercel.json`) | Revisión de cabeceras HTTP | Abierto |
+
+### Defectos por ronda
+
+| Ronda | Defectos nuevos | Comentario |
+| --- | --- | --- |
+| R1 | DEF-001 a DEF-005 | 2 por pruebas automatizadas (SEC-14, E2E-07/08) y 3 por revisión estática del prototipo |
+| R2 a R7 | 0 | Las suites de cada ronda (social, notificaciones, cuentas por ítems y pagos) pasaron al primer intento; ver evidencias |
+| R8 (UX) | DEF-006, DEF-007, DEF-008 | Encontrados con técnicas no automatizadas: evaluación heurística, exploratoria y revisión de cabeceras |
 
 ---
 
@@ -154,6 +165,90 @@
 **Corrección:** el backend compara en centavos y exige igualdad exacta (400 `SPLIT_MISMATCH`). El frontend calcula el restante en centavos y solo deja guardar cuando es exactamente 0.
 
 **Regresión:** API-22 (diferencia de 0.01) y E2E-08 — **Pasan**.
+
+---
+
+## DEF-006 — "Ayuda y preguntas frecuentes" en Perfil no hace nada
+
+| Campo | Valor |
+| --- | --- |
+| Severidad / Prioridad | Baja / Media (no bloquea nada, pero el usuario que busca ayuda no la encuentra) |
+| Componente | `frontend/src/pages/ProfilePage.tsx` |
+| Versión | `main` en el commit `66d329f` (versión del Avance 2) |
+| Detectado | 2026-11-11, evaluación heurística de UX (heurística de Nielsen n.º 10, "Ayuda y documentación") |
+| Requisito | RNF-03, UX-10 |
+
+**Pasos para reproducir**
+
+1. Iniciar sesión e ir a Perfil.
+2. Tocar "Ayuda y preguntas frecuentes".
+
+**Resultado esperado:** se abre alguna forma de ayuda.
+**Resultado obtenido:** no pasa nada. El botón no tenía `onClick`.
+
+**Causa raíz:** el elemento se maquetó como marcador de posición y nunca se conectó a una pantalla.
+
+**Corrección:** el botón se renombró a "Cómo funciona Evenly" y abre la guía de bienvenida (`WelcomeTour.tsx`), que
+también se muestra al crear la cuenta (UX-10). Commit `c91fa22`.
+
+**Regresión:** E2E-34 (abre la guía desde Perfil, la recorre y verifica que no reaparece al recargar) — **Pasa**
+(`evidencias/cypress-ronda8b-regresion-def006.txt`). E2E-01 cubre la guía al registrarse.
+
+---
+
+## DEF-007 — Los integrantes de cada grupo son ilegibles en "¿Con quién fue?"
+
+| Campo | Valor |
+| --- | --- |
+| Severidad / Prioridad | Baja / Media |
+| Componente | `frontend/src/pages/groups/AddExpenseEntryPage.tsx` |
+| Versión | Rama `feature/ux-mejoras` antes del merge (código nuevo de UX-02) |
+| Detectado | 2026-11-11, prueba exploratoria en el navegador con viewport móvil (375 × 812) y la cuenta demo |
+| Requisito | RNF-03, UX-02 |
+
+**Pasos para reproducir**
+
+1. Iniciar sesión con una cuenta que tenga grupos de 3 o más personas.
+2. Tocar el botón "+".
+
+**Resultado esperado:** en cada tarjeta de grupo se distingue con quién es el grupo.
+**Resultado obtenido:** los avatares de 20 px con iniciales se encimaban y no se podían leer.
+
+**Causa raíz:** se reutilizó la fila de avatares de Inicio con un tamaño menor sin comprobarla en pantalla.
+
+**Corrección:** la tarjeta muestra los nombres de los demás integrantes ("Ana, Kevin") en texto. Se corrigió antes
+del merge a `main`.
+
+**Regresión:** E2E-27 (flujo con personas sueltas en la misma pantalla) — **Pasa**; revisión visual en móvil — **OK**.
+
+**Lección aprendida:** las pruebas automatizadas verifican que los elementos existen, no que se puedan leer. La
+revisión visual en el tamaño real del dispositivo sigue siendo necesaria.
+
+---
+
+## DEF-008 — El frontend en producción no envía cabeceras de seguridad
+
+| Campo | Valor |
+| --- | --- |
+| Severidad / Prioridad | Media / Alta (no hay explotación directa, pero sin CSP un XSS podría leer el token de sesión guardado en `localStorage`, y la página se puede incrustar en otro sitio) |
+| Componente | `frontend/vercel.json` (configuración del hosting) |
+| Versión | Producción `https://evenly-acs.vercel.app` (commit `504f26e`) |
+| Detectado | 2026-11-11, revisión de cabeceras HTTP con `curl -I` |
+| Requisito | RNF-06 |
+
+**Pasos para reproducir**
+
+1. `curl -I https://evenly-acs.vercel.app/login`
+
+**Resultado esperado:** como en la API (que usa helmet): `Content-Security-Policy`, `X-Frame-Options` o
+`frame-ancestors`, `X-Content-Type-Options: nosniff`, `Referrer-Policy` y `Permissions-Policy`.
+**Resultado obtenido:** solo `Strict-Transport-Security`, que Vercel agrega por defecto.
+
+**Causa raíz:** `vercel.json` solo define la reescritura de rutas de la SPA; no tiene un bloque `headers`.
+
+**Corrección planificada:** agregar las cabeceras en `vercel.json` (CSP limitada al propio sitio y a la API de Render).
+
+**Regresión planificada:** SEC-37 verifica las cabeceras en producción — ronda 9.
 
 ---
 
