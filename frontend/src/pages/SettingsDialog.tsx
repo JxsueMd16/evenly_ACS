@@ -39,8 +39,8 @@ export function SettingsDialog({
               value={currency}
               onValueChange={(value) => value && setCurrency(value as CurrencyCode)}
             >
-              <ToggleGroupItem value="USD">USD — Dólar</ToggleGroupItem>
               <ToggleGroupItem value="GTQ">GTQ — Quetzal</ToggleGroupItem>
+              <ToggleGroupItem value="USD">USD — Dólar</ToggleGroupItem>
             </ToggleGroup>
             <p className="text-xs text-muted-foreground">
               Cambia el código mostrado en los montos. La conversión de tasas llega después.

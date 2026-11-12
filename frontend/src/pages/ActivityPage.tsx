@@ -62,7 +62,7 @@ export function ActivityPage() {
                 <div className="text-right">
                   <p className="text-sm font-bold text-foreground">{formatCurrency(expense.amount)}</p>
                   <p className="text-xs text-muted-foreground">
-                    {new Date(expense.createdAt).toLocaleDateString("es-MX", { day: "numeric", month: "short" })}
+                    {new Date(expense.createdAt).toLocaleDateString("es-GT", { day: "numeric", month: "short" })}
                   </p>
                 </div>
               </Card>

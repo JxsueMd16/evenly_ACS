@@ -123,6 +123,13 @@ export const createExpenseSchema = z.strictObject({
   paidById: idSchema,
   splitType: z.enum(["equal", "items", "itemized"]),
   category: z.enum(CATEGORIES).default("grupo"),
+  /** Propina en porcentaje del subtotal; se reparte proporcionalmente (UX-05). */
+  tipPercent: z
+    .number({ error: "La propina debe ser un número." })
+    .int("La propina debe ser un porcentaje entero.")
+    .min(0, "La propina no puede ser negativa.")
+    .max(30, "La propina no puede ser mayor a 30 %.")
+    .default(0),
   lines: z.array(billLineSchema).max(50, "Una cuenta puede tener como máximo 50 ítems.").default([]),
   participants: z
     .array(
@@ -153,6 +160,9 @@ export const activityQuerySchema = z.strictObject({
 });
 
 export const friendRequestSchema = z.strictObject({ userId: idSchema });
+
+/** Recordatorio de cobro: a quién y en qué grupo (UX-08). */
+export const remindSchema = z.strictObject({ groupId: idSchema, userId: idSchema });
 
 /** Código del enlace de invitación a un grupo. */
 export const inviteCodeSchema = z.string().regex(/^[A-Za-z0-9_-]{8,32}$/, "Enlace de invitación inválido.");

@@ -98,3 +98,65 @@ describe("computeBill — total", () => {
     ).toThrow(/no puede ser mayor/);
   });
 });
+
+describe("computeBill — propina (UX-05)", () => {
+  it("10 % sobre partes iguales: 120 entre 4 => subtotal 120, propina 12, 33 c/u", () => {
+    const r = computeBill({ splitType: "equal", participantIds: ["a", "b", "c", "d"], amountCents: 12000, lines: [], tipPercent: 10 });
+    expect(r.subtotalCents).toBe(12000);
+    expect(r.tipCents).toBe(1200);
+    expect(r.totalCents).toBe(13200);
+    expect(r.shares.map((s) => s.cents)).toEqual([3300, 3300, 3300, 3300]);
+  });
+
+  it("la propina se reparte en proporción a lo consumido", () => {
+    const r = computeBill({
+      splitType: "items",
+      participantIds: people,
+      lines: [line("Churrasco", 1, 50, [["josue", 1]]), line("Pizza", 1, 30, [["alexis", 1]]), line("Sopa", 1, 20, [["picon", 1]])],
+      tipPercent: 10,
+    });
+    expect(r.tipCents).toBe(1000);
+    expect(r.shares).toEqual([
+      { userId: "josue", cents: 5500 },
+      { userId: "alexis", cents: 3300 },
+      { userId: "picon", cents: 2200 },
+    ]);
+  });
+
+  it("los centavos de la propina no se pierden ni sobran", () => {
+    const r = computeBill({ splitType: "equal", participantIds: people, amountCents: 10000, lines: [], tipPercent: 7 });
+    expect(r.tipCents).toBe(700);
+    expect(r.shares.reduce((sum, s) => sum + s.cents, 0)).toBe(r.totalCents);
+  });
+
+  it("montos exactos + propina: los montos deben sumar el subtotal", () => {
+    const r = computeBill({
+      splitType: "itemized",
+      participantIds: ["a", "b"],
+      amountCents: 10000,
+      lines: [],
+      manualShares: [
+        { userId: "a", cents: 6000 },
+        { userId: "b", cents: 4000 },
+      ],
+      tipPercent: 10,
+    });
+    expect(r.totalCents).toBe(11000);
+    expect(r.shares).toEqual([
+      { userId: "a", cents: 6600 },
+      { userId: "b", cents: 4400 },
+    ]);
+  });
+
+  it("sin propina el resultado no cambia", () => {
+    const r = computeBill({ splitType: "equal", participantIds: ["a", "b"], amountCents: 1000, lines: [] });
+    expect(r.tipCents).toBe(0);
+    expect(r.totalCents).toBe(1000);
+  });
+
+  it.each([-1, 31, 10.5])("rechaza una propina de %s %%", (tipPercent) => {
+    expect(() =>
+      computeBill({ splitType: "equal", participantIds: ["a"], amountCents: 1000, lines: [], tipPercent }),
+    ).toThrow(BillError);
+  });
+});

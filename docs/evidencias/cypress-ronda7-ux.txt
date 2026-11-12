@@ -1,0 +1,297 @@
+
+
+====================================================================================================
+
+  (Run Starting)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Cypress:        16.1.0                                                                         │
+  │ Browser:        Electron 146 (headless) (deprecated)                                           │
+  │ Node Version:   v24.15.0 (C:\Program Files\nodejs\node.exe)                                    │
+  │ Specs:          8 found (01-auth.cy.ts, 02-grupos-gastos.cy.ts, 03-seguridad.cy.ts, 04-gestion │
+  │                 -grupo.cy.ts, 05-actividad-perfil.cy.ts, 06-amigos-invitaciones.cy.ts, 07-noti │
+  │                 ficaciones.cy.ts, 08-cuentas-y-pagos.cy.ts)                                    │
+  │ Searched:       cypress/e2e/**/*.cy.{js,jsx,ts,tsx}                                            │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+Warning: The Electron browser is deprecated as a test browser and will be removed in a future version of Cypress.
+
+Switch to Chrome or another installed browser to avoid a breaking change when you upgrade.
+
+Read more about supported browsers: https://on.cypress.io/launching-browsers
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  01-auth.cy.ts                                                                   (1 of 8)
+
+
+  Autenticación
+    √ E2E-01 registra una cuenta nueva y entra al inicio (3444ms)
+    √ E2E-02 valida la política de contraseña antes de llamar a la API (1142ms)
+    √ E2E-03 muestra un error claro con credenciales incorrectas y no inicia sesión (941ms)
+    √ E2E-04 redirige a /login al abrir una ruta protegida sin sesión (201ms)
+    √ E2E-05 cierra la sesión si el token ya no es válido (476ms)
+
+
+  5 passing (6s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        5                                                                                │
+  │ Passing:      5                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        false                                                                            │
+  │ Duration:     6 seconds                                                                        │
+  │ Spec Ran:     01-auth.cy.ts                                                                    │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  02-grupos-gastos.cy.ts                                                          (2 of 8)
+
+
+  Grupos y cuentas
+    √ E2E-06 crea un grupo buscando a un integrante por correo y entra a él (3636ms)
+    √ E2E-07 registra una cuenta en partes iguales y actualiza el balance (4283ms)
+    √ E2E-08 no permite guardar una división por ítems con unidades sin asignar (3146ms)
+    √ E2E-09 limpia caracteres no numéricos del precio (entrada maliciosa) (2797ms)
+
+  Montos exactos y propina (UX-04, UX-05)
+    √ E2E-30 montos exactos: no deja guardar si no cuadra y guarda cuando cuadra (4170ms)
+    √ E2E-31 propina del 10 % repartida y visible en el detalle (4869ms)
+
+
+  6 passing (23s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        6                                                                                │
+  │ Passing:      6                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        false                                                                            │
+  │ Duration:     23 seconds                                                                       │
+  │ Spec Ran:     02-grupos-gastos.cy.ts                                                           │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  03-seguridad.cy.ts                                                              (3 of 8)
+
+
+  Seguridad en la interfaz
+    √ E2E-10 un usuario no puede abrir el grupo de otro cambiando la URL (2041ms)
+
+
+  1 passing (2s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        1                                                                                │
+  │ Passing:      1                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        false                                                                            │
+  │ Duration:     2 seconds                                                                        │
+  │ Spec Ran:     03-seguridad.cy.ts                                                               │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  04-gestion-grupo.cy.ts                                                          (4 of 8)
+
+
+  Gestión del grupo
+    √ E2E-11 el admin renombra el grupo y cambia la categoría (4196ms)
+    √ E2E-12 el admin agrega a un integrante buscándolo y luego lo quita (5272ms)
+    √ E2E-13 no permite quitar a un integrante que participa en gastos y explica por qué (4023ms)
+    √ E2E-14 elimina una cuenta desde su detalle y los balances se recalculan; otros integrantes no pueden (5696ms)
+    √ E2E-15 un integrante sin gastos sale del grupo (3055ms)
+    √ E2E-16 el admin elimina el grupo (4288ms)
+
+
+  6 passing (27s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        6                                                                                │
+  │ Passing:      6                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        false                                                                            │
+  │ Duration:     26 seconds                                                                       │
+  │ Spec Ran:     04-gestion-grupo.cy.ts                                                           │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  05-actividad-perfil.cy.ts                                                       (5 of 8)
+
+
+  Actividad y perfil
+    √ E2E-17 la actividad muestra los gastos de mis grupos con quién pagó (4624ms)
+    √ E2E-18 el perfil solo muestra en el historial los gastos que pagué y el balance total (4630ms)
+
+
+  2 passing (9s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        2                                                                                │
+  │ Passing:      2                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        false                                                                            │
+  │ Duration:     9 seconds                                                                        │
+  │ Spec Ran:     05-actividad-perfil.cy.ts                                                        │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  06-amigos-invitaciones.cy.ts                                                    (6 of 8)
+
+
+  Contraseña visible y requisitos
+    √ E2E-19 muestra u oculta la contraseña y marca los requisitos mientras se escribe (1051ms)
+
+  Amigos
+    √ E2E-20 envía una solicitud de amistad y el otro la acepta (5576ms)
+    √ E2E-21 crea un grupo eligiendo a un amigo sin buscarlo (3040ms)
+
+  Invitación por enlace
+    √ E2E-22 quien abre el enlace sin sesión inicia sesión y se une al grupo (4890ms)
+    √ E2E-23 un enlace inválido muestra un mensaje claro (939ms)
+
+
+  5 passing (16s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        5                                                                                │
+  │ Passing:      5                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        false                                                                            │
+  │ Duration:     15 seconds                                                                       │
+  │ Spec Ran:     06-amigos-invitaciones.cy.ts                                                     │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  07-notificaciones.cy.ts                                                         (7 of 8)
+
+
+  Notificaciones en tiempo real (SSE)
+    √ E2E-24 una solicitud de amistad aparece al instante en la barra, sin recargar (2073ms)
+    √ E2E-25 un gasto nuevo en mi grupo marca el pago pendiente al instante (4693ms)
+    √ E2E-32 recordatorio de cobro: llega al deudor y no se puede repetir en 24 h (4329ms)
+    √ E2E-33 el acreedor recuerda desde Inicio y el botón queda como 'Recordado' (5499ms)
+
+
+  4 passing (17s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        4                                                                                │
+  │ Passing:      4                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        false                                                                            │
+  │ Duration:     16 seconds                                                                       │
+  │ Spec Ran:     07-notificaciones.cy.ts                                                          │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  08-cuentas-y-pagos.cy.ts                                                        (8 of 8)
+
+
+  Cuentas por ítems y cuenta rápida
+    √ E2E-26 almuerzo del sábado dividido por ítems: 30 / 35 / 20 (8529ms)
+    √ E2E-27 cuenta con personas sueltas (sin grupo) y un ítem compartido (5457ms)
+
+  Datos de pago y pagos en dos pasos
+    √ E2E-28 el usuario registra su cuenta bancaria y su preferencia en el perfil (2577ms)
+    √ E2E-29 quien debe registra el pago con comprobante y quien recibe lo confirma (7421ms)
+
+
+  4 passing (24s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        4                                                                                │
+  │ Passing:      4                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        false                                                                            │
+  │ Duration:     24 seconds                                                                       │
+  │ Spec Ran:     08-cuentas-y-pagos.cy.ts                                                         │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+====================================================================================================
+
+  (Run Finished)
+
+
+       Spec                                              Tests  Passing  Failing  Pending  Skipped  
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ ✔  01-auth.cy.ts                            00:06        5        5        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  02-grupos-gastos.cy.ts                   00:23        6        6        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  03-seguridad.cy.ts                       00:02        1        1        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  04-gestion-grupo.cy.ts                   00:26        6        6        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  05-actividad-perfil.cy.ts                00:09        2        2        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  06-amigos-invitaciones.cy.ts             00:15        5        5        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  07-notificaciones.cy.ts                  00:16        4        4        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  08-cuentas-y-pagos.cy.ts                 00:24        4        4        -        -        - │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+    ✔  All specs passed!                        02:03       33       33        -        -        -  
+

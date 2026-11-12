@@ -16,6 +16,7 @@ import { notificationsRouter } from "./routes/notifications.js";
 import { quickBillsRouter } from "./routes/quickBills.js";
 import { paymentsRouter } from "./routes/payments.js";
 import { meRouter } from "./routes/me.js";
+import { debtsRouter } from "./routes/debts.js";
 
 export const app = express();
 
@@ -72,6 +73,7 @@ app.use("/invites", requireAuth, invitesRouter);
 app.use("/notifications", requireAuth, notificationsRouter);
 app.use("/quick-bills", requireAuth, quickBillsRouter);
 app.use("/me", requireAuth, meRouter);
+app.use("/debts", requireAuth, debtsRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

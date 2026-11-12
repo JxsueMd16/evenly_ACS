@@ -9,6 +9,10 @@ describe("Autenticación", () => {
     cy.contains("button", "Crear cuenta").click()
 
     cy.location("pathname").should("eq", "/")
+    // UX-10: la primera vez aparece la bienvenida y se puede saltar.
+    cy.get('[role="dialog"][aria-labelledby="welcome-title"]').should("be.visible")
+    cy.contains("button", "Saltar").click()
+    cy.get('[aria-labelledby="welcome-title"]').should("not.exist")
     cy.contains("h1", "Laura").should("be.visible")
     cy.contains("Balance total").should("be.visible")
   })

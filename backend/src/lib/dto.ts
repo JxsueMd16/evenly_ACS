@@ -19,6 +19,7 @@ export interface ExpenseRecord {
   grupoId: string;
   descripcion: string;
   montoCentavos: number;
+  propinaCentavos: number;
   categoria: string;
   tipoDivision: string;
   pagadoPorId: string;
@@ -58,6 +59,7 @@ export function toExpenseDto(e: ExpenseRecord) {
     groupId: e.grupoId,
     description: e.descripcion,
     amount: fromCents(e.montoCentavos),
+    tip: fromCents(e.propinaCentavos),
     paidById: e.pagadoPorId,
     paidBy: toUserDto(e.pagadoPor),
     splitType: e.tipoDivision,

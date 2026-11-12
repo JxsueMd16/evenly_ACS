@@ -11,7 +11,7 @@ import { getGroups, getPaymentHistory, overallBalance as sumBalances } from "@/l
 import type { ActivityItem } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { useAuthStore } from "@/store/authStore"
-import { useFormatCurrency } from "@/store/settingsStore"
+import { useFormatCurrency, useSettingsStore } from "@/store/settingsStore"
 
 export function ProfilePage() {
   const user = useAuthStore((s) => s.user)!
@@ -114,9 +114,13 @@ export function ProfilePage() {
             <span className="flex-1 text-sm font-medium text-foreground">Ajustes</span>
             <ChevronRight className="size-4 text-muted-foreground" />
           </button>
-          <button type="button" className="flex items-center gap-3 p-3.5 text-left">
+          <button
+            type="button"
+            onClick={() => useSettingsStore.getState().setWelcomeOpen(true)}
+            className="flex items-center gap-3 p-3.5 text-left"
+          >
             <HelpCircle className="size-4 text-muted-foreground" />
-            <span className="flex-1 text-sm font-medium text-foreground">Ayuda y preguntas frecuentes</span>
+            <span className="flex-1 text-sm font-medium text-foreground">Cómo funciona Evenly</span>
             <ChevronRight className="size-4 text-muted-foreground" />
           </button>
         </Card>

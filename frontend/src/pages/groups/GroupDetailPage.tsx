@@ -1,6 +1,17 @@
 import { useCallback, useEffect, useState } from "react"
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom"
-import { ArrowLeft, ArrowRight, ChevronRight, Loader2, Plus, Receipt, Settings, UserPlus, Zap } from "lucide-react"
+import { Link, Navigate, useLocation, useNavigate, useParams } from "react-router-dom"
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  ChevronRight,
+  Loader2,
+  Plus,
+  Receipt,
+  Settings,
+  UserPlus,
+  Zap,
+} from "lucide-react"
 import { toast } from "sonner"
 import { Card } from "@/components/ui/card"
 import { UserAvatar } from "@/components/UserAvatar"
@@ -8,6 +19,7 @@ import { CategoryIcon } from "@/components/CategoryIcon"
 import { BillDetailDialog } from "@/components/bill/BillDetailDialog"
 import { PayDialog } from "@/components/payments/PayDialog"
 import { GroupPayments } from "@/components/payments/GroupPayments"
+import { RemindButton } from "@/components/payments/RemindButton"
 import { deleteExpense, getExpensesForGroup, getGroup, getPayments } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { useAuthStore } from "@/store/authStore"
@@ -17,10 +29,18 @@ import type { Expense, GroupDetail, Payment, Settlement } from "@/lib/types"
 import { GroupSettingsDialog } from "./GroupSettingsDialog"
 import { InviteDialog } from "./InviteDialog"
 
+/**
+ * Detalle de un grupo. Orden (UX-07): primero "Tu situación" (cuánto debes y a
+ * quién, con Pagar / Recordar), luego pagos por confirmar y cuentas, y al
+ * final el balance de todos.
+ */
 export function GroupDetailPage() {
   const { groupId } = useParams<{ groupId: string }>()
   const currentUser = useAuthStore((s) => s.user)!
   const formatCurrency = useFormatCurrency()
+  const location = useLocation()
+  /** Desde Inicio, "Pagar" llega con a quién pagarle para abrir el diálogo directo. */
+  const payToFromHome = (location.state as { payTo?: string } | null)?.payTo
   const [group, setGroup] = useState<GroupDetail | null | undefined>(undefined)
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -43,8 +63,9 @@ export function GroupDetailPage() {
             setGroup(g)
             setExpenses(list)
             setPayments(pays)
+            return g
           })
-        : Promise.resolve(),
+        : Promise.resolve(null),
     [groupId],
   )
 
@@ -53,10 +74,20 @@ export function GroupDetailPage() {
     s.lastNotice?.link === `/groups/${groupId}` ? s.lastNotice.at : undefined,
   )
   useEffect(() => {
-    load().catch((err: Error) => {
-      setError(err.message)
-      toast.error(err.message)
-    })
+    load()
+      .then((g) => {
+        if (!g || !payToFromHome) return
+        const s = g.settlements.find((x) => x.fromUserId === currentUser.id && x.toUserId === payToFromHome)
+        if (s) setPayTo(s)
+        // Se limpia el estado para que no se vuelva a abrir al recargar.
+        navigate(location.pathname, { replace: true, state: null })
+      })
+      .catch((err: Error) => {
+        setError(err.message)
+        toast.error(err.message)
+      })
+    // Solo al entrar o cuando llega un aviso del grupo.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [load, groupNoticeAt])
 
   async function deleteBill(expense: Expense) {
@@ -94,13 +125,17 @@ export function GroupDetailPage() {
     isAdmin || expense.createdById === currentUser.id || expense.paidById === currentUser.id
   const nameOf = (userId: string) =>
     userId === currentUser.id ? "Tú" : (members.find((m) => m.id === userId)?.name.split(" ")[0] ?? "Alguien")
+  const mySettlements = group.settlements.filter(
+    (s) => s.fromUserId === currentUser.id || s.toUserId === currentUser.id,
+  )
 
   return (
     <div className="relative flex flex-col gap-6 pb-6">
       <header className="flex items-center gap-3 bg-sky/50 px-5 pb-6 pt-6">
         <Link
           to="/groups"
-          className="flex size-9 items-center justify-center rounded-2xl bg-card text-foreground shadow-sm"
+          aria-label="Volver a tus grupos"
+          className="flex size-10 items-center justify-center rounded-2xl bg-card text-foreground shadow-sm"
         >
           <ArrowLeft className="size-4" />
         </Link>
@@ -120,7 +155,7 @@ export function GroupDetailPage() {
           type="button"
           onClick={() => setInviteOpen(true)}
           aria-label="Invitar al grupo"
-          className="flex size-9 items-center justify-center rounded-2xl bg-card text-foreground shadow-sm"
+          className="flex size-10 items-center justify-center rounded-2xl bg-card text-foreground shadow-sm"
         >
           <UserPlus className="size-4" />
         </button>
@@ -128,65 +163,71 @@ export function GroupDetailPage() {
           type="button"
           onClick={() => setSettingsOpen(true)}
           aria-label="Ajustes del grupo"
-          className="flex size-9 items-center justify-center rounded-2xl bg-card text-foreground shadow-sm"
+          className="flex size-10 items-center justify-center rounded-2xl bg-card text-foreground shadow-sm"
         >
           <Settings className="size-4" />
         </button>
       </header>
 
-      <section className="flex flex-col gap-3 px-5">
-        <h2 className="text-base font-semibold text-foreground">Balance del grupo</h2>
-        <Card className="flex flex-col divide-y divide-border p-2">
-          {members.map((member) => {
-            const net = group.balances.find((b) => b.userId === member.id)?.net ?? 0
-            const isYou = member.id === currentUser.id
-            return (
-              <div key={member.id} className="flex items-center gap-3 p-3">
-                <UserAvatar user={member} className="size-10" />
-                <p className="flex-1 text-sm font-medium text-foreground">
-                  {isYou ? "Tú" : member.name}
-                </p>
-                <p className={cn("text-sm font-bold", net >= 0 ? "text-success" : "text-destructive")}>
-                  {net === 0 ? "Al día" : `${net > 0 ? "+" : "-"}${formatCurrency(Math.abs(net))}`}
-                </p>
-              </div>
-            )
-          })}
-        </Card>
-      </section>
-
-      {group.settlements.length > 0 && (
-        <section className="flex flex-col gap-3 px-5">
-          <h2 className="text-base font-semibold text-foreground">Para quedar a mano</h2>
-          <Card className="flex flex-col divide-y divide-border p-2">
-            {group.settlements.map((s) => (
-              <div key={`${s.fromUserId}-${s.toUserId}`} className="flex items-center gap-2 p-3 text-sm">
-                <span className="font-medium text-foreground">{nameOf(s.fromUserId)}</span>
-                <ArrowRight className="size-4 text-muted-foreground" />
-                <span className="flex-1 font-medium text-foreground">{nameOf(s.toUserId)}</span>
-                <span className="font-bold text-foreground">{formatCurrency(s.amount)}</span>
-                {s.fromUserId === currentUser.id &&
-                  (payments.some(
-                    (p) => p.status === "PENDIENTE" && p.fromUserId === currentUser.id && p.toUserId === s.toUserId,
-                  ) ? (
-                    <span className="rounded-full bg-amber-500/15 px-2 py-1 text-[10px] font-semibold text-amber-700 dark:text-amber-300">
-                      Por confirmar
-                    </span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => setPayTo(s)}
-                      aria-label={`Pagar a ${nameOf(s.toUserId)}`}
-                      className="rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground"
-                    >
-                      Pagar
-                    </button>
-                  ))}
-              </div>
-            ))}
+      {/* UX-07: tu situación, con la acción a un toque. */}
+      <section className="flex flex-col gap-3 px-5" aria-labelledby="my-situation-title">
+        <h2 id="my-situation-title" className="text-base font-semibold text-foreground">
+          Tu situación
+        </h2>
+        {mySettlements.length === 0 ? (
+          <Card className="flex items-center gap-3 p-4" data-testid="my-situation">
+            <span className="flex size-10 items-center justify-center rounded-2xl bg-success/15 text-success">
+              <Check className="size-5" />
+            </span>
+            <p className="text-sm font-medium text-foreground">Estás a mano en este grupo</p>
           </Card>
-        </section>
-      )}
+        ) : (
+          <Card className="flex flex-col divide-y divide-border p-1" data-testid="my-situation">
+            {mySettlements.map((s) => {
+              const iOwe = s.fromUserId === currentUser.id
+              const other = members.find((m) => m.id === (iOwe ? s.toUserId : s.fromUserId))
+              const otherFirst = other?.name.split(" ")[0] ?? "Ex integrante"
+              const pending = payments.some(
+                (p) => p.status === "PENDIENTE" && p.fromUserId === currentUser.id && p.toUserId === s.toUserId,
+              )
+              return (
+                <div key={`${s.fromUserId}-${s.toUserId}`} className="flex items-center gap-3 p-3">
+                  {other && <UserAvatar user={other} className="size-10" />}
+                  <p className="min-w-0 flex-1 text-sm text-foreground">
+                    {iOwe ? (
+                      <>
+                        Le debes <b className="text-destructive">{formatCurrency(s.amount)}</b> a {otherFirst}
+                      </>
+                    ) : (
+                      <>
+                        {otherFirst} te debe <b className="text-success">{formatCurrency(s.amount)}</b>
+                      </>
+                    )}
+                  </p>
+                  {iOwe ? (
+                    pending ? (
+                      <span className="rounded-full bg-amber-500/15 px-2 py-1 text-[10px] font-semibold text-amber-700 dark:text-amber-300">
+                        Por confirmar
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setPayTo(s)}
+                        aria-label={`Pagar a ${nameOf(s.toUserId)}`}
+                        className="h-8 rounded-full bg-primary px-4 text-xs font-semibold text-primary-foreground"
+                      >
+                        Pagar
+                      </button>
+                    )
+                  ) : (
+                    other && <RemindButton groupId={group.id} userId={other.id} userName={other.name} />
+                  )}
+                </div>
+              )
+            })}
+          </Card>
+        )}
+      </section>
 
       <GroupPayments
         groupId={group.id}
@@ -219,29 +260,64 @@ export function GroupDetailPage() {
                 aria-label={`Ver cuenta ${expense.description}`}
                 className="text-left"
               >
-              <Card className="flex items-center gap-3 p-3.5">
-                <CategoryIcon category={expense.category} className="size-10" />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-foreground">{expense.description}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {payer.id === currentUser.id ? "Tú pagaste" : `${payer.name.split(" ")[0]} pagó`}
-                    {expense.lines.length > 0 && ` · ${expense.lines.length} ítems`} ·{" "}
-                    {new Date(expense.createdAt).toLocaleDateString("es-MX", { day: "numeric", month: "short" })}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold text-foreground">{formatCurrency(expense.amount)}</p>
-                  {myShare !== undefined && (
-                    <p className="text-xs text-muted-foreground">tu parte {formatCurrency(myShare)}</p>
-                  )}
-                </div>
-                <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
-              </Card>
+                <Card className="flex items-center gap-3 p-3.5">
+                  <CategoryIcon category={expense.category} className="size-10" />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold text-foreground">{expense.description}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {payer.id === currentUser.id ? "Tú pagaste" : `${payer.name.split(" ")[0]} pagó`}
+                      {expense.lines.length > 0 && ` · ${expense.lines.length} ítems`} ·{" "}
+                      {new Date(expense.createdAt).toLocaleDateString("es-GT", { day: "numeric", month: "short" })}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-foreground">{formatCurrency(expense.amount)}</p>
+                    {myShare !== undefined && (
+                      <p className="text-xs text-muted-foreground">tu parte {formatCurrency(myShare)}</p>
+                    )}
+                  </div>
+                  <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+                </Card>
               </button>
             )
           })}
         </div>
       </section>
+
+      <section className="flex flex-col gap-3 px-5">
+        <h2 className="text-base font-semibold text-foreground">Balance del grupo</h2>
+        <Card className="flex flex-col divide-y divide-border p-2">
+          {members.map((member) => {
+            const net = group.balances.find((b) => b.userId === member.id)?.net ?? 0
+            const isYou = member.id === currentUser.id
+            return (
+              <div key={member.id} className="flex items-center gap-3 p-3">
+                <UserAvatar user={member} className="size-10" />
+                <p className="flex-1 text-sm font-medium text-foreground">{isYou ? "Tú" : member.name}</p>
+                <p className={cn("text-sm font-bold", net >= 0 ? "text-success" : "text-destructive")}>
+                  {net === 0 ? "Al día" : `${net > 0 ? "+" : "-"}${formatCurrency(Math.abs(net))}`}
+                </p>
+              </div>
+            )
+          })}
+        </Card>
+      </section>
+
+      {group.settlements.length > 0 && (
+        <section className="flex flex-col gap-3 px-5">
+          <h2 className="text-base font-semibold text-foreground">Para quedar a mano</h2>
+          <Card className="flex flex-col divide-y divide-border p-2">
+            {group.settlements.map((s) => (
+              <div key={`${s.fromUserId}-${s.toUserId}`} className="flex items-center gap-2 p-3 text-sm">
+                <span className="font-medium text-foreground">{nameOf(s.fromUserId)}</span>
+                <ArrowRight className="size-4 text-muted-foreground" />
+                <span className="flex-1 font-medium text-foreground">{nameOf(s.toUserId)}</span>
+                <span className="font-bold text-foreground">{formatCurrency(s.amount)}</span>
+              </div>
+            ))}
+          </Card>
+        </section>
+      )}
 
       <div className="sticky bottom-4 z-30 flex justify-end px-5">
         <Link

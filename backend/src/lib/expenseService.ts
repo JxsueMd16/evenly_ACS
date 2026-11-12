@@ -41,6 +41,7 @@ export async function createBill(
         userId: p.userId,
         cents: p.amount === undefined ? undefined : toCents(p.amount),
       })),
+      tipPercent: input.tipPercent,
     });
   } catch (err) {
     if (err instanceof BillError) throw badRequest(err.code, err.message);
@@ -55,6 +56,7 @@ export async function createBill(
       grupoId: groupId,
       descripcion: input.description,
       montoCentavos: bill.totalCents,
+      propinaCentavos: bill.tipCents,
       categoria: input.category,
       tipoDivision: input.splitType,
       pagadoPorId: input.paidById,

@@ -130,6 +130,10 @@
     {
       "key": "balanceBefore",
       "value": ""
+    },
+    {
+      "key": "debtGroupId",
+      "value": ""
     }
   ],
   "item": [
@@ -4729,6 +4733,566 @@
                 "exec": [
                   "pm.test(\"Status 409\", () => pm.response.to.have.status(409));",
                   "pm.test(\"Código de error PAYMENT_CLOSED\", () => pm.expect(pm.response.json().error.code).to.eql(\"PAYMENT_CLOSED\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05h Propina, deudas y recordatorios",
+      "item": [
+        {
+          "name": "API-87 Crear grupo para deudas (A con B)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenA}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Deudas QA\",\n  \"memberIds\": [\n    \"{{userBId}}\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/groups",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "groups"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"debtGroupId\", pm.response.json().group.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "API-88 Gasto de 100 con propina del 10 %",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenA}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Almuerzo con propina\",\n  \"paidById\": \"{{userAId}}\",\n  \"splitType\": \"equal\",\n  \"amount\": 100,\n  \"participants\": [\n    {\n      \"userId\": \"{{userAId}}\"\n    },\n    {\n      \"userId\": \"{{userBId}}\"\n    }\n  ],\n  \"tipPercent\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/groups/{{debtGroupId}}/expenses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "groups",
+                "{{debtGroupId}}",
+                "expenses"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "const e = pm.response.json().expense;",
+                  "pm.test(\"Total 110 con propina 10\", () => { pm.expect(e.amount).to.eql(110); pm.expect(e.tip).to.eql(10); });",
+                  "pm.test(\"A cada quien 55\", () => pm.expect(e.participants.map((p) => p.amount)).to.eql([55, 55]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "API-89 Propina mayor a 30 % (valor límite)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenA}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Almuerzo con propina\",\n  \"paidById\": \"{{userAId}}\",\n  \"splitType\": \"equal\",\n  \"amount\": 100,\n  \"participants\": [\n    {\n      \"userId\": \"{{userAId}}\"\n    },\n    {\n      \"userId\": \"{{userBId}}\"\n    }\n  ],\n  \"tipPercent\": 31\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/groups/{{debtGroupId}}/expenses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "groups",
+                "{{debtGroupId}}",
+                "expenses"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Código VALIDATION_ERROR\", () => pm.expect(pm.response.json().error.code).to.eql(\"VALIDATION_ERROR\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "API-90 Propina con decimales",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenA}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Almuerzo con propina\",\n  \"paidById\": \"{{userAId}}\",\n  \"splitType\": \"equal\",\n  \"amount\": 100,\n  \"participants\": [\n    {\n      \"userId\": \"{{userAId}}\"\n    },\n    {\n      \"userId\": \"{{userBId}}\"\n    }\n  ],\n  \"tipPercent\": 10.5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/groups/{{debtGroupId}}/expenses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "groups",
+                "{{debtGroupId}}",
+                "expenses"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Código VALIDATION_ERROR\", () => pm.expect(pm.response.json().error.code).to.eql(\"VALIDATION_ERROR\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "API-91 Montos exactos que no suman el total",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenA}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Almuerzo con propina\",\n  \"paidById\": \"{{userAId}}\",\n  \"splitType\": \"itemized\",\n  \"amount\": 100,\n  \"participants\": [\n    {\n      \"userId\": \"{{userAId}}\",\n      \"amount\": 70\n    },\n    {\n      \"userId\": \"{{userBId}}\",\n      \"amount\": 20\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/groups/{{debtGroupId}}/expenses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "groups",
+                "{{debtGroupId}}",
+                "expenses"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Código SPLIT_MISMATCH\", () => pm.expect(pm.response.json().error.code).to.eql(\"SPLIT_MISMATCH\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "API-92 GET /debts del acreedor: B le debe 55",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenA}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/debts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "debts"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const d = pm.response.json().owedToMe.find((x) => x.group.id === pm.collectionVariables.get(\"debtGroupId\"));",
+                  "pm.test(\"B debe 55 y se puede recordar\", () => { pm.expect(d.user.id).to.eql(pm.collectionVariables.get(\"userBId\")); pm.expect(d.amount).to.eql(55); pm.expect(d.canRemindAt).to.eql(null); });",
+                  "pm.test(\"Sin datos sensibles del usuario\", () => { pm.expect(d.user).to.not.have.property(\"passwordHash\"); pm.expect(d.user).to.not.have.property(\"password\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "API-93 GET /debts del deudor: le debe 55 a A",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenB}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/debts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "debts"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const d = pm.response.json().owe.find((x) => x.group.id === pm.collectionVariables.get(\"debtGroupId\"));",
+                  "pm.test(\"Debe 55 a A\", () => { pm.expect(d.user.id).to.eql(pm.collectionVariables.get(\"userAId\")); pm.expect(d.amount).to.eql(55); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "SEC-32 GET /debts sin token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/debts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "debts"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"Código UNAUTHORIZED\", () => pm.expect(pm.response.json().error.code).to.eql(\"UNAUTHORIZED\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "SEC-33 El deudor intenta 'recordarle' al acreedor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenB}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupId\": \"{{debtGroupId}}\",\n  \"userId\": \"{{userAId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/debts/remind",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "debts",
+                "remind"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Código NO_DEBT\", () => pm.expect(pm.response.json().error.code).to.eql(\"NO_DEBT\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "SEC-34 Usuario ajeno envía recordatorio en un grupo que no es suyo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenC}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupId\": \"{{debtGroupId}}\",\n  \"userId\": \"{{userBId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/debts/remind",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "debts",
+                "remind"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "SEC-35 Recordatorio con campos extra o id inválido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenA}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupId\": \"' OR 1=1 --\",\n  \"userId\": \"{{userBId}}\",\n  \"admin\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/debts/remind",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "debts",
+                "remind"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Código VALIDATION_ERROR\", () => pm.expect(pm.response.json().error.code).to.eql(\"VALIDATION_ERROR\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "API-94 El acreedor recuerda a B",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenA}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupId\": \"{{debtGroupId}}\",\n  \"userId\": \"{{userBId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/debts/remind",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "debts",
+                "remind"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Indica cuándo se puede volver a recordar (24 h)\", () => { const next = Date.parse(pm.response.json().canRemindAt); pm.expect(next - Date.now()).to.be.within(23.9 * 3600e3, 24.1 * 3600e3); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "SEC-36 Segundo recordatorio antes de 24 h (anti-spam)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenA}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupId\": \"{{debtGroupId}}\",\n  \"userId\": \"{{userBId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/debts/remind",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "debts",
+                "remind"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 429\", () => pm.response.to.have.status(429));",
+                  "pm.test(\"Código REMINDER_TOO_SOON\", () => pm.expect(pm.response.json().error.code).to.eql(\"REMINDER_TOO_SOON\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "API-95 GET /debts refleja el recordatorio enviado",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenA}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/debts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "debts"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const d = pm.response.json().owedToMe.find((x) => x.group.id === pm.collectionVariables.get(\"debtGroupId\"));",
+                  "pm.test(\"canRemindAt con fecha\", () => pm.expect(d.canRemindAt).to.be.a(\"string\"));"
                 ]
               }
             }

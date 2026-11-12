@@ -1,0 +1,712 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Evenly API" tests="128" time="41.285">
+  <testsuite name="00 Salud / API-01 Health check con base de datos" id="60752cdb-c0ad-44cd-ab58-69ca124d469d" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.646">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.646" classname="00SaludApi01HealthCheckConBaseDeDatos"/>
+    <testcase name="Status 200" time="0.646" classname="00SaludApi01HealthCheckConBaseDeDatos"/>
+    <testcase name="Servicio y BD disponibles" time="0.646" classname="00SaludApi01HealthCheckConBaseDeDatos"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / API-02 Registro usuario A (admin del grupo)" id="62f70d42-319a-4a69-94d2-f3f82b7ad06e" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.235">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.235" classname="01AutenticacionApi02RegistroUsuarioAAdminDelGrupo"/>
+    <testcase name="Status 201" time="0.235" classname="01AutenticacionApi02RegistroUsuarioAAdminDelGrupo"/>
+    <testcase name="Devuelve token y usuario" time="0.235" classname="01AutenticacionApi02RegistroUsuarioAAdminDelGrupo"/>
+    <testcase name="No devuelve la contraseña ni su hash" time="0.235" classname="01AutenticacionApi02RegistroUsuarioAAdminDelGrupo"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / API-03 Registro usuario B (integrante)" id="c35c0b7d-5214-465c-ab08-91019c851419" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.232">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.232" classname="01AutenticacionApi03RegistroUsuarioBIntegrante"/>
+    <testcase name="Status 201" time="0.232" classname="01AutenticacionApi03RegistroUsuarioBIntegrante"/>
+    <testcase name="Devuelve token y usuario" time="0.232" classname="01AutenticacionApi03RegistroUsuarioBIntegrante"/>
+    <testcase name="No devuelve la contraseña ni su hash" time="0.232" classname="01AutenticacionApi03RegistroUsuarioBIntegrante"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / API-04 Registro usuario C (ajeno al grupo)" id="99e95668-2540-4941-bb54-61238b7cefd8" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.232">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.232" classname="01AutenticacionApi04RegistroUsuarioCAjenoAlGrupo"/>
+    <testcase name="Status 201" time="0.232" classname="01AutenticacionApi04RegistroUsuarioCAjenoAlGrupo"/>
+    <testcase name="Devuelve token y usuario" time="0.232" classname="01AutenticacionApi04RegistroUsuarioCAjenoAlGrupo"/>
+    <testcase name="No devuelve la contraseña ni su hash" time="0.232" classname="01AutenticacionApi04RegistroUsuarioCAjenoAlGrupo"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / API-05 Registro usuario D (integrante)" id="fbb43a00-41b2-4c88-910c-b9faadbddc12" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.233">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.233" classname="01AutenticacionApi05RegistroUsuarioDIntegrante"/>
+    <testcase name="Status 201" time="0.233" classname="01AutenticacionApi05RegistroUsuarioDIntegrante"/>
+    <testcase name="Devuelve token y usuario" time="0.233" classname="01AutenticacionApi05RegistroUsuarioDIntegrante"/>
+    <testcase name="No devuelve la contraseña ni su hash" time="0.233" classname="01AutenticacionApi05RegistroUsuarioDIntegrante"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / API-06 Registro con correo duplicado" id="18e3c94c-9289-4086-86d8-cdad0a0367f6" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.089">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.089" classname="01AutenticacionApi06RegistroConCorreoDuplicado"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.089" classname="01AutenticacionApi06RegistroConCorreoDuplicado"/>
+    <testcase name="Status 409" time="0.089" classname="01AutenticacionApi06RegistroConCorreoDuplicado"/>
+    <testcase name="Código de error EMAIL_TAKEN" time="0.089" classname="01AutenticacionApi06RegistroConCorreoDuplicado"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / API-07 Registro con contraseña débil" id="4caf34af-fd97-4a8e-8ce8-f1d920acbf7c" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.001">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.001" classname="01AutenticacionApi07RegistroConContrasenaDebil"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.001" classname="01AutenticacionApi07RegistroConContrasenaDebil"/>
+    <testcase name="Status 400" time="0.001" classname="01AutenticacionApi07RegistroConContrasenaDebil"/>
+    <testcase name="Código de error VALIDATION_ERROR" time="0.001" classname="01AutenticacionApi07RegistroConContrasenaDebil"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / API-63 Contraseña sin símbolo" id="f708a1bc-9cd6-49d7-a295-43230d53b76f" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.001">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.001" classname="01AutenticacionApi63ContrasenaSinSimbolo"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.001" classname="01AutenticacionApi63ContrasenaSinSimbolo"/>
+    <testcase name="Status 400" time="0.001" classname="01AutenticacionApi63ContrasenaSinSimbolo"/>
+    <testcase name="Explica que falta un símbolo" time="0.001" classname="01AutenticacionApi63ContrasenaSinSimbolo"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / API-64 Contraseña sin mayúscula" id="1c4627ca-190e-4e12-82ea-cc4cb6ee5717" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.004">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.004" classname="01AutenticacionApi64ContrasenaSinMayuscula"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.004" classname="01AutenticacionApi64ContrasenaSinMayuscula"/>
+    <testcase name="Status 400" time="0.004" classname="01AutenticacionApi64ContrasenaSinMayuscula"/>
+    <testcase name="Explica que falta una mayúscula" time="0.004" classname="01AutenticacionApi64ContrasenaSinMayuscula"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / API-08 Registro con correo inválido" id="93155b8d-e8b2-4c1f-8722-e221ddb7b375" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.001">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.001" classname="01AutenticacionApi08RegistroConCorreoInvalido"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.001" classname="01AutenticacionApi08RegistroConCorreoInvalido"/>
+    <testcase name="Status 400" time="0.001" classname="01AutenticacionApi08RegistroConCorreoInvalido"/>
+    <testcase name="Código de error VALIDATION_ERROR" time="0.001" classname="01AutenticacionApi08RegistroConCorreoInvalido"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / API-09 Registro con campo no permitido (asignación masiva)" id="d597a393-f658-470a-bfe5-4b0783723554" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.002">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.002" classname="01AutenticacionApi09RegistroConCampoNoPermitidoAsignacionMasiva"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.002" classname="01AutenticacionApi09RegistroConCampoNoPermitidoAsignacionMasiva"/>
+    <testcase name="Status 400" time="0.002" classname="01AutenticacionApi09RegistroConCampoNoPermitidoAsignacionMasiva"/>
+    <testcase name="Código de error VALIDATION_ERROR" time="0.002" classname="01AutenticacionApi09RegistroConCampoNoPermitidoAsignacionMasiva"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / API-10 Login correcto" id="59999de5-c85c-4a9c-8798-f482460df305" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.141">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.141" classname="01AutenticacionApi10LoginCorrecto"/>
+    <testcase name="Status 200" time="0.141" classname="01AutenticacionApi10LoginCorrecto"/>
+    <testcase name="Devuelve un JWT" time="0.141" classname="01AutenticacionApi10LoginCorrecto"/>
+    <testcase name="La respuesta no expone hash, stack ni SQL" time="0.141" classname="01AutenticacionApi10LoginCorrecto"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / API-11 Login con contraseña incorrecta" id="8235f297-84e9-4c74-9dd5-6ce916ec48bf" timestamp="2026-11-12T04:37:48.651Z" tests="5" failures="0" errors="0" time="0.138">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.138" classname="01AutenticacionApi11LoginConContrasenaIncorrecta"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.138" classname="01AutenticacionApi11LoginConContrasenaIncorrecta"/>
+    <testcase name="Status 401" time="0.138" classname="01AutenticacionApi11LoginConContrasenaIncorrecta"/>
+    <testcase name="Mensaje genérico" time="0.138" classname="01AutenticacionApi11LoginConContrasenaIncorrecta"/>
+    <testcase name="La respuesta no expone hash, stack ni SQL" time="0.138" classname="01AutenticacionApi11LoginConContrasenaIncorrecta"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / API-12 Login con correo inexistente (mismo mensaje)" id="10773a6a-41cf-415c-b4a9-13a0292753bb" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.139">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.139" classname="01AutenticacionApi12LoginConCorreoInexistenteMismoMensaje"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.139" classname="01AutenticacionApi12LoginConCorreoInexistenteMismoMensaje"/>
+    <testcase name="Status 401" time="0.139" classname="01AutenticacionApi12LoginConCorreoInexistenteMismoMensaje"/>
+    <testcase name="No revela si la cuenta existe" time="0.139" classname="01AutenticacionApi12LoginConCorreoInexistenteMismoMensaje"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / SEC-01 Login con inyección SQL en el correo" id="45f77ddb-d885-4b67-a734-bdd8e2fef11d" timestamp="2026-11-12T04:37:48.651Z" tests="5" failures="0" errors="0" time="0.002">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.002" classname="01AutenticacionSec01LoginConInyeccionSqlEnElCorreo"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.002" classname="01AutenticacionSec01LoginConInyeccionSqlEnElCorreo"/>
+    <testcase name="Status 400" time="0.002" classname="01AutenticacionSec01LoginConInyeccionSqlEnElCorreo"/>
+    <testcase name="No hay token" time="0.002" classname="01AutenticacionSec01LoginConInyeccionSqlEnElCorreo"/>
+    <testcase name="La respuesta no expone hash, stack ni SQL" time="0.002" classname="01AutenticacionSec01LoginConInyeccionSqlEnElCorreo"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / API-13 Perfil sin token" id="baaf8a88-1ef4-45e8-946c-b61e966cfeb8" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.002">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.002" classname="01AutenticacionApi13PerfilSinToken"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.002" classname="01AutenticacionApi13PerfilSinToken"/>
+    <testcase name="Status 401" time="0.002" classname="01AutenticacionApi13PerfilSinToken"/>
+    <testcase name="Código de error UNAUTHORIZED" time="0.002" classname="01AutenticacionApi13PerfilSinToken"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / SEC-02 Perfil con token manipulado" id="a0d65e4a-683d-4a3b-8eff-73aad0532770" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.001">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.001" classname="01AutenticacionSec02PerfilConTokenManipulado"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.001" classname="01AutenticacionSec02PerfilConTokenManipulado"/>
+    <testcase name="Status 401" time="0.001" classname="01AutenticacionSec02PerfilConTokenManipulado"/>
+    <testcase name="Código de error UNAUTHORIZED" time="0.001" classname="01AutenticacionSec02PerfilConTokenManipulado"/>
+  </testsuite>
+  <testsuite name="01 Autenticación / API-14 Perfil con token válido" id="a8c2d98a-96aa-4131-b115-cb6c7614291b" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.089">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.089" classname="01AutenticacionApi14PerfilConTokenValido"/>
+    <testcase name="Status 200" time="0.089" classname="01AutenticacionApi14PerfilConTokenValido"/>
+    <testcase name="Es el usuario A" time="0.089" classname="01AutenticacionApi14PerfilConTokenValido"/>
+    <testcase name="La respuesta no expone hash, stack ni SQL" time="0.089" classname="01AutenticacionApi14PerfilConTokenValido"/>
+  </testsuite>
+  <testsuite name="02 Usuarios / API-15 Buscar usuario por correo" id="917e52bc-3883-401a-b9ef-6861cda74c5a" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.265">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.265" classname="02UsuariosApi15BuscarUsuarioPorCorreo"/>
+    <testcase name="Status 200" time="0.265" classname="02UsuariosApi15BuscarUsuarioPorCorreo"/>
+    <testcase name="Encuentra a B" time="0.265" classname="02UsuariosApi15BuscarUsuarioPorCorreo"/>
+  </testsuite>
+  <testsuite name="02 Usuarios / SEC-03 Búsqueda con inyección SQL" id="8e2237e6-cae7-4cde-acb6-97564f7b5e68" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.177">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.177" classname="02UsuariosSec03BusquedaConInyeccionSql"/>
+    <testcase name="Status 200" time="0.177" classname="02UsuariosSec03BusquedaConInyeccionSql"/>
+    <testcase name="No devuelve toda la tabla de usuarios" time="0.177" classname="02UsuariosSec03BusquedaConInyeccionSql"/>
+    <testcase name="La respuesta no expone hash, stack ni SQL" time="0.177" classname="02UsuariosSec03BusquedaConInyeccionSql"/>
+  </testsuite>
+  <testsuite name="02 Usuarios / SEC-14 Búsqueda con comodines LIKE (enumeración de usuarios)" id="abd951dc-ea84-4815-a77e-7a414b838329" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.177">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.177" classname="02UsuariosSec14BusquedaConComodinesLikeEnumeracionDeUsuarios"/>
+    <testcase name="Status 200" time="0.177" classname="02UsuariosSec14BusquedaConComodinesLikeEnumeracionDeUsuarios"/>
+    <testcase name="Los comodines se tratan como texto literal (DEF-002)" time="0.177" classname="02UsuariosSec14BusquedaConComodinesLikeEnumeracionDeUsuarios"/>
+  </testsuite>
+  <testsuite name="03 Grupos / API-16 Crear grupo sin nombre" id="0db0612f-0da2-4247-a52b-a90720da93d6" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.090">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.090" classname="03GruposApi16CrearGrupoSinNombre"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.090" classname="03GruposApi16CrearGrupoSinNombre"/>
+    <testcase name="Status 400" time="0.090" classname="03GruposApi16CrearGrupoSinNombre"/>
+    <testcase name="Código de error VALIDATION_ERROR" time="0.090" classname="03GruposApi16CrearGrupoSinNombre"/>
+  </testsuite>
+  <testsuite name="03 Grupos / API-17 Crear grupo con integrantes" id="5dd565b0-5e0b-4d15-b7bb-8243af2555a3" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="1.372">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="1.372" classname="03GruposApi17CrearGrupoConIntegrantes"/>
+    <testcase name="Status 201" time="1.372" classname="03GruposApi17CrearGrupoConIntegrantes"/>
+    <testcase name="Tiene 3 integrantes y A es ADMIN" time="1.372" classname="03GruposApi17CrearGrupoConIntegrantes"/>
+    <testcase name="Balance inicial en 0" time="1.372" classname="03GruposApi17CrearGrupoConIntegrantes"/>
+  </testsuite>
+  <testsuite name="03 Grupos / API-18 Listar mis grupos" id="866ec9a7-0be0-4ca6-a4a7-e4458abb11ff" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.335">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.335" classname="03GruposApi18ListarMisGrupos"/>
+    <testcase name="Status 200" time="0.335" classname="03GruposApi18ListarMisGrupos"/>
+    <testcase name="B ve el grupo donde lo agregaron" time="0.335" classname="03GruposApi18ListarMisGrupos"/>
+  </testsuite>
+  <testsuite name="03 Grupos / SEC-04 Usuario ajeno intenta ver el grupo" id="e9aa8af7-24ce-464f-b16a-55bc0e9e0966" timestamp="2026-11-12T04:37:48.651Z" tests="5" failures="0" errors="0" time="0.169">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.169" classname="03GruposSec04UsuarioAjenoIntentaVerElGrupo"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.169" classname="03GruposSec04UsuarioAjenoIntentaVerElGrupo"/>
+    <testcase name="Status 404" time="0.169" classname="03GruposSec04UsuarioAjenoIntentaVerElGrupo"/>
+    <testcase name="Código de error NOT_FOUND" time="0.169" classname="03GruposSec04UsuarioAjenoIntentaVerElGrupo"/>
+    <testcase name="No filtra datos del grupo" time="0.169" classname="03GruposSec04UsuarioAjenoIntentaVerElGrupo"/>
+  </testsuite>
+  <testsuite name="03 Grupos / SEC-05 Usuario ajeno intenta editar el grupo" id="5f6f7fca-7041-4586-bb4d-169e3922cf68" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.169">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.169" classname="03GruposSec05UsuarioAjenoIntentaEditarElGrupo"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.169" classname="03GruposSec05UsuarioAjenoIntentaEditarElGrupo"/>
+    <testcase name="Status 404" time="0.169" classname="03GruposSec05UsuarioAjenoIntentaEditarElGrupo"/>
+    <testcase name="Código de error NOT_FOUND" time="0.169" classname="03GruposSec05UsuarioAjenoIntentaEditarElGrupo"/>
+  </testsuite>
+  <testsuite name="03 Grupos / SEC-06 Integrante no admin intenta editar el grupo" id="615f982f-25bc-494c-9d21-55fbf12618ec" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.169">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.169" classname="03GruposSec06IntegranteNoAdminIntentaEditarElGrupo"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.169" classname="03GruposSec06IntegranteNoAdminIntentaEditarElGrupo"/>
+    <testcase name="Status 403" time="0.169" classname="03GruposSec06IntegranteNoAdminIntentaEditarElGrupo"/>
+    <testcase name="Código de error FORBIDDEN" time="0.169" classname="03GruposSec06IntegranteNoAdminIntentaEditarElGrupo"/>
+  </testsuite>
+  <testsuite name="03 Grupos / API-19 Admin renombra el grupo" id="00faae6b-0925-49ad-90be-62e38eeba76b" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.502">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.502" classname="03GruposApi19AdminRenombraElGrupo"/>
+    <testcase name="Status 200" time="0.502" classname="03GruposApi19AdminRenombraElGrupo"/>
+    <testcase name="Nombre actualizado" time="0.502" classname="03GruposApi19AdminRenombraElGrupo"/>
+  </testsuite>
+  <testsuite name="04 Gastos / API-20 Gasto equitativo 100.00 entre 3 (redondeo)" id="bf19bc61-7d2b-4e8f-9633-a644dd8e66ce" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="1.085">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="1.085" classname="04GastosApi20GastoEquitativo10000Entre3Redondeo"/>
+    <testcase name="Status 201" time="1.085" classname="04GastosApi20GastoEquitativo10000Entre3Redondeo"/>
+    <testcase name="Las partes suman exactamente el total (DEF-001)" time="1.085" classname="04GastosApi20GastoEquitativo10000Entre3Redondeo"/>
+    <testcase name="Reparto 33.34 / 33.33 / 33.33" time="1.085" classname="04GastosApi20GastoEquitativo10000Entre3Redondeo"/>
+  </testsuite>
+  <testsuite name="04 Gastos / API-21 Gasto por ítem que cuadra" id="853edf2e-3ec6-4d0a-b0a1-7e07d7f1e63c" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="1.084">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="1.084" classname="04GastosApi21GastoPorItemQueCuadra"/>
+    <testcase name="Status 201" time="1.084" classname="04GastosApi21GastoPorItemQueCuadra"/>
+    <testcase name="Tipo itemized" time="1.084" classname="04GastosApi21GastoPorItemQueCuadra"/>
+  </testsuite>
+  <testsuite name="04 Gastos / API-22 Gasto por ítem que no cuadra" id="4a7a06d5-4d82-4161-828b-2c6ef41bd6bd" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.252">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.252" classname="04GastosApi22GastoPorItemQueNoCuadra"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.252" classname="04GastosApi22GastoPorItemQueNoCuadra"/>
+    <testcase name="Status 400" time="0.252" classname="04GastosApi22GastoPorItemQueNoCuadra"/>
+    <testcase name="Código de error SPLIT_MISMATCH" time="0.252" classname="04GastosApi22GastoPorItemQueNoCuadra"/>
+  </testsuite>
+  <testsuite name="04 Gastos / API-23 Monto 0 (límite inferior)" id="5100109c-3b29-4d2c-ae99-35146d2632c0" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.169">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.169" classname="04GastosApi23Monto0LimiteInferior"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.169" classname="04GastosApi23Monto0LimiteInferior"/>
+    <testcase name="Status 400" time="0.169" classname="04GastosApi23Monto0LimiteInferior"/>
+    <testcase name="Código de error VALIDATION_ERROR" time="0.169" classname="04GastosApi23Monto0LimiteInferior"/>
+  </testsuite>
+  <testsuite name="04 Gastos / API-24 Monto negativo" id="1d347b9e-216c-4561-9ff2-c0aa225c6ddc" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.170">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.170" classname="04GastosApi24MontoNegativo"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.170" classname="04GastosApi24MontoNegativo"/>
+    <testcase name="Status 400" time="0.170" classname="04GastosApi24MontoNegativo"/>
+    <testcase name="Código de error VALIDATION_ERROR" time="0.170" classname="04GastosApi24MontoNegativo"/>
+  </testsuite>
+  <testsuite name="04 Gastos / API-25 Monto mínimo 0.01 (límite válido)" id="1510e504-7e59-4623-b8fc-cc6583378f76" timestamp="2026-11-12T04:37:48.651Z" tests="2" failures="0" errors="0" time="1.085">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="1.085" classname="04GastosApi25MontoMinimo001LimiteValido"/>
+    <testcase name="Status 201" time="1.085" classname="04GastosApi25MontoMinimo001LimiteValido"/>
+  </testsuite>
+  <testsuite name="04 Gastos / API-26 Monto máximo 1,000,000 (límite válido)" id="2c16256f-707d-449a-b49c-b3989b77da09" timestamp="2026-11-12T04:37:48.651Z" tests="2" failures="0" errors="0" time="1.083">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="1.083" classname="04GastosApi26MontoMaximo1000000LimiteValido"/>
+    <testcase name="Status 201" time="1.083" classname="04GastosApi26MontoMaximo1000000LimiteValido"/>
+  </testsuite>
+  <testsuite name="04 Gastos / API-27 Monto 1,000,000.01 (sobre el límite)" id="5a6436e6-3bde-4fe5-abac-6ecff69c337f" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.168">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.168" classname="04GastosApi27Monto100000001SobreElLimite"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.168" classname="04GastosApi27Monto100000001SobreElLimite"/>
+    <testcase name="Status 400" time="0.168" classname="04GastosApi27Monto100000001SobreElLimite"/>
+    <testcase name="Código de error VALIDATION_ERROR" time="0.168" classname="04GastosApi27Monto100000001SobreElLimite"/>
+  </testsuite>
+  <testsuite name="04 Gastos / API-28 Monto con 3 decimales" id="05526052-b6ce-4479-ba8b-234f53af40b5" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.169">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.169" classname="04GastosApi28MontoCon3Decimales"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.169" classname="04GastosApi28MontoCon3Decimales"/>
+    <testcase name="Status 400" time="0.169" classname="04GastosApi28MontoCon3Decimales"/>
+    <testcase name="Código de error VALIDATION_ERROR" time="0.169" classname="04GastosApi28MontoCon3Decimales"/>
+  </testsuite>
+  <testsuite name="04 Gastos / SEC-07 Inyección en el monto" id="174ef785-c43f-411b-88c2-2103fd72576c" timestamp="2026-11-12T04:37:48.651Z" tests="5" failures="0" errors="0" time="0.170">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.170" classname="04GastosSec07InyeccionEnElMonto"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.170" classname="04GastosSec07InyeccionEnElMonto"/>
+    <testcase name="Status 400" time="0.170" classname="04GastosSec07InyeccionEnElMonto"/>
+    <testcase name="Código de error VALIDATION_ERROR" time="0.170" classname="04GastosSec07InyeccionEnElMonto"/>
+    <testcase name="La respuesta no expone hash, stack ni SQL" time="0.170" classname="04GastosSec07InyeccionEnElMonto"/>
+  </testsuite>
+  <testsuite name="04 Gastos / API-29 Participante que no es del grupo" id="7ea8c61e-7406-412c-8b9f-5d021abb32b8" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.253">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.253" classname="04GastosApi29ParticipanteQueNoEsDelGrupo"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.253" classname="04GastosApi29ParticipanteQueNoEsDelGrupo"/>
+    <testcase name="Status 400" time="0.253" classname="04GastosApi29ParticipanteQueNoEsDelGrupo"/>
+    <testcase name="Código de error NOT_A_MEMBER" time="0.253" classname="04GastosApi29ParticipanteQueNoEsDelGrupo"/>
+  </testsuite>
+  <testsuite name="04 Gastos / SEC-08 Usuario ajeno intenta registrar un gasto" id="43c39b07-6219-4dd3-8aeb-37d59a9dac4d" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.169">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.169" classname="04GastosSec08UsuarioAjenoIntentaRegistrarUnGasto"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.169" classname="04GastosSec08UsuarioAjenoIntentaRegistrarUnGasto"/>
+    <testcase name="Status 404" time="0.169" classname="04GastosSec08UsuarioAjenoIntentaRegistrarUnGasto"/>
+    <testcase name="Código de error NOT_FOUND" time="0.169" classname="04GastosSec08UsuarioAjenoIntentaRegistrarUnGasto"/>
+  </testsuite>
+  <testsuite name="04 Gastos / SEC-09 Usuario ajeno intenta listar los gastos" id="ed30ee00-245f-442e-a5bd-1faa26b729f5" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.169">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.169" classname="04GastosSec09UsuarioAjenoIntentaListarLosGastos"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.169" classname="04GastosSec09UsuarioAjenoIntentaListarLosGastos"/>
+    <testcase name="Status 404" time="0.169" classname="04GastosSec09UsuarioAjenoIntentaListarLosGastos"/>
+    <testcase name="No filtra montos" time="0.169" classname="04GastosSec09UsuarioAjenoIntentaListarLosGastos"/>
+  </testsuite>
+  <testsuite name="04 Gastos / SEC-10 Integrante sin permiso intenta borrar un gasto" id="272c9572-ade7-4a46-b4a1-11ec33e440bc" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.552">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.552" classname="04GastosSec10IntegranteSinPermisoIntentaBorrarUnGasto"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.552" classname="04GastosSec10IntegranteSinPermisoIntentaBorrarUnGasto"/>
+    <testcase name="Status 403" time="0.552" classname="04GastosSec10IntegranteSinPermisoIntentaBorrarUnGasto"/>
+    <testcase name="Código de error FORBIDDEN" time="0.552" classname="04GastosSec10IntegranteSinPermisoIntentaBorrarUnGasto"/>
+  </testsuite>
+  <testsuite name="04 Gastos / API-30 Admin elimina el gasto de límite superior" id="ec930e3e-40e4-4023-a4b9-f99502e645c0" timestamp="2026-11-12T04:37:48.651Z" tests="2" failures="0" errors="0" time="0.594">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.594" classname="04GastosApi30AdminEliminaElGastoDeLimiteSuperior"/>
+    <testcase name="Status 204" time="0.594" classname="04GastosApi30AdminEliminaElGastoDeLimiteSuperior"/>
+  </testsuite>
+  <testsuite name="04 Gastos / API-31 Admin elimina el gasto de 0.01" id="fd4dd467-3ae5-4a29-9812-2227e98b2360" timestamp="2026-11-12T04:37:48.651Z" tests="2" failures="0" errors="0" time="0.584">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.584" classname="04GastosApi31AdminEliminaElGastoDe001"/>
+    <testcase name="Status 204" time="0.584" classname="04GastosApi31AdminEliminaElGastoDe001"/>
+  </testsuite>
+  <testsuite name="04 Gastos / API-32 Listar gastos del grupo" id="eef9c810-9f54-4590-85fa-ecc3ed7f4a4c" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.416">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.416" classname="04GastosApi32ListarGastosDelGrupo"/>
+    <testcase name="Status 200" time="0.416" classname="04GastosApi32ListarGastosDelGrupo"/>
+    <testcase name="Quedan 2 gastos, del más reciente al más antiguo" time="0.416" classname="04GastosApi32ListarGastosDelGrupo"/>
+  </testsuite>
+  <testsuite name="05 Balances y actividad / API-33 Balances del grupo" id="e29e21cc-a5a5-4453-a977-c72a039fe86f" timestamp="2026-11-12T04:37:48.651Z" tests="7" failures="0" errors="0" time="0.423">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.423" classname="05BalancesYActividadApi33BalancesDelGrupo"/>
+    <testcase name="Status 200" time="0.423" classname="05BalancesYActividadApi33BalancesDelGrupo"/>
+    <testcase name="La suma de balances es 0" time="0.423" classname="05BalancesYActividadApi33BalancesDelGrupo"/>
+    <testcase name="A: +100 - 33.34 - 10.25 = 56.41" time="0.423" classname="05BalancesYActividadApi33BalancesDelGrupo"/>
+    <testcase name="B: +30.50 - 33.33 - 20.25 = -23.08" time="0.423" classname="05BalancesYActividadApi33BalancesDelGrupo"/>
+    <testcase name="D: -33.33" time="0.423" classname="05BalancesYActividadApi33BalancesDelGrupo"/>
+    <testcase name="Pagos sugeridos saldan el grupo" time="0.423" classname="05BalancesYActividadApi33BalancesDelGrupo"/>
+  </testsuite>
+  <testsuite name="05 Balances y actividad / API-34 Actividad reciente" id="a9b74462-13c8-4e5a-b2a7-a2ba1751344d" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.797">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.797" classname="05BalancesYActividadApi34ActividadReciente"/>
+    <testcase name="Status 200" time="0.797" classname="05BalancesYActividadApi34ActividadReciente"/>
+    <testcase name="Incluye los gastos del grupo con su pagador" time="0.797" classname="05BalancesYActividadApi34ActividadReciente"/>
+  </testsuite>
+  <testsuite name="05 Balances y actividad / API-35 Historial de pagos (paidByMe)" id="3f9d3d50-0e96-419c-9599-8a86e54edfd0" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.352">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.352" classname="05BalancesYActividadApi35HistorialDePagosPaidByMe"/>
+    <testcase name="Status 200" time="0.352" classname="05BalancesYActividadApi35HistorialDePagosPaidByMe"/>
+    <testcase name="Solo gastos pagados por B" time="0.352" classname="05BalancesYActividadApi35HistorialDePagosPaidByMe"/>
+  </testsuite>
+  <testsuite name="05b Integrantes / API-40 Admin agrega a un integrante" id="220104aa-2267-42af-86ca-2b2118e6cabd" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.702">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.702" classname="05BIntegrantesApi40AdminAgregaAUnIntegrante"/>
+    <testcase name="Status 201" time="0.702" classname="05BIntegrantesApi40AdminAgregaAUnIntegrante"/>
+    <testcase name="C ahora es integrante" time="0.702" classname="05BIntegrantesApi40AdminAgregaAUnIntegrante"/>
+  </testsuite>
+  <testsuite name="05b Integrantes / API-41 Agregar a alguien que ya es integrante" id="f7385215-c5c5-4b65-902b-fede3df06011" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.350">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.350" classname="05BIntegrantesApi41AgregarAAlguienQueYaEsIntegrante"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.350" classname="05BIntegrantesApi41AgregarAAlguienQueYaEsIntegrante"/>
+    <testcase name="Status 409" time="0.350" classname="05BIntegrantesApi41AgregarAAlguienQueYaEsIntegrante"/>
+    <testcase name="Código de error ALREADY_MEMBER" time="0.350" classname="05BIntegrantesApi41AgregarAAlguienQueYaEsIntegrante"/>
+  </testsuite>
+  <testsuite name="05b Integrantes / API-42 Integrante no admin intenta agregar" id="2846ff25-c336-4a21-9ca4-a686acadeff1" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.177">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.177" classname="05BIntegrantesApi42IntegranteNoAdminIntentaAgregar"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.177" classname="05BIntegrantesApi42IntegranteNoAdminIntentaAgregar"/>
+    <testcase name="Status 403" time="0.177" classname="05BIntegrantesApi42IntegranteNoAdminIntentaAgregar"/>
+    <testcase name="Código de error FORBIDDEN" time="0.177" classname="05BIntegrantesApi42IntegranteNoAdminIntentaAgregar"/>
+  </testsuite>
+  <testsuite name="05b Integrantes / API-43 Quitar a un integrante que participa en gastos" id="ec8628b3-b4e1-49b9-8c83-b7bf0eabb067" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.440">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.440" classname="05BIntegrantesApi43QuitarAUnIntegranteQueParticipaEnGastos"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.440" classname="05BIntegrantesApi43QuitarAUnIntegranteQueParticipaEnGastos"/>
+    <testcase name="Status 409" time="0.440" classname="05BIntegrantesApi43QuitarAUnIntegranteQueParticipaEnGastos"/>
+    <testcase name="Código de error MEMBER_HAS_EXPENSES" time="0.440" classname="05BIntegrantesApi43QuitarAUnIntegranteQueParticipaEnGastos"/>
+  </testsuite>
+  <testsuite name="05b Integrantes / API-44 El admin intenta salir del grupo" id="fbd92ca7-c350-4df1-9d7f-5e16b4eeb6d8" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.177">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.177" classname="05BIntegrantesApi44ElAdminIntentaSalirDelGrupo"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.177" classname="05BIntegrantesApi44ElAdminIntentaSalirDelGrupo"/>
+    <testcase name="Status 409" time="0.177" classname="05BIntegrantesApi44ElAdminIntentaSalirDelGrupo"/>
+    <testcase name="Código de error ADMIN_CANNOT_LEAVE" time="0.177" classname="05BIntegrantesApi44ElAdminIntentaSalirDelGrupo"/>
+  </testsuite>
+  <testsuite name="05b Integrantes / API-45 Integrante no admin intenta quitar a otro" id="e8f15e04-ffe9-4e6e-a0bd-8c1f38c4827e" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.176">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.176" classname="05BIntegrantesApi45IntegranteNoAdminIntentaQuitarAOtro"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.176" classname="05BIntegrantesApi45IntegranteNoAdminIntentaQuitarAOtro"/>
+    <testcase name="Status 403" time="0.176" classname="05BIntegrantesApi45IntegranteNoAdminIntentaQuitarAOtro"/>
+    <testcase name="Código de error FORBIDDEN" time="0.176" classname="05BIntegrantesApi45IntegranteNoAdminIntentaQuitarAOtro"/>
+  </testsuite>
+  <testsuite name="05b Integrantes / API-46 Integrante sin gastos sale del grupo" id="71a368a1-742b-41d7-a614-094f02c04d44" timestamp="2026-11-12T04:37:48.651Z" tests="2" failures="0" errors="0" time="0.527">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.527" classname="05BIntegrantesApi46IntegranteSinGastosSaleDelGrupo"/>
+    <testcase name="Status 204" time="0.527" classname="05BIntegrantesApi46IntegranteSinGastosSaleDelGrupo"/>
+  </testsuite>
+  <testsuite name="05b Integrantes / API-47 Quien salió ya no ve el grupo" id="1da2dc96-8bab-4e3a-b280-18123e165d2b" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.176">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.176" classname="05BIntegrantesApi47QuienSalioYaNoVeElGrupo"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.176" classname="05BIntegrantesApi47QuienSalioYaNoVeElGrupo"/>
+    <testcase name="Status 404" time="0.176" classname="05BIntegrantesApi47QuienSalioYaNoVeElGrupo"/>
+  </testsuite>
+  <testsuite name="05c Amigos / API-48 A envía solicitud de amistad a B" id="df79272e-53b1-4a23-84b8-41efb7369936" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.351">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.351" classname="05CAmigosApi48AEnviaSolicitudDeAmistadAB"/>
+    <testcase name="Status 201" time="0.351" classname="05CAmigosApi48AEnviaSolicitudDeAmistadAB"/>
+    <testcase name="Queda pendiente" time="0.351" classname="05CAmigosApi48AEnviaSolicitudDeAmistadAB"/>
+  </testsuite>
+  <testsuite name="05c Amigos / API-49 Solicitud duplicada" id="b69710e8-db25-4688-8dd4-cd75f0d218ef" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.263">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.263" classname="05CAmigosApi49SolicitudDuplicada"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.263" classname="05CAmigosApi49SolicitudDuplicada"/>
+    <testcase name="Status 409" time="0.263" classname="05CAmigosApi49SolicitudDuplicada"/>
+    <testcase name="Código de error REQUEST_PENDING" time="0.263" classname="05CAmigosApi49SolicitudDuplicada"/>
+  </testsuite>
+  <testsuite name="05c Amigos / API-50 Solicitud a uno mismo" id="011d5385-c822-48c1-a2ec-ac3306337fe2" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.088">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.088" classname="05CAmigosApi50SolicitudAUnoMismo"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.088" classname="05CAmigosApi50SolicitudAUnoMismo"/>
+    <testcase name="Status 400" time="0.088" classname="05CAmigosApi50SolicitudAUnoMismo"/>
+    <testcase name="Código de error SELF_FRIENDSHIP" time="0.088" classname="05CAmigosApi50SolicitudAUnoMismo"/>
+  </testsuite>
+  <testsuite name="05c Amigos / API-51 B ve la solicitud recibida" id="28e7c06c-9e07-4a6d-af06-95e110c35e00" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.263">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.263" classname="05CAmigosApi51BVeLaSolicitudRecibida"/>
+    <testcase name="Status 200" time="0.263" classname="05CAmigosApi51BVeLaSolicitudRecibida"/>
+    <testcase name="La solicitud de A está en recibidas" time="0.263" classname="05CAmigosApi51BVeLaSolicitudRecibida"/>
+  </testsuite>
+  <testsuite name="05c Amigos / SEC-18 Un tercero intenta aceptar una solicitud ajena" id="4285c9b4-4ae4-4d27-9789-302ffeceb7fa" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.178">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.178" classname="05CAmigosSec18UnTerceroIntentaAceptarUnaSolicitudAjena"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.178" classname="05CAmigosSec18UnTerceroIntentaAceptarUnaSolicitudAjena"/>
+    <testcase name="Status 404" time="0.178" classname="05CAmigosSec18UnTerceroIntentaAceptarUnaSolicitudAjena"/>
+  </testsuite>
+  <testsuite name="05c Amigos / SEC-19 Quien envió intenta aceptar su propia solicitud" id="ca2232c9-d07d-4642-af29-ef4e693f453f" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.178">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.178" classname="05CAmigosSec19QuienEnvioIntentaAceptarSuPropiaSolicitud"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.178" classname="05CAmigosSec19QuienEnvioIntentaAceptarSuPropiaSolicitud"/>
+    <testcase name="Status 403" time="0.178" classname="05CAmigosSec19QuienEnvioIntentaAceptarSuPropiaSolicitud"/>
+    <testcase name="Código de error FORBIDDEN" time="0.178" classname="05CAmigosSec19QuienEnvioIntentaAceptarSuPropiaSolicitud"/>
+  </testsuite>
+  <testsuite name="05c Amigos / API-52 B acepta la solicitud" id="8cc9ed69-7b0c-43a4-b702-dcfdb64caf8c" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.265">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.265" classname="05CAmigosApi52BAceptaLaSolicitud"/>
+    <testcase name="Status 200" time="0.265" classname="05CAmigosApi52BAceptaLaSolicitud"/>
+    <testcase name="Ahora son amigos" time="0.265" classname="05CAmigosApi52BAceptaLaSolicitud"/>
+  </testsuite>
+  <testsuite name="05c Amigos / API-53 La búsqueda muestra la relación" id="1d9a5511-1c96-41af-a380-ac72fba8dfea" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.266">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.266" classname="05CAmigosApi53LaBusquedaMuestraLaRelacion"/>
+    <testcase name="Status 200" time="0.266" classname="05CAmigosApi53LaBusquedaMuestraLaRelacion"/>
+    <testcase name="B aparece como amigo" time="0.266" classname="05CAmigosApi53LaBusquedaMuestraLaRelacion"/>
+  </testsuite>
+  <testsuite name="05c Amigos / API-54 D envía solicitud a A" id="6e8817a7-5cf5-4384-8c26-acf1d6fe7737" timestamp="2026-11-12T04:37:48.651Z" tests="2" failures="0" errors="0" time="0.352">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.352" classname="05CAmigosApi54DEnviaSolicitudAA"/>
+    <testcase name="Status 201" time="0.352" classname="05CAmigosApi54DEnviaSolicitudAA"/>
+  </testsuite>
+  <testsuite name="05c Amigos / API-55 Solicitud cruzada: A envía a D y quedan como amigos" id="77cf6206-e6c4-4a7d-aa12-fb98cc452762" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.352">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.352" classname="05CAmigosApi55SolicitudCruzadaAEnviaADYQuedanComoAmigos"/>
+    <testcase name="Status 200" time="0.352" classname="05CAmigosApi55SolicitudCruzadaAEnviaADYQuedanComoAmigos"/>
+    <testcase name="Quedan como amigos" time="0.352" classname="05CAmigosApi55SolicitudCruzadaAEnviaADYQuedanComoAmigos"/>
+  </testsuite>
+  <testsuite name="05c Amigos / API-56 A elimina la amistad con B" id="e9bc27b9-42a3-4db6-88c2-f81a9bfff3d3" timestamp="2026-11-12T04:37:48.651Z" tests="2" failures="0" errors="0" time="0.264">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.264" classname="05CAmigosApi56AEliminaLaAmistadConB"/>
+    <testcase name="Status 204" time="0.264" classname="05CAmigosApi56AEliminaLaAmistadConB"/>
+  </testsuite>
+  <testsuite name="05c Amigos / API-57 A ya no tiene a B como amigo" id="f0d5907c-e2d2-492e-8a98-29b976bfe283" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.264">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.264" classname="05CAmigosApi57AYaNoTieneABComoAmigo"/>
+    <testcase name="Status 200" time="0.264" classname="05CAmigosApi57AYaNoTieneABComoAmigo"/>
+    <testcase name="B no está y D sí" time="0.264" classname="05CAmigosApi57AYaNoTieneABComoAmigo"/>
+  </testsuite>
+  <testsuite name="05d Invitaciones por enlace / API-58 Integrante obtiene el enlace de invitación" id="c970580d-0eda-413b-b3b8-b792b84804ba" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.353">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.353" classname="05DInvitacionesPorEnlaceApi58IntegranteObtieneElEnlaceDeInvitacion"/>
+    <testcase name="Status 200" time="0.353" classname="05DInvitacionesPorEnlaceApi58IntegranteObtieneElEnlaceDeInvitacion"/>
+    <testcase name="Código URL-safe de 12 caracteres" time="0.353" classname="05DInvitacionesPorEnlaceApi58IntegranteObtieneElEnlaceDeInvitacion"/>
+  </testsuite>
+  <testsuite name="05d Invitaciones por enlace / SEC-20 Un no integrante no puede obtener el enlace" id="69a866d2-875a-492c-bdb8-4312d2bffff1" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.176">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.176" classname="05DInvitacionesPorEnlaceSec20UnNoIntegranteNoPuedeObtenerElEnlace"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.176" classname="05DInvitacionesPorEnlaceSec20UnNoIntegranteNoPuedeObtenerElEnlace"/>
+    <testcase name="Status 404" time="0.176" classname="05DInvitacionesPorEnlaceSec20UnNoIntegranteNoPuedeObtenerElEnlace"/>
+  </testsuite>
+  <testsuite name="05d Invitaciones por enlace / API-59 Vista previa de la invitación" id="40523b3d-17ff-41e0-8d21-894ae8a6c418" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.351">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.351" classname="05DInvitacionesPorEnlaceApi59VistaPreviaDeLaInvitacion"/>
+    <testcase name="Status 200" time="0.351" classname="05DInvitacionesPorEnlaceApi59VistaPreviaDeLaInvitacion"/>
+    <testcase name="Muestra el grupo y que C aún no es integrante" time="0.351" classname="05DInvitacionesPorEnlaceApi59VistaPreviaDeLaInvitacion"/>
+    <testcase name="No expone correos ni montos" time="0.351" classname="05DInvitacionesPorEnlaceApi59VistaPreviaDeLaInvitacion"/>
+  </testsuite>
+  <testsuite name="05d Invitaciones por enlace / API-60 Unirse con el enlace" id="2bbfab89-b626-4cf5-b18c-1e6396f5d8b3" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.439">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.439" classname="05DInvitacionesPorEnlaceApi60UnirseConElEnlace"/>
+    <testcase name="Status 201" time="0.439" classname="05DInvitacionesPorEnlaceApi60UnirseConElEnlace"/>
+    <testcase name="Devuelve el grupo" time="0.439" classname="05DInvitacionesPorEnlaceApi60UnirseConElEnlace"/>
+  </testsuite>
+  <testsuite name="05d Invitaciones por enlace / API-61 Unirse otra vez no duplica" id="a059f740-be3f-4d04-91e5-6005e3d660bc" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.351">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.351" classname="05DInvitacionesPorEnlaceApi61UnirseOtraVezNoDuplica"/>
+    <testcase name="Status 200" time="0.351" classname="05DInvitacionesPorEnlaceApi61UnirseOtraVezNoDuplica"/>
+    <testcase name="Ya era integrante" time="0.351" classname="05DInvitacionesPorEnlaceApi61UnirseOtraVezNoDuplica"/>
+  </testsuite>
+  <testsuite name="05d Invitaciones por enlace / SEC-21 Un integrante no admin intenta regenerar el enlace" id="b4434c4a-6e1b-4010-9c48-4cef996b81f3" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.177">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.177" classname="05DInvitacionesPorEnlaceSec21UnIntegranteNoAdminIntentaRegenerarElEnlace"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.177" classname="05DInvitacionesPorEnlaceSec21UnIntegranteNoAdminIntentaRegenerarElEnlace"/>
+    <testcase name="Status 403" time="0.177" classname="05DInvitacionesPorEnlaceSec21UnIntegranteNoAdminIntentaRegenerarElEnlace"/>
+  </testsuite>
+  <testsuite name="05d Invitaciones por enlace / API-62 El admin regenera el enlace" id="9d0decf6-1d55-4fad-9e3e-e17d4899297b" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.265">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.265" classname="05DInvitacionesPorEnlaceApi62ElAdminRegeneraElEnlace"/>
+    <testcase name="Status 201" time="0.265" classname="05DInvitacionesPorEnlaceApi62ElAdminRegeneraElEnlace"/>
+    <testcase name="El código cambió" time="0.265" classname="05DInvitacionesPorEnlaceApi62ElAdminRegeneraElEnlace"/>
+  </testsuite>
+  <testsuite name="05d Invitaciones por enlace / SEC-22 El enlace anterior deja de funcionar" id="c11fcaf0-8104-4b07-be2e-8178bc2d25fe" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.177">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.177" classname="05DInvitacionesPorEnlaceSec22ElEnlaceAnteriorDejaDeFuncionar"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.177" classname="05DInvitacionesPorEnlaceSec22ElEnlaceAnteriorDejaDeFuncionar"/>
+    <testcase name="Status 404" time="0.177" classname="05DInvitacionesPorEnlaceSec22ElEnlaceAnteriorDejaDeFuncionar"/>
+  </testsuite>
+  <testsuite name="05d Invitaciones por enlace / SEC-23 Código de invitación con inyección" id="078d447b-e7ca-4901-ad75-a09586467c66" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.089">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.089" classname="05DInvitacionesPorEnlaceSec23CodigoDeInvitacionConInyeccion"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.089" classname="05DInvitacionesPorEnlaceSec23CodigoDeInvitacionConInyeccion"/>
+    <testcase name="Status 404" time="0.089" classname="05DInvitacionesPorEnlaceSec23CodigoDeInvitacionConInyeccion"/>
+    <testcase name="La respuesta no expone hash, stack ni SQL" time="0.089" classname="05DInvitacionesPorEnlaceSec23CodigoDeInvitacionConInyeccion"/>
+  </testsuite>
+  <testsuite name="05e Notificaciones / API-65 Contadores de avisos" id="91a59f39-fd90-40e3-9c09-639102464012" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.874">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.874" classname="05ENotificacionesApi65ContadoresDeAvisos"/>
+    <testcase name="Status 200" time="0.874" classname="05ENotificacionesApi65ContadoresDeAvisos"/>
+    <testcase name="B debe 23.08 en 1 grupo y no tiene solicitudes" time="0.874" classname="05ENotificacionesApi65ContadoresDeAvisos"/>
+  </testsuite>
+  <testsuite name="05e Notificaciones / API-66 Contadores sin sesión" id="0f6d18e4-6491-4617-ad10-4dab032c39d2" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.003">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.003" classname="05ENotificacionesApi66ContadoresSinSesion"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.003" classname="05ENotificacionesApi66ContadoresSinSesion"/>
+    <testcase name="Status 401" time="0.003" classname="05ENotificacionesApi66ContadoresSinSesion"/>
+  </testsuite>
+  <testsuite name="05e Notificaciones / SEC-24 Stream de notificaciones sin sesión" id="5fbbbc43-c09b-4a02-876d-bde5f8213625" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.002">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.002" classname="05ENotificacionesSec24StreamDeNotificacionesSinSesion"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.002" classname="05ENotificacionesSec24StreamDeNotificacionesSinSesion"/>
+    <testcase name="Status 401" time="0.002" classname="05ENotificacionesSec24StreamDeNotificacionesSinSesion"/>
+    <testcase name="Código de error UNAUTHORIZED" time="0.002" classname="05ENotificacionesSec24StreamDeNotificacionesSinSesion"/>
+  </testsuite>
+  <testsuite name="05f Cuentas por ítems y cuenta rápida / API-67 Cuenta dividida por ítems" id="c14aab5b-6cc1-4a13-8333-2cc01cd4437a" timestamp="2026-11-12T04:37:48.651Z" tests="5" failures="0" errors="0" time="1.469">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="1.469" classname="05FCuentasPorItemsYCuentaRapidaApi67CuentaDivididaPorItems"/>
+    <testcase name="Status 201" time="1.469" classname="05FCuentasPorItemsYCuentaRapidaApi67CuentaDivididaPorItems"/>
+    <testcase name="Total 60 (suma de ítems)" time="1.469" classname="05FCuentasPorItemsYCuentaRapidaApi67CuentaDivididaPorItems"/>
+    <testcase name="A paga 25 y B 35" time="1.469" classname="05FCuentasPorItemsYCuentaRapidaApi67CuentaDivididaPorItems"/>
+    <testcase name="Guarda las líneas con sus asignaciones" time="1.469" classname="05FCuentasPorItemsYCuentaRapidaApi67CuentaDivididaPorItems"/>
+  </testsuite>
+  <testsuite name="05f Cuentas por ítems y cuenta rápida / API-68 Ítems con unidades sin asignar" id="ccbb9be9-c473-4b86-939a-877bc275c68a" timestamp="2026-11-12T04:37:48.651Z" tests="5" failures="0" errors="0" time="0.260">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.260" classname="05FCuentasPorItemsYCuentaRapidaApi68ItemsConUnidadesSinAsignar"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.260" classname="05FCuentasPorItemsYCuentaRapidaApi68ItemsConUnidadesSinAsignar"/>
+    <testcase name="Status 400" time="0.260" classname="05FCuentasPorItemsYCuentaRapidaApi68ItemsConUnidadesSinAsignar"/>
+    <testcase name="Código de error ITEMS_UNASSIGNED" time="0.260" classname="05FCuentasPorItemsYCuentaRapidaApi68ItemsConUnidadesSinAsignar"/>
+    <testcase name="Dice cuántas faltan" time="0.260" classname="05FCuentasPorItemsYCuentaRapidaApi68ItemsConUnidadesSinAsignar"/>
+  </testsuite>
+  <testsuite name="05f Cuentas por ítems y cuenta rápida / API-69 Total distinto a la suma de los ítems" id="b9354e69-7f90-4b62-9fb8-0df49a05828d" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.261">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.261" classname="05FCuentasPorItemsYCuentaRapidaApi69TotalDistintoALaSumaDeLosItems"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.261" classname="05FCuentasPorItemsYCuentaRapidaApi69TotalDistintoALaSumaDeLosItems"/>
+    <testcase name="Status 400" time="0.261" classname="05FCuentasPorItemsYCuentaRapidaApi69TotalDistintoALaSumaDeLosItems"/>
+    <testcase name="Código de error TOTAL_MISMATCH" time="0.261" classname="05FCuentasPorItemsYCuentaRapidaApi69TotalDistintoALaSumaDeLosItems"/>
+  </testsuite>
+  <testsuite name="05f Cuentas por ítems y cuenta rápida / API-70 Ítem con cantidad 0" id="5bc19f06-cdcc-46e2-a588-2d0f521dbc86" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.175">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.175" classname="05FCuentasPorItemsYCuentaRapidaApi70ItemConCantidad0"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.175" classname="05FCuentasPorItemsYCuentaRapidaApi70ItemConCantidad0"/>
+    <testcase name="Status 400" time="0.175" classname="05FCuentasPorItemsYCuentaRapidaApi70ItemConCantidad0"/>
+    <testcase name="Código de error VALIDATION_ERROR" time="0.175" classname="05FCuentasPorItemsYCuentaRapidaApi70ItemConCantidad0"/>
+  </testsuite>
+  <testsuite name="05f Cuentas por ítems y cuenta rápida / API-71 Cuenta sin ítems ni monto" id="ce9b3964-b4c3-4c68-8596-cf87db5681ec" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.260">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.260" classname="05FCuentasPorItemsYCuentaRapidaApi71CuentaSinItemsNiMonto"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.260" classname="05FCuentasPorItemsYCuentaRapidaApi71CuentaSinItemsNiMonto"/>
+    <testcase name="Status 400" time="0.260" classname="05FCuentasPorItemsYCuentaRapidaApi71CuentaSinItemsNiMonto"/>
+    <testcase name="Código de error MISSING_TOTAL" time="0.260" classname="05FCuentasPorItemsYCuentaRapidaApi71CuentaSinItemsNiMonto"/>
+  </testsuite>
+  <testsuite name="05f Cuentas por ítems y cuenta rápida / API-72 Cuenta rápida sin grupo previo" id="bc28c893-9f1c-4429-ad25-1a7828cda461" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="1.298">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="1.298" classname="05FCuentasPorItemsYCuentaRapidaApi72CuentaRapidaSinGrupoPrevio"/>
+    <testcase name="Status 201" time="1.298" classname="05FCuentasPorItemsYCuentaRapidaApi72CuentaRapidaSinGrupoPrevio"/>
+    <testcase name="Cada uno paga 20" time="1.298" classname="05FCuentasPorItemsYCuentaRapidaApi72CuentaRapidaSinGrupoPrevio"/>
+  </testsuite>
+  <testsuite name="05f Cuentas por ítems y cuenta rápida / API-73 La cuenta rápida aparece marcada en mis grupos" id="d4eb9b2d-9e6f-49cb-b252-169539065253" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.346">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.346" classname="05FCuentasPorItemsYCuentaRapidaApi73LaCuentaRapidaApareceMarcadaEnMisGrupos"/>
+    <testcase name="Status 200" time="0.346" classname="05FCuentasPorItemsYCuentaRapidaApi73LaCuentaRapidaApareceMarcadaEnMisGrupos"/>
+    <testcase name="isQuick = true" time="0.346" classname="05FCuentasPorItemsYCuentaRapidaApi73LaCuentaRapidaApareceMarcadaEnMisGrupos"/>
+  </testsuite>
+  <testsuite name="05f Cuentas por ítems y cuenta rápida / SEC-25 Cuenta rápida con un usuario inexistente" id="b6babb3c-f8f9-40f2-9f0a-1afd9cbd90be" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.176">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.176" classname="05FCuentasPorItemsYCuentaRapidaSec25CuentaRapidaConUnUsuarioInexistente"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.176" classname="05FCuentasPorItemsYCuentaRapidaSec25CuentaRapidaConUnUsuarioInexistente"/>
+    <testcase name="Status 400" time="0.176" classname="05FCuentasPorItemsYCuentaRapidaSec25CuentaRapidaConUnUsuarioInexistente"/>
+    <testcase name="Código de error USER_NOT_FOUND" time="0.176" classname="05FCuentasPorItemsYCuentaRapidaSec25CuentaRapidaConUnUsuarioInexistente"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / API-74 A registra su cuenta bancaria" id="a27eef75-7b1b-4bf7-8054-461b6bdee11d" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.262">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.262" classname="05GDatosBancariosYPagosApi74ARegistraSuCuentaBancaria"/>
+    <testcase name="Status 201" time="0.262" classname="05GDatosBancariosYPagosApi74ARegistraSuCuentaBancaria"/>
+    <testcase name="Visible por defecto" time="0.262" classname="05GDatosBancariosYPagosApi74ARegistraSuCuentaBancaria"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / SEC-26 Número de cuenta con texto malicioso" id="ee8841a6-5b44-4a21-80d3-0c3c7ddf4678" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.089">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.089" classname="05GDatosBancariosYPagosSec26NumeroDeCuentaConTextoMalicioso"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.089" classname="05GDatosBancariosYPagosSec26NumeroDeCuentaConTextoMalicioso"/>
+    <testcase name="Status 400" time="0.089" classname="05GDatosBancariosYPagosSec26NumeroDeCuentaConTextoMalicioso"/>
+    <testcase name="Código de error VALIDATION_ERROR" time="0.089" classname="05GDatosBancariosYPagosSec26NumeroDeCuentaConTextoMalicioso"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / API-75 Banco fuera de la lista" id="f2da605c-6195-426d-bc6d-c48e1e0f1f96" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.088">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.088" classname="05GDatosBancariosYPagosApi75BancoFueraDeLaLista"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.088" classname="05GDatosBancariosYPagosApi75BancoFueraDeLaLista"/>
+    <testcase name="Status 400" time="0.088" classname="05GDatosBancariosYPagosApi75BancoFueraDeLaLista"/>
+    <testcase name="Código de error VALIDATION_ERROR" time="0.088" classname="05GDatosBancariosYPagosApi75BancoFueraDeLaLista"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / API-76 A prefiere transferencia" id="ddce0079-a2e6-4c4a-9c50-33bd3b0f1b83" timestamp="2026-11-12T04:37:48.651Z" tests="2" failures="0" errors="0" time="0.177">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.177" classname="05GDatosBancariosYPagosApi76APrefiereTransferencia"/>
+    <testcase name="Status 200" time="0.177" classname="05GDatosBancariosYPagosApi76APrefiereTransferencia"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / API-77 B (comparte grupo) ve los datos de pago de A" id="ba4edd76-1029-4d50-9718-ebeff9d45a7b" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.347">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.347" classname="05GDatosBancariosYPagosApi77BComparteGrupoVeLosDatosDePagoDeA"/>
+    <testcase name="Status 200" time="0.347" classname="05GDatosBancariosYPagosApi77BComparteGrupoVeLosDatosDePagoDeA"/>
+    <testcase name="Preferencia y cuenta visibles" time="0.347" classname="05GDatosBancariosYPagosApi77BComparteGrupoVeLosDatosDePagoDeA"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / API-78 Registro de un usuario sin relación con A" id="892ee749-b424-40ad-a07d-ebcfa122f3cf" timestamp="2026-11-12T04:37:48.651Z" tests="2" failures="0" errors="0" time="0.227">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.227" classname="05GDatosBancariosYPagosApi78RegistroDeUnUsuarioSinRelacionConA"/>
+    <testcase name="Status 201" time="0.227" classname="05GDatosBancariosYPagosApi78RegistroDeUnUsuarioSinRelacionConA"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / SEC-27 Un usuario sin grupo ni amistad no ve los datos bancarios" id="2a0d5a85-61aa-4c57-a50b-d824ac4cef47" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.174">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.174" classname="05GDatosBancariosYPagosSec27UnUsuarioSinGrupoNiAmistadNoVeLosDatosBancarios"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.174" classname="05GDatosBancariosYPagosSec27UnUsuarioSinGrupoNiAmistadNoVeLosDatosBancarios"/>
+    <testcase name="Status 404" time="0.174" classname="05GDatosBancariosYPagosSec27UnUsuarioSinGrupoNiAmistadNoVeLosDatosBancarios"/>
+    <testcase name="No filtra el número" time="0.174" classname="05GDatosBancariosYPagosSec27UnUsuarioSinGrupoNiAmistadNoVeLosDatosBancarios"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / API-79 A hace privada su cuenta" id="cc617cc0-b4f6-4592-b53e-f5daef5875e9" timestamp="2026-11-12T04:37:48.651Z" tests="2" failures="0" errors="0" time="0.261">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.261" classname="05GDatosBancariosYPagosApi79AHacePrivadaSuCuenta"/>
+    <testcase name="Status 200" time="0.261" classname="05GDatosBancariosYPagosApi79AHacePrivadaSuCuenta"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / SEC-28 Una cuenta privada no se muestra a otros" id="31b59e8f-7caf-4d09-b622-448f2973cf95" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.345">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.345" classname="05GDatosBancariosYPagosSec28UnaCuentaPrivadaNoSeMuestraAOtros"/>
+    <testcase name="Status 200" time="0.345" classname="05GDatosBancariosYPagosSec28UnaCuentaPrivadaNoSeMuestraAOtros"/>
+    <testcase name="Sin cuentas visibles" time="0.345" classname="05GDatosBancariosYPagosSec28UnaCuentaPrivadaNoSeMuestraAOtros"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / API-80 Pagar más de lo que se debe" id="56d1d721-36be-44fb-8dd2-bacf028c8c09" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.519">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.519" classname="05GDatosBancariosYPagosApi80PagarMasDeLoQueSeDebe"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.519" classname="05GDatosBancariosYPagosApi80PagarMasDeLoQueSeDebe"/>
+    <testcase name="Status 400" time="0.519" classname="05GDatosBancariosYPagosApi80PagarMasDeLoQueSeDebe"/>
+    <testcase name="Código de error AMOUNT_EXCEEDS_DEBT" time="0.519" classname="05GDatosBancariosYPagosApi80PagarMasDeLoQueSeDebe"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / API-81 B registra un pago de 20 a A" id="63b360fb-bc1a-40b6-9a79-f395eeef8105" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.604">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.604" classname="05GDatosBancariosYPagosApi81BRegistraUnPagoDe20AA"/>
+    <testcase name="Status 201" time="0.604" classname="05GDatosBancariosYPagosApi81BRegistraUnPagoDe20AA"/>
+    <testcase name="Queda pendiente" time="0.604" classname="05GDatosBancariosYPagosApi81BRegistraUnPagoDe20AA"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / SEC-29 Comprobante que no es imagen" id="c19a8320-4297-4e94-90d8-7160a0a123f6" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.263">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.263" classname="05GDatosBancariosYPagosSec29ComprobanteQueNoEsImagen"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.263" classname="05GDatosBancariosYPagosSec29ComprobanteQueNoEsImagen"/>
+    <testcase name="Status 400" time="0.263" classname="05GDatosBancariosYPagosSec29ComprobanteQueNoEsImagen"/>
+    <testcase name="Código de error INVALID_EVIDENCE" time="0.263" classname="05GDatosBancariosYPagosSec29ComprobanteQueNoEsImagen"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / SEC-30 Quien pagó intenta confirmar su propio pago" id="32456e42-35a3-4470-8e7e-72dd5ef7d554" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.262">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.262" classname="05GDatosBancariosYPagosSec30QuienPagoIntentaConfirmarSuPropioPago"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.262" classname="05GDatosBancariosYPagosSec30QuienPagoIntentaConfirmarSuPropioPago"/>
+    <testcase name="Status 403" time="0.262" classname="05GDatosBancariosYPagosSec30QuienPagoIntentaConfirmarSuPropioPago"/>
+    <testcase name="Código de error FORBIDDEN" time="0.262" classname="05GDatosBancariosYPagosSec30QuienPagoIntentaConfirmarSuPropioPago"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / SEC-31 Un tercero intenta ver el comprobante" id="98cd404d-72f3-490f-bb18-938bd12c212c" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.261">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.261" classname="05GDatosBancariosYPagosSec31UnTerceroIntentaVerElComprobante"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.261" classname="05GDatosBancariosYPagosSec31UnTerceroIntentaVerElComprobante"/>
+    <testcase name="Status 403" time="0.261" classname="05GDatosBancariosYPagosSec31UnTerceroIntentaVerElComprobante"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / API-82 A tiene un pago por confirmar" id="cd61b16e-a8ca-4174-86eb-04f002a61217" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.848">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.848" classname="05GDatosBancariosYPagosApi82ATieneUnPagoPorConfirmar"/>
+    <testcase name="Status 200" time="0.848" classname="05GDatosBancariosYPagosApi82ATieneUnPagoPorConfirmar"/>
+    <testcase name="paymentsToConfirm = 1" time="0.848" classname="05GDatosBancariosYPagosApi82ATieneUnPagoPorConfirmar"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / API-83 Balance de B antes de confirmar" id="5aa3a405-df62-49e2-ab71-e35759ccd355" timestamp="2026-11-12T04:37:48.651Z" tests="2" failures="0" errors="0" time="0.424">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.424" classname="05GDatosBancariosYPagosApi83BalanceDeBAntesDeConfirmar"/>
+    <testcase name="Status 200" time="0.424" classname="05GDatosBancariosYPagosApi83BalanceDeBAntesDeConfirmar"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / API-84 A confirma que recibió el monto completo" id="327fa50c-0c6d-401e-9133-8a21b682537b" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.344">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.344" classname="05GDatosBancariosYPagosApi84AConfirmaQueRecibioElMontoCompleto"/>
+    <testcase name="Status 200" time="0.344" classname="05GDatosBancariosYPagosApi84AConfirmaQueRecibioElMontoCompleto"/>
+    <testcase name="Confirmado" time="0.344" classname="05GDatosBancariosYPagosApi84AConfirmaQueRecibioElMontoCompleto"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / API-85 El pago confirmado reduce la deuda de B" id="2e9e3f9e-9fa2-4a7f-b185-4f6a8b779812" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.430">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.430" classname="05GDatosBancariosYPagosApi85ElPagoConfirmadoReduceLaDeudaDeB"/>
+    <testcase name="Status 200" time="0.430" classname="05GDatosBancariosYPagosApi85ElPagoConfirmadoReduceLaDeudaDeB"/>
+    <testcase name="La deuda baja exactamente 20" time="0.430" classname="05GDatosBancariosYPagosApi85ElPagoConfirmadoReduceLaDeudaDeB"/>
+  </testsuite>
+  <testsuite name="05g Datos bancarios y pagos / API-86 No se puede confirmar dos veces" id="77e262c8-424e-41be-a8f9-0c3e00296a84" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.257">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.257" classname="05GDatosBancariosYPagosApi86NoSePuedeConfirmarDosVeces"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.257" classname="05GDatosBancariosYPagosApi86NoSePuedeConfirmarDosVeces"/>
+    <testcase name="Status 409" time="0.257" classname="05GDatosBancariosYPagosApi86NoSePuedeConfirmarDosVeces"/>
+    <testcase name="Código de error PAYMENT_CLOSED" time="0.257" classname="05GDatosBancariosYPagosApi86NoSePuedeConfirmarDosVeces"/>
+  </testsuite>
+  <testsuite name="05h Propina, deudas y recordatorios / API-87 Crear grupo para deudas (A con B)" id="6f0c915b-928b-4dfa-9972-75abe1e8ea9a" timestamp="2026-11-12T04:37:48.651Z" tests="2" failures="0" errors="0" time="0.858">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.858" classname="05HPropinaDeudasYRecordatoriosApi87CrearGrupoParaDeudasAConB"/>
+    <testcase name="Status 201" time="0.858" classname="05HPropinaDeudasYRecordatoriosApi87CrearGrupoParaDeudasAConB"/>
+  </testsuite>
+  <testsuite name="05h Propina, deudas y recordatorios / API-88 Gasto de 100 con propina del 10 %" id="2544dbdb-9e1f-4fe3-a626-2b35b1fc4ccd" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="1.108">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="1.108" classname="05HPropinaDeudasYRecordatoriosApi88GastoDe100ConPropinaDel10"/>
+    <testcase name="Status 201" time="1.108" classname="05HPropinaDeudasYRecordatoriosApi88GastoDe100ConPropinaDel10"/>
+    <testcase name="Total 110 con propina 10" time="1.108" classname="05HPropinaDeudasYRecordatoriosApi88GastoDe100ConPropinaDel10"/>
+    <testcase name="A cada quien 55" time="1.108" classname="05HPropinaDeudasYRecordatoriosApi88GastoDe100ConPropinaDel10"/>
+  </testsuite>
+  <testsuite name="05h Propina, deudas y recordatorios / API-89 Propina mayor a 30 % (valor límite)" id="2712ac44-8253-436d-8494-51bc331415b9" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.172">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.172" classname="05HPropinaDeudasYRecordatoriosApi89PropinaMayorA30ValorLimite"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.172" classname="05HPropinaDeudasYRecordatoriosApi89PropinaMayorA30ValorLimite"/>
+    <testcase name="Status 400" time="0.172" classname="05HPropinaDeudasYRecordatoriosApi89PropinaMayorA30ValorLimite"/>
+    <testcase name="Código VALIDATION_ERROR" time="0.172" classname="05HPropinaDeudasYRecordatoriosApi89PropinaMayorA30ValorLimite"/>
+  </testsuite>
+  <testsuite name="05h Propina, deudas y recordatorios / API-90 Propina con decimales" id="cc24e766-f4bc-4227-ba28-086195ada063" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.172">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.172" classname="05HPropinaDeudasYRecordatoriosApi90PropinaConDecimales"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.172" classname="05HPropinaDeudasYRecordatoriosApi90PropinaConDecimales"/>
+    <testcase name="Status 400" time="0.172" classname="05HPropinaDeudasYRecordatoriosApi90PropinaConDecimales"/>
+    <testcase name="Código VALIDATION_ERROR" time="0.172" classname="05HPropinaDeudasYRecordatoriosApi90PropinaConDecimales"/>
+  </testsuite>
+  <testsuite name="05h Propina, deudas y recordatorios / API-91 Montos exactos que no suman el total" id="c8096cca-d51b-45cd-b754-a769c8c68c0e" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.259">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.259" classname="05HPropinaDeudasYRecordatoriosApi91MontosExactosQueNoSumanElTotal"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.259" classname="05HPropinaDeudasYRecordatoriosApi91MontosExactosQueNoSumanElTotal"/>
+    <testcase name="Status 400" time="0.259" classname="05HPropinaDeudasYRecordatoriosApi91MontosExactosQueNoSumanElTotal"/>
+    <testcase name="Código SPLIT_MISMATCH" time="0.259" classname="05HPropinaDeudasYRecordatoriosApi91MontosExactosQueNoSumanElTotal"/>
+  </testsuite>
+  <testsuite name="05h Propina, deudas y recordatorios / API-92 GET /debts del acreedor: B le debe 55" id="44929ef3-ba44-413b-9630-5a9c67bc8453" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.429">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.429" classname="05HPropinaDeudasYRecordatoriosApi92GetDebtsDelAcreedorBLeDebe55"/>
+    <testcase name="Status 200" time="0.429" classname="05HPropinaDeudasYRecordatoriosApi92GetDebtsDelAcreedorBLeDebe55"/>
+    <testcase name="B debe 55 y se puede recordar" time="0.429" classname="05HPropinaDeudasYRecordatoriosApi92GetDebtsDelAcreedorBLeDebe55"/>
+    <testcase name="Sin datos sensibles del usuario" time="0.429" classname="05HPropinaDeudasYRecordatoriosApi92GetDebtsDelAcreedorBLeDebe55"/>
+  </testsuite>
+  <testsuite name="05h Propina, deudas y recordatorios / API-93 GET /debts del deudor: le debe 55 a A" id="9d99b3dd-d2bb-4b07-b16d-5274759fe941" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.427">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.427" classname="05HPropinaDeudasYRecordatoriosApi93GetDebtsDelDeudorLeDebe55AA"/>
+    <testcase name="Status 200" time="0.427" classname="05HPropinaDeudasYRecordatoriosApi93GetDebtsDelDeudorLeDebe55AA"/>
+    <testcase name="Debe 55 a A" time="0.427" classname="05HPropinaDeudasYRecordatoriosApi93GetDebtsDelDeudorLeDebe55AA"/>
+  </testsuite>
+  <testsuite name="05h Propina, deudas y recordatorios / SEC-32 GET /debts sin token" id="25563a3e-3838-4976-8969-b84ba15d7d05" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.002">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.002" classname="05HPropinaDeudasYRecordatoriosSec32GetDebtsSinToken"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.002" classname="05HPropinaDeudasYRecordatoriosSec32GetDebtsSinToken"/>
+    <testcase name="Status 401" time="0.002" classname="05HPropinaDeudasYRecordatoriosSec32GetDebtsSinToken"/>
+    <testcase name="Código UNAUTHORIZED" time="0.002" classname="05HPropinaDeudasYRecordatoriosSec32GetDebtsSinToken"/>
+  </testsuite>
+  <testsuite name="05h Propina, deudas y recordatorios / SEC-33 El deudor intenta 'recordarle' al acreedor" id="03e3661d-c4fe-4dcf-87ef-a184312301d6" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.426">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.426" classname="05HPropinaDeudasYRecordatoriosSec33ElDeudorIntentaRecordarleAlAcreedor"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.426" classname="05HPropinaDeudasYRecordatoriosSec33ElDeudorIntentaRecordarleAlAcreedor"/>
+    <testcase name="Status 400" time="0.426" classname="05HPropinaDeudasYRecordatoriosSec33ElDeudorIntentaRecordarleAlAcreedor"/>
+    <testcase name="Código NO_DEBT" time="0.426" classname="05HPropinaDeudasYRecordatoriosSec33ElDeudorIntentaRecordarleAlAcreedor"/>
+  </testsuite>
+  <testsuite name="05h Propina, deudas y recordatorios / SEC-34 Usuario ajeno envía recordatorio en un grupo que no es suyo" id="14ef80ad-921f-46f7-a640-306e4549503e" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.172">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.172" classname="05HPropinaDeudasYRecordatoriosSec34UsuarioAjenoEnviaRecordatorioEnUnGrupoQueNoEsSuyo"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.172" classname="05HPropinaDeudasYRecordatoriosSec34UsuarioAjenoEnviaRecordatorioEnUnGrupoQueNoEsSuyo"/>
+    <testcase name="Status 404" time="0.172" classname="05HPropinaDeudasYRecordatoriosSec34UsuarioAjenoEnviaRecordatorioEnUnGrupoQueNoEsSuyo"/>
+  </testsuite>
+  <testsuite name="05h Propina, deudas y recordatorios / SEC-35 Recordatorio con campos extra o id inválido" id="ce54ac71-de4c-45cf-b334-5d04ac76dc13" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.088">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.088" classname="05HPropinaDeudasYRecordatoriosSec35RecordatorioConCamposExtraOIdInvalido"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.088" classname="05HPropinaDeudasYRecordatoriosSec35RecordatorioConCamposExtraOIdInvalido"/>
+    <testcase name="Status 400" time="0.088" classname="05HPropinaDeudasYRecordatoriosSec35RecordatorioConCamposExtraOIdInvalido"/>
+    <testcase name="Código VALIDATION_ERROR" time="0.088" classname="05HPropinaDeudasYRecordatoriosSec35RecordatorioConCamposExtraOIdInvalido"/>
+  </testsuite>
+  <testsuite name="05h Propina, deudas y recordatorios / API-94 El acreedor recuerda a B" id="8fd15aab-9c6e-412e-aeda-3eaf3c433c14" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.598">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.598" classname="05HPropinaDeudasYRecordatoriosApi94ElAcreedorRecuerdaAB"/>
+    <testcase name="Status 201" time="0.598" classname="05HPropinaDeudasYRecordatoriosApi94ElAcreedorRecuerdaAB"/>
+    <testcase name="Indica cuándo se puede volver a recordar (24 h)" time="0.598" classname="05HPropinaDeudasYRecordatoriosApi94ElAcreedorRecuerdaAB"/>
+  </testsuite>
+  <testsuite name="05h Propina, deudas y recordatorios / SEC-36 Segundo recordatorio antes de 24 h (anti-spam)" id="4038e0b9-5cdf-4eb8-8bd2-c2bf6253dc6a" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.515">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.515" classname="05HPropinaDeudasYRecordatoriosSec36SegundoRecordatorioAntesDe24HAntiSpam"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.515" classname="05HPropinaDeudasYRecordatoriosSec36SegundoRecordatorioAntesDe24HAntiSpam"/>
+    <testcase name="Status 429" time="0.515" classname="05HPropinaDeudasYRecordatoriosSec36SegundoRecordatorioAntesDe24HAntiSpam"/>
+    <testcase name="Código REMINDER_TOO_SOON" time="0.515" classname="05HPropinaDeudasYRecordatoriosSec36SegundoRecordatorioAntesDe24HAntiSpam"/>
+  </testsuite>
+  <testsuite name="05h Propina, deudas y recordatorios / API-95 GET /debts refleja el recordatorio enviado" id="4cb60a2f-805d-451f-b250-5a59ebb6cf18" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.428">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.428" classname="05HPropinaDeudasYRecordatoriosApi95GetDebtsReflejaElRecordatorioEnviado"/>
+    <testcase name="Status 200" time="0.428" classname="05HPropinaDeudasYRecordatoriosApi95GetDebtsReflejaElRecordatorioEnviado"/>
+    <testcase name="canRemindAt con fecha" time="0.428" classname="05HPropinaDeudasYRecordatoriosApi95GetDebtsReflejaElRecordatorioEnviado"/>
+  </testsuite>
+  <testsuite name="06 Robustez y datos sensibles / SEC-11 JSON mal formado" id="5e53d85a-418f-4e15-9caa-828782f6d829" timestamp="2026-11-12T04:37:48.651Z" tests="5" failures="0" errors="0" time="0.002">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.002" classname="06RobustezYDatosSensiblesSec11JsonMalFormado"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.002" classname="06RobustezYDatosSensiblesSec11JsonMalFormado"/>
+    <testcase name="Status 400" time="0.002" classname="06RobustezYDatosSensiblesSec11JsonMalFormado"/>
+    <testcase name="Código de error INVALID_JSON" time="0.002" classname="06RobustezYDatosSensiblesSec11JsonMalFormado"/>
+    <testcase name="La respuesta no expone hash, stack ni SQL" time="0.002" classname="06RobustezYDatosSensiblesSec11JsonMalFormado"/>
+  </testsuite>
+  <testsuite name="06 Robustez y datos sensibles / SEC-12 Cuerpo mayor a 100 KB" id="1f203ee5-ec12-445c-99f7-badf9a62e5ff" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.003">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.003" classname="06RobustezYDatosSensiblesSec12CuerpoMayorA100Kb"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.003" classname="06RobustezYDatosSensiblesSec12CuerpoMayorA100Kb"/>
+    <testcase name="Status 413" time="0.003" classname="06RobustezYDatosSensiblesSec12CuerpoMayorA100Kb"/>
+    <testcase name="Código de error PAYLOAD_TOO_LARGE" time="0.003" classname="06RobustezYDatosSensiblesSec12CuerpoMayorA100Kb"/>
+  </testsuite>
+  <testsuite name="06 Robustez y datos sensibles / SEC-13 Cabeceras de seguridad" id="092fd857-d42a-44dc-81cc-7cac8ac9c727" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.086">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.086" classname="06RobustezYDatosSensiblesSec13CabecerasDeSeguridad"/>
+    <testcase name="Status 200" time="0.086" classname="06RobustezYDatosSensiblesSec13CabecerasDeSeguridad"/>
+    <testcase name="No expone X-Powered-By" time="0.086" classname="06RobustezYDatosSensiblesSec13CabecerasDeSeguridad"/>
+    <testcase name="X-Content-Type-Options: nosniff" time="0.086" classname="06RobustezYDatosSensiblesSec13CabecerasDeSeguridad"/>
+  </testsuite>
+  <testsuite name="06 Robustez y datos sensibles / API-36 Ruta inexistente" id="1f35801d-2489-4d4a-9ea5-f5bfba9e34f6" timestamp="2026-11-12T04:37:48.651Z" tests="4" failures="0" errors="0" time="0.001">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.001" classname="06RobustezYDatosSensiblesApi36RutaInexistente"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.001" classname="06RobustezYDatosSensiblesApi36RutaInexistente"/>
+    <testcase name="Status 404" time="0.001" classname="06RobustezYDatosSensiblesApi36RutaInexistente"/>
+    <testcase name="Código de error NOT_FOUND" time="0.001" classname="06RobustezYDatosSensiblesApi36RutaInexistente"/>
+  </testsuite>
+  <testsuite name="07 Limpieza / API-37 Integrante no admin intenta eliminar el grupo" id="4603d00e-ba2f-4cfd-a772-f2fcdad3cfe3" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.172">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.172" classname="07LimpiezaApi37IntegranteNoAdminIntentaEliminarElGrupo"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.172" classname="07LimpiezaApi37IntegranteNoAdminIntentaEliminarElGrupo"/>
+    <testcase name="Status 403" time="0.172" classname="07LimpiezaApi37IntegranteNoAdminIntentaEliminarElGrupo"/>
+  </testsuite>
+  <testsuite name="07 Limpieza / API-38 Admin elimina el grupo" id="26f72eef-6b91-405b-b722-dc19a674d162" timestamp="2026-11-12T04:37:48.651Z" tests="2" failures="0" errors="0" time="0.343">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.343" classname="07LimpiezaApi38AdminEliminaElGrupo"/>
+    <testcase name="Status 204" time="0.343" classname="07LimpiezaApi38AdminEliminaElGrupo"/>
+  </testsuite>
+  <testsuite name="07 Limpieza / API-39 El grupo eliminado ya no existe" id="04693329-6196-43a5-91b9-8f7c9c99be40" timestamp="2026-11-12T04:37:48.651Z" tests="3" failures="0" errors="0" time="0.174">
+    <testcase name="RNF-01 Tiempo de respuesta &lt; 3000 ms" time="0.174" classname="07LimpiezaApi39ElGrupoEliminadoYaNoExiste"/>
+    <testcase name="RNF-02 Error con formato { error: { code, message } }" time="0.174" classname="07LimpiezaApi39ElGrupoEliminadoYaNoExiste"/>
+    <testcase name="Status 404" time="0.174" classname="07LimpiezaApi39ElGrupoEliminadoYaNoExiste"/>
+  </testsuite>
+</testsuites>

@@ -9,6 +9,7 @@ export interface Notice {
     | "payment-reported"
     | "payment-confirmed"
     | "payment-rejected"
+    | "payment-reminder"
   message: string
   link?: string
 }

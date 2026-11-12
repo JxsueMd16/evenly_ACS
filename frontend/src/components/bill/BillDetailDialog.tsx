@@ -18,7 +18,7 @@ import { useFormatCurrency } from "@/store/settingsStore"
 const SPLIT_LABEL: Record<Expense["splitType"], string> = {
   equal: "Partes iguales",
   items: "Por ítems (cada quien paga lo que consumió)",
-  itemized: "Montos personalizados",
+  itemized: "Montos exactos",
 }
 
 /** Detalle de una cuenta: ítems, cómo se cobró y qué le toca a cada quien. */
@@ -66,7 +66,7 @@ export function BillDetailDialog({
               <DialogTitle className="truncate">{expense.description}</DialogTitle>
               <DialogDescription>
                 {getCategory(expense.category).label} ·{" "}
-                {new Date(expense.createdAt).toLocaleDateString("es-MX", { day: "numeric", month: "long" })}
+                {new Date(expense.createdAt).toLocaleDateString("es-GT", { day: "numeric", month: "long" })}
               </DialogDescription>
             </div>
           </div>
@@ -77,6 +77,11 @@ export function BillDetailDialog({
             <div>
               <p className="text-xs text-muted-foreground">Total</p>
               <p className="text-2xl font-bold text-foreground">{formatCurrency(expense.amount)}</p>
+              {expense.tip > 0 && (
+                <p className="text-xs text-muted-foreground" data-testid="detail-tip">
+                  Subtotal {formatCurrency(expense.amount - expense.tip)} + propina {formatCurrency(expense.tip)}
+                </p>
+              )}
             </div>
             <p className="text-right text-xs text-muted-foreground">
               Pagó

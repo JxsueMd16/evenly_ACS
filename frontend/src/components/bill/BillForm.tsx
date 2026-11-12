@@ -1,5 +1,5 @@
 import { useMemo, useState, type FormEvent, type ReactNode } from "react"
-import { Check, Loader2, Minus, Plus, Trash2, Users } from "lucide-react"
+import { Check, ChevronDown, Loader2, Minus, Plus, Trash2, Users, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -10,16 +10,17 @@ import { CategoryPicker } from "@/components/CategoryPicker"
 import {
   assignedUnits,
   lineSubtotalCents,
+  MAX_TIP_PERCENT,
   previewBill,
   sanitizeAmount,
   toCents,
   type DraftLine,
 } from "@/lib/bill"
 import type { BillInput } from "@/lib/api"
-import type { CategoryId } from "@/lib/categories"
-import type { User } from "@/lib/types"
+import { getCategory, type CategoryId } from "@/lib/categories"
+import type { SplitType, User } from "@/lib/types"
 import { cn } from "@/lib/utils"
-import { useFormatCurrency, useSettingsStore } from "@/store/settingsStore"
+import { useFormatCurrency } from "@/store/settingsStore"
 
 let lineCounter = 0
 const newLine = (): DraftLine => ({
@@ -31,13 +32,22 @@ const newLine = (): DraftLine => ({
   assignments: {},
 })
 
+const TIP_PRESETS = [5, 10, 15]
+
 const firstName = (user: User, currentUserId: string) => (user.id === currentUserId ? "Tú" : user.name.split(" ")[0])
 const fullName = (user: User, currentUserId: string) => (user.id === currentUserId ? "Tú" : user.name)
 
+/** "Comida · 11 nov": nombre que se usa si el usuario no escribe uno. */
+function defaultBillName(category: CategoryId) {
+  const date = new Date().toLocaleDateString("es-GT", { day: "numeric", month: "short" }).replace(".", "")
+  return `${getCategory(category).label} · ${date}`
+}
+
 /**
- * Formulario de una cuenta: tipo, nombre, participantes, quién pagó, ítems
- * (cantidad × precio) y cómo se cobra (partes iguales o por ítems). Lo usan
- * las cuentas de un grupo y las cuentas rápidas.
+ * Formulario de una cuenta (UX-03). Abre listo para el caso más común: escribir
+ * el monto y guardar (pagó el usuario actual, partes iguales entre todos). Lo
+ * demás —ítems, montos exactos, propina, quién pagó, participantes— está a un
+ * toque, pero no estorba. Lo usan las cuentas de grupo y las de personas sueltas.
  */
 export function BillForm({
   members,
@@ -53,45 +63,56 @@ export function BillForm({
   onSubmit: (bill: BillInput) => Promise<void>
 }) {
   const formatCurrency = useFormatCurrency()
-  const currency = useSettingsStore((s) => s.currency)
   const money = (cents: number) => formatCurrency(cents / 100)
 
   const [category, setCategory] = useState<CategoryId>(defaultCategory)
   const [name, setName] = useState("")
   const [participantIds, setParticipantIds] = useState<string[]>(() => members.map((m) => m.id))
   const [paidById, setPaidById] = useState(currentUserId)
+  const [detailed, setDetailed] = useState(false)
   const [lines, setLines] = useState<DraftLine[]>(() => [newLine()])
-  const [totalOnly, setTotalOnly] = useState(false)
-  const [totalOnlyAmount, setTotalOnlyAmount] = useState("")
-  const [splitType, setSplitType] = useState<"equal" | "items">("equal")
+  const [totalAmount, setTotalAmount] = useState("")
+  const [splitType, setSplitType] = useState<SplitType>("equal")
+  const [manual, setManual] = useState<Record<string, string>>({})
+  /** null = sin propina. */
+  const [tipPercent, setTipPercent] = useState<number | null>(null)
+  const [showMore, setShowMore] = useState(false)
   const [showErrors, setShowErrors] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const participants = members.filter((m) => participantIds.includes(m.id))
+  const payer = members.find((m) => m.id === paidById)
   const allSelected = participantIds.length === members.length
-  const effectiveSplit = totalOnly ? "equal" : splitType
-  const activeLines = useMemo(() => (totalOnly ? [] : lines), [totalOnly, lines])
+  const activeLines = useMemo(() => (detailed ? lines : []), [detailed, lines])
+  const manualCents = useMemo(
+    () => Object.fromEntries(Object.entries(manual).map(([id, v]) => [id, toCents(v)])),
+    [manual],
+  )
 
   const preview = useMemo(
     () =>
       previewBill({
-        splitType: effectiveSplit,
+        splitType,
         participantIds,
         lines: activeLines,
-        totalOnlyCents: toCents(totalOnlyAmount),
+        totalOnlyCents: toCents(totalAmount),
+        manualCents,
+        tipPercent: tipPercent ?? 0,
       }),
-    [effectiveSplit, participantIds, activeLines, totalOnlyAmount],
+    [splitType, participantIds, activeLines, totalAmount, manualCents, tipPercent],
   )
 
   const problems = [...preview.problems]
-  if (!name.trim()) problems.unshift("Ponle un nombre a la cuenta.")
   activeLines.forEach((line, i) => {
     if (!line.description.trim() || toCents(line.unitPrice) <= 0) {
       problems.push(`Completa la descripción y el precio del ítem ${i + 1}.`)
     }
   })
   if (preview.totalCents > 100_000_000) problems.push("El total no puede ser mayor a 1,000,000.")
+
+  const manualAssigned = participantIds.reduce((s, id) => s + (manualCents[id] ?? 0), 0)
+  const manualDiff = preview.subtotalCents - manualAssigned
 
   function toggleParticipant(id: string) {
     setParticipantIds((prev) => (prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]))
@@ -105,6 +126,27 @@ export function BillForm({
     updateLine(line.key, { assignments: { ...line.assignments, [userId]: Math.max(0, quantity) } })
   }
 
+  function changeSplit(value: SplitType) {
+    setSplitType(value)
+    // Dividir por ítems necesita los ítems: se abre el detalle automáticamente.
+    if (value === "items") setDetailed(true)
+  }
+
+  function toggleDetailed() {
+    // Sin ítems no se puede dividir por ítems: se vuelve a partes iguales.
+    if (detailed && splitType === "items") setSplitType("equal")
+    setDetailed(!detailed)
+  }
+
+  const splitSummary =
+    splitType === "items"
+      ? "cada quien paga lo suyo"
+      : splitType === "itemized"
+        ? "montos exactos"
+        : participants.length > 0 && preview.totalCents > 0
+          ? `partes iguales entre ${participants.length} · ${money(Math.round(preview.totalCents / participants.length))} c/u`
+          : `partes iguales entre ${participants.length}`
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError(null)
@@ -113,24 +155,27 @@ export function BillForm({
       return
     }
     const bill: BillInput = {
-      description: name.trim(),
+      description: name.trim() || defaultBillName(category),
       category,
       paidById,
-      splitType: effectiveSplit,
-      ...(totalOnly && { amount: toCents(totalOnlyAmount) / 100 }),
+      splitType,
+      ...(tipPercent ? { tipPercent } : {}),
+      ...(!detailed && { amount: toCents(totalAmount) / 100 }),
       lines: activeLines.map((l) => ({
         description: l.description.trim(),
         quantity: l.quantity,
         unitPrice: toCents(l.unitPrice) / 100,
         shared: l.shared,
         assignments:
-          effectiveSplit === "items"
+          splitType === "items"
             ? participantIds
                 .filter((id) => (l.assignments[id] ?? 0) > 0)
                 .map((userId) => ({ userId, quantity: l.shared ? 1 : l.assignments[userId]! }))
             : [],
       })),
-      participants: participantIds.map((userId) => ({ userId })),
+      participants: participantIds.map((userId) =>
+        splitType === "itemized" ? { userId, amount: (manualCents[userId] ?? 0) / 100 } : { userId },
+      ),
     }
     setIsSubmitting(true)
     try {
@@ -143,102 +188,17 @@ export function BillForm({
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5 px-5">
-      <Section title="Tipo de cuenta">
-        <CategoryPicker value={category} onChange={setCategory} />
-      </Section>
-
-      <Section title="Nombre de la cuenta" htmlFor="bill-name">
-        <Input
-          id="bill-name"
-          placeholder="Ej. Almuerzo del sábado"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          maxLength={100}
-        />
-      </Section>
-
+      {/* 1. Cuánto: lo único obligatorio en el caso común. */}
       <Section
-        title="Participantes"
+        title={detailed ? "Ítems" : "¿Cuánto fue?"}
+        htmlFor={detailed ? undefined : "bill-total"}
         action={
-          <button
-            type="button"
-            onClick={() => setParticipantIds(allSelected ? [currentUserId] : members.map((m) => m.id))}
-            className="flex items-center gap-1 text-xs font-semibold text-primary"
-          >
-            <Users className="size-3.5" /> {allSelected ? "Solo yo" : "Todos"}
+          <button type="button" onClick={toggleDetailed} className="text-xs font-semibold text-primary">
+            {detailed ? "Solo ingresar el total" : "Detallar por ítems"}
           </button>
         }
       >
-        <div className="flex flex-wrap gap-2">
-          {members.map((member) => {
-            const selected = participantIds.includes(member.id)
-            return (
-              <button
-                key={member.id}
-                type="button"
-                onClick={() => toggleParticipant(member.id)}
-                aria-pressed={selected}
-                aria-label={`Participante ${member.name}`}
-                className={cn(
-                  "flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 text-sm transition-colors",
-                  selected ? "border-primary bg-primary/10 text-foreground" : "border-border text-muted-foreground",
-                )}
-              >
-                <UserAvatar user={member} className="size-7" />
-                {firstName(member, currentUserId)}
-                {selected && <Check className="size-3.5 text-primary" strokeWidth={3} />}
-              </button>
-            )
-          })}
-        </div>
-      </Section>
-
-      <Section title="¿Quién pagó?">
-        <div className="flex gap-3 overflow-x-auto py-1">
-          {members.map((member) => (
-            <button
-              type="button"
-              key={member.id}
-              onClick={() => setPaidById(member.id)}
-              aria-pressed={paidById === member.id}
-              aria-label={`Pagó ${member.name}`}
-              className="flex flex-col items-center gap-1"
-            >
-              <UserAvatar
-                user={member}
-                className={cn("size-11 ring-2 ring-transparent", paidById === member.id && "ring-primary")}
-              />
-              <span className="text-[11px] text-muted-foreground">{firstName(member, currentUserId)}</span>
-            </button>
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        title={totalOnly ? "Monto total" : "Ítems"}
-        action={
-          <button
-            type="button"
-            onClick={() => setTotalOnly((v) => !v)}
-            className="text-xs font-semibold text-primary"
-          >
-            {totalOnly ? "Detallar por ítems" : "Solo ingresar el total"}
-          </button>
-        }
-      >
-        {totalOnly ? (
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-bold text-muted-foreground">{currency}</span>
-            <Input
-              id="bill-total"
-              inputMode="decimal"
-              placeholder="0.00"
-              value={totalOnlyAmount}
-              onChange={(e) => setTotalOnlyAmount(sanitizeAmount(e.target.value))}
-              className="text-lg font-semibold"
-            />
-          </div>
-        ) : (
+        {detailed ? (
           <div className="flex flex-col gap-2">
             {lines.map((line, index) => (
               <div key={line.key} className="flex flex-col gap-2 rounded-2xl border border-border p-2.5">
@@ -253,9 +213,11 @@ export function BillForm({
                   />
                   <button
                     type="button"
-                    onClick={() => setLines((prev) => (prev.length > 1 ? prev.filter((l) => l.key !== line.key) : [newLine()]))}
+                    onClick={() =>
+                      setLines((prev) => (prev.length > 1 ? prev.filter((l) => l.key !== line.key) : [newLine()]))
+                    }
                     aria-label={`Quitar ítem ${index + 1}`}
-                    className="flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                    className="flex size-11 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                   >
                     <Trash2 className="size-4" />
                   </button>
@@ -268,19 +230,14 @@ export function BillForm({
                     label={`Cantidad ítem ${index + 1}`}
                     onChange={(quantity) => updateLine(line.key, { quantity })}
                   />
-                  <div className="relative">
-                    <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                      {currency}
-                    </span>
-                    <Input
-                      aria-label={`Precio ítem ${index + 1}`}
-                      inputMode="decimal"
-                      placeholder="c/u"
-                      value={line.unitPrice}
-                      onChange={(e) => updateLine(line.key, { unitPrice: sanitizeAmount(e.target.value) })}
-                      className="h-9 pl-11 text-right text-sm"
-                    />
-                  </div>
+                  <Input
+                    aria-label={`Precio ítem ${index + 1}`}
+                    inputMode="decimal"
+                    placeholder="Precio c/u"
+                    value={line.unitPrice}
+                    onChange={(e) => updateLine(line.key, { unitPrice: sanitizeAmount(e.target.value) })}
+                    className="h-9 text-right text-sm"
+                  />
                   <span className="min-w-16 text-right text-sm font-semibold text-foreground">
                     {money(lineSubtotalCents(line))}
                   </span>
@@ -291,28 +248,143 @@ export function BillForm({
               <Plus /> Agregar ítem
             </Button>
           </div>
+        ) : (
+          <Input
+            id="bill-total"
+            inputMode="decimal"
+            autoFocus
+            autoComplete="off"
+            placeholder="0.00"
+            value={totalAmount}
+            onChange={(e) => setTotalAmount(sanitizeAmount(e.target.value))}
+            className="h-14 text-center text-3xl font-bold"
+          />
         )}
-        <div className="mt-1 flex items-center justify-between rounded-2xl bg-muted/60 px-4 py-3">
-          <span className="text-sm font-semibold text-foreground">Total</span>
-          <span data-testid="bill-total" className="text-lg font-bold text-foreground">
-            {money(preview.totalCents)}
-          </span>
+
+        {/* Propina (UX-05) */}
+        {tipPercent === null ? (
+          <button
+            type="button"
+            onClick={() => setTipPercent(10)}
+            className="flex items-center gap-1 self-start py-1 text-xs font-semibold text-primary"
+          >
+            <Plus className="size-3.5" /> Agregar propina
+          </button>
+        ) : (
+          <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-border p-2.5" data-testid="tip-row">
+            <span className="text-sm font-medium text-foreground">Propina</span>
+            {TIP_PRESETS.map((p) => (
+              <button
+                key={p}
+                type="button"
+                aria-pressed={tipPercent === p}
+                onClick={() => setTipPercent(p)}
+                className={cn(
+                  "h-8 rounded-full border px-3 text-xs",
+                  tipPercent === p ? "border-primary bg-primary/10 font-semibold text-primary" : "border-border text-muted-foreground",
+                )}
+              >
+                {p} %
+              </button>
+            ))}
+            <div className="flex items-center gap-1">
+              <Input
+                aria-label="Porcentaje de propina"
+                inputMode="numeric"
+                value={String(tipPercent)}
+                onChange={(e) => {
+                  const n = Number(e.target.value.replace(/\D/g, "").slice(0, 2)) || 0
+                  setTipPercent(Math.min(MAX_TIP_PERCENT, n))
+                }}
+                className="h-8 w-14 text-center text-sm"
+              />
+              <span className="text-xs text-muted-foreground">%</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setTipPercent(null)}
+              aria-label="Quitar propina"
+              className="ml-auto flex size-8 items-center justify-center rounded-full text-muted-foreground hover:bg-muted"
+            >
+              <X className="size-4" />
+            </button>
+          </div>
+        )}
+
+        <div className="flex flex-col gap-1 rounded-2xl bg-muted/60 px-4 py-3">
+          {preview.tipCents > 0 && (
+            <>
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Subtotal</span>
+                <span data-testid="bill-subtotal">{money(preview.subtotalCents)}</span>
+              </div>
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Propina ({tipPercent} %)</span>
+                <span data-testid="bill-tip">{money(preview.tipCents)}</span>
+              </div>
+            </>
+          )}
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-foreground">Total</span>
+            <span data-testid="bill-total" className="text-lg font-bold text-foreground">
+              {money(preview.totalCents)}
+            </span>
+          </div>
         </div>
       </Section>
 
-      <Section title="¿Cómo se cobra?">
-        <ToggleGroup
-          type="single"
-          value={effectiveSplit}
-          onValueChange={(value) => value && setSplitType(value as "equal" | "items")}
-        >
+      {/* 2. Nombre: opcional. */}
+      <Section title="Nombre (opcional)" htmlFor="bill-name">
+        <Input
+          id="bill-name"
+          placeholder={defaultBillName(category)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          maxLength={100}
+        />
+      </Section>
+
+      {/* 3. Cómo se cobra. */}
+      <Section title="¿Cómo se divide?">
+        <ToggleGroup type="single" value={splitType} onValueChange={(value) => value && changeSplit(value as SplitType)}>
           <ToggleGroupItem value="equal">Partes iguales</ToggleGroupItem>
-          <ToggleGroupItem value="items" disabled={totalOnly}>
-            Por ítems
-          </ToggleGroupItem>
+          <ToggleGroupItem value="items">Por ítems</ToggleGroupItem>
+          <ToggleGroupItem value="itemized">Montos exactos</ToggleGroupItem>
         </ToggleGroup>
 
-        {effectiveSplit === "items" && (
+        {splitType === "itemized" && (
+          <Card className="flex flex-col gap-1 p-3" data-testid="manual-amounts">
+            <p className="text-xs text-muted-foreground">
+              Escribe cuánto le toca a cada quien{preview.tipCents > 0 ? " (sin propina; se agrega aparte)" : ""}.
+            </p>
+            {participants.map((p) => (
+              <div key={p.id} className="flex items-center gap-2 py-1">
+                <UserAvatar user={p} className="size-7" />
+                <span className="min-w-0 flex-1 truncate text-sm text-foreground">{fullName(p, currentUserId)}</span>
+                <Input
+                  aria-label={`Monto de ${p.name}`}
+                  inputMode="decimal"
+                  placeholder="0.00"
+                  value={manual[p.id] ?? ""}
+                  onChange={(e) => setManual((prev) => ({ ...prev, [p.id]: sanitizeAmount(e.target.value) }))}
+                  className="h-9 w-28 text-right text-sm"
+                />
+              </div>
+            ))}
+            <p
+              data-testid="manual-status"
+              className={cn("text-right text-xs font-semibold", manualDiff === 0 ? "text-success" : "text-destructive")}
+            >
+              {manualDiff === 0
+                ? "Cuadra con el total"
+                : manualDiff > 0
+                  ? `Faltan ${money(manualDiff)}`
+                  : `Sobran ${money(-manualDiff)}`}
+            </p>
+          </Card>
+        )}
+
+        {splitType === "items" && (
           <div className="mt-2 flex flex-col gap-3">
             <p className="text-xs text-muted-foreground">
               Indica cuántas unidades consumió cada quien. Si algo se compartió (una pizza, una jarra), márcalo como
@@ -357,8 +429,10 @@ export function BillForm({
                             aria-label={`${title}: compartido con ${p.name}`}
                             onClick={() => setAssignment(line, p.id, on ? 0 : 1)}
                             className={cn(
-                              "rounded-full border px-3 py-1 text-xs",
-                              on ? "border-primary bg-primary/10 font-semibold text-primary" : "border-border text-muted-foreground",
+                              "h-8 rounded-full border px-3 text-xs",
+                              on
+                                ? "border-primary bg-primary/10 font-semibold text-primary"
+                                : "border-border text-muted-foreground",
                             )}
                           >
                             {firstName(p, currentUserId)}
@@ -373,7 +447,9 @@ export function BillForm({
                         return (
                           <div key={p.id} className="flex items-center gap-2 py-1.5">
                             <UserAvatar user={p} className="size-7" />
-                            <span className="min-w-0 flex-1 truncate text-sm text-foreground">{fullName(p, currentUserId)}</span>
+                            <span className="min-w-0 flex-1 truncate text-sm text-foreground">
+                              {fullName(p, currentUserId)}
+                            </span>
                             <Stepper
                               value={qty}
                               min={0}
@@ -404,22 +480,112 @@ export function BillForm({
         )}
       </Section>
 
-      <Section title="Resumen">
-        <Card className="flex flex-col divide-y divide-border p-1" data-testid="bill-summary">
-          {participants.map((p) => (
-            <div key={p.id} className="flex items-center gap-3 p-3">
-              <UserAvatar user={p} className="size-8" />
-              <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">{fullName(p, currentUserId)}</span>
-              <span className="text-sm font-bold text-foreground" data-testid={`share-${p.id}`}>
-                {money(preview.shares.get(p.id) ?? 0)}
-              </span>
-            </div>
-          ))}
-          {participants.length === 0 && (
-            <p className="p-3 text-sm text-muted-foreground">Selecciona quiénes participan en la cuenta.</p>
-          )}
-        </Card>
-      </Section>
+      {/* 4. Quién pagó / participantes / categoría: casi nunca cambian. */}
+      <section className="flex flex-col gap-3">
+        <button
+          type="button"
+          onClick={() => setShowMore((v) => !v)}
+          aria-expanded={showMore}
+          className="flex items-center gap-3 rounded-2xl border border-border p-3 text-left"
+        >
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-medium text-foreground" data-testid="bill-who">
+              {payer?.id === currentUserId ? "Pagaste tú" : `Pagó ${payer?.name.split(" ")[0] ?? "—"}`} · {splitSummary}
+            </span>
+            <span className="block text-xs text-muted-foreground">Quién pagó, participantes y categoría</span>
+          </span>
+          <span className="flex items-center gap-1 text-xs font-semibold text-primary">
+            {showMore ? "Ocultar" : "Cambiar"}
+            <ChevronDown className={cn("size-4 transition-transform", showMore && "rotate-180")} />
+          </span>
+        </button>
+
+        {showMore && (
+          <div className="flex flex-col gap-5">
+            <Section title="¿Quién pagó?">
+              <div className="flex gap-3 overflow-x-auto py-1">
+                {members.map((member) => (
+                  <button
+                    type="button"
+                    key={member.id}
+                    onClick={() => setPaidById(member.id)}
+                    aria-pressed={paidById === member.id}
+                    aria-label={`Pagó ${member.name}`}
+                    className="flex flex-col items-center gap-1"
+                  >
+                    <UserAvatar
+                      user={member}
+                      className={cn("size-11 ring-2 ring-transparent", paidById === member.id && "ring-primary")}
+                    />
+                    <span className="text-[11px] text-muted-foreground">{firstName(member, currentUserId)}</span>
+                  </button>
+                ))}
+              </div>
+            </Section>
+
+            <Section
+              title="Participantes"
+              action={
+                <button
+                  type="button"
+                  onClick={() => setParticipantIds(allSelected ? [currentUserId] : members.map((m) => m.id))}
+                  className="flex items-center gap-1 text-xs font-semibold text-primary"
+                >
+                  <Users className="size-3.5" /> {allSelected ? "Solo yo" : "Todos"}
+                </button>
+              }
+            >
+              <div className="flex flex-wrap gap-2">
+                {members.map((member) => {
+                  const selected = participantIds.includes(member.id)
+                  return (
+                    <button
+                      key={member.id}
+                      type="button"
+                      onClick={() => toggleParticipant(member.id)}
+                      aria-pressed={selected}
+                      aria-label={`Participante ${member.name}`}
+                      className={cn(
+                        "flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 text-sm transition-colors",
+                        selected
+                          ? "border-primary bg-primary/10 text-foreground"
+                          : "border-border text-muted-foreground",
+                      )}
+                    >
+                      <UserAvatar user={member} className="size-7" />
+                      {firstName(member, currentUserId)}
+                      {selected && <Check className="size-3.5 text-primary" strokeWidth={3} />}
+                    </button>
+                  )
+                })}
+              </div>
+            </Section>
+
+            <Section title="Categoría">
+              <CategoryPicker value={category} onChange={setCategory} />
+            </Section>
+          </div>
+        )}
+      </section>
+
+      {/* 5. Cuánto le toca a cada quien. */}
+      {preview.totalCents > 0 && participants.length > 0 && (
+        <Section title="A cada quien le toca">
+          <Card className="flex flex-col divide-y divide-border p-1" data-testid="bill-summary">
+            {participants.map((p) => (
+              <div key={p.id} className="flex items-center gap-3 p-3">
+                <UserAvatar user={p} className="size-8" />
+                <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">
+                  {fullName(p, currentUserId)}
+                </span>
+                <span className="text-sm font-bold text-foreground" data-testid={`share-${p.id}`}>
+                  {money(preview.shares.get(p.id) ?? 0)}
+                </span>
+              </div>
+            ))}
+          </Card>
+        </Section>
+      )}
 
       {showErrors && problems.length > 0 && (
         <ul role="alert" className="flex flex-col gap-1 text-sm text-destructive">
@@ -480,7 +646,11 @@ function Stepper({
   onChange: (value: number) => void
 }) {
   return (
-    <div className="flex h-9 items-center justify-between rounded-xl border border-input bg-card" aria-label={label} role="group">
+    <div
+      className="flex h-9 items-center justify-between rounded-xl border border-input bg-card"
+      aria-label={label}
+      role="group"
+    >
       <button
         type="button"
         onClick={() => onChange(Math.max(min, value - 1))}
