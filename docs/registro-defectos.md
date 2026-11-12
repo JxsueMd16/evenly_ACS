@@ -1,6 +1,6 @@
 # Registro de defectos — Evenly
 
-**Ciclo:** Avance 2 · **Última actualización:** 2026-09-27
+**Ciclo:** Entrega final · **Última actualización:** 2026-11-11
 
 ## Escalas
 
@@ -26,6 +26,20 @@
 | DEF-003 | "Agregar gasto" rechaza cualquier monto válido | Crítica | Alta | Frontend (`AddExpensePage.tsx`) | E2E-07 y E2E-08 (Cypress) | Cerrado |
 | DEF-004 | Política de contraseña débil (4 caracteres) y distinta entre frontend y backend | Media | Media | Prototipo (`RegisterPage.tsx`, `mockApi.ts`) | Revisión estática | Cerrado |
 | DEF-005 | La división por ítem acepta hasta 0.05 de diferencia con el total | Media | Media | Prototipo (`AddExpensePage.tsx`, `mockApi.ts`) | Revisión estática | Cerrado |
+| DEF-006 | "Ayuda y preguntas frecuentes" en Perfil no hace nada | Baja | Media | Frontend (`ProfilePage.tsx`) | Evaluación heurística de UX | Cerrado |
+| DEF-007 | Los integrantes de cada grupo son ilegibles en "¿Con quién fue?" | Baja | Media | Frontend (`AddExpenseEntryPage.tsx`, código nuevo de UX) | Prueba exploratoria en móvil | Cerrado |
+| DEF-008 | El frontend en producción no envía cabeceras de seguridad (CSP, anti-clickjacking, nosniff) | Media | Alta | Configuración de Vercel (`frontend/vercel.json`) | Revisión de cabeceras HTTP | Corregido (falta verificar en producción con SEC-37) |
+| DEF-009 | Contraste de color insuficiente en textos secundarios, montos y barra de navegación | Media | Alta | Frontend (`index.css`, `BottomNav.tsx`) | ACC-01 (axe-core, automatizado) | Cerrado |
+| DEF-010 | Nombres accesibles que no coinciden con el texto visible | Baja | Media | Frontend (`BottomNav.tsx`, `HomePage.tsx`, `GroupDetailPage.tsx`) | ACC-01 (axe-core, automatizado) | Cerrado |
+
+### Defectos por ronda
+
+| Ronda | Defectos nuevos | Comentario |
+| --- | --- | --- |
+| R1 | DEF-001 a DEF-005 | 2 por pruebas automatizadas (SEC-14, E2E-07/08) y 3 por revisión estática del prototipo |
+| R2 a R7 | 0 | Las suites de cada ronda (social, notificaciones, cuentas por ítems y pagos) pasaron al primer intento; ver evidencias |
+| R8 (UX) | DEF-006, DEF-007, DEF-008 | Encontrados con técnicas no automatizadas: evaluación heurística, exploratoria y revisión de cabeceras |
+| R9 (no funcionales) | DEF-009, DEF-010 | Encontrados por la auditoría automática de accesibilidad (ACC-01); corregidos y verificados en R9b |
 
 ---
 
@@ -154,6 +168,154 @@
 **Corrección:** el backend compara en centavos y exige igualdad exacta (400 `SPLIT_MISMATCH`). El frontend calcula el restante en centavos y solo deja guardar cuando es exactamente 0.
 
 **Regresión:** API-22 (diferencia de 0.01) y E2E-08 — **Pasan**.
+
+---
+
+## DEF-006 — "Ayuda y preguntas frecuentes" en Perfil no hace nada
+
+| Campo | Valor |
+| --- | --- |
+| Severidad / Prioridad | Baja / Media (no bloquea nada, pero el usuario que busca ayuda no la encuentra) |
+| Componente | `frontend/src/pages/ProfilePage.tsx` |
+| Versión | `main` en el commit `66d329f` (versión del Avance 2) |
+| Detectado | 2026-11-11, evaluación heurística de UX (heurística de Nielsen n.º 10, "Ayuda y documentación") |
+| Requisito | RNF-03, UX-10 |
+
+**Pasos para reproducir**
+
+1. Iniciar sesión e ir a Perfil.
+2. Tocar "Ayuda y preguntas frecuentes".
+
+**Resultado esperado:** se abre alguna forma de ayuda.
+**Resultado obtenido:** no pasa nada. El botón no tenía `onClick`.
+
+**Causa raíz:** el elemento se maquetó como marcador de posición y nunca se conectó a una pantalla.
+
+**Corrección:** el botón se renombró a "Cómo funciona Evenly" y abre la guía de bienvenida (`WelcomeTour.tsx`), que
+también se muestra al crear la cuenta (UX-10). Commit `c91fa22`.
+
+**Regresión:** E2E-34 (abre la guía desde Perfil, la recorre y verifica que no reaparece al recargar) — **Pasa**
+(`evidencias/cypress-ronda8b-regresion-def006.txt`). E2E-01 cubre la guía al registrarse.
+
+---
+
+## DEF-007 — Los integrantes de cada grupo son ilegibles en "¿Con quién fue?"
+
+| Campo | Valor |
+| --- | --- |
+| Severidad / Prioridad | Baja / Media |
+| Componente | `frontend/src/pages/groups/AddExpenseEntryPage.tsx` |
+| Versión | Rama `feature/ux-mejoras` antes del merge (código nuevo de UX-02) |
+| Detectado | 2026-11-11, prueba exploratoria en el navegador con viewport móvil (375 × 812) y la cuenta demo |
+| Requisito | RNF-03, UX-02 |
+
+**Pasos para reproducir**
+
+1. Iniciar sesión con una cuenta que tenga grupos de 3 o más personas.
+2. Tocar el botón "+".
+
+**Resultado esperado:** en cada tarjeta de grupo se distingue con quién es el grupo.
+**Resultado obtenido:** los avatares de 20 px con iniciales se encimaban y no se podían leer.
+
+**Causa raíz:** se reutilizó la fila de avatares de Inicio con un tamaño menor sin comprobarla en pantalla.
+
+**Corrección:** la tarjeta muestra los nombres de los demás integrantes ("Ana, Kevin") en texto. Se corrigió antes
+del merge a `main`.
+
+**Regresión:** E2E-27 (flujo con personas sueltas en la misma pantalla) — **Pasa**; revisión visual en móvil — **OK**.
+
+**Lección aprendida:** las pruebas automatizadas verifican que los elementos existen, no que se puedan leer. La
+revisión visual en el tamaño real del dispositivo sigue siendo necesaria.
+
+---
+
+## DEF-008 — El frontend en producción no envía cabeceras de seguridad
+
+| Campo | Valor |
+| --- | --- |
+| Severidad / Prioridad | Media / Alta (no hay explotación directa, pero sin CSP un XSS podría leer el token de sesión guardado en `localStorage`, y la página se puede incrustar en otro sitio) |
+| Componente | `frontend/vercel.json` (configuración del hosting) |
+| Versión | Producción `https://evenly-acs.vercel.app` (commit `504f26e`) |
+| Detectado | 2026-11-11, revisión de cabeceras HTTP con `curl -I` |
+| Requisito | RNF-06 |
+
+**Pasos para reproducir**
+
+1. `curl -I https://evenly-acs.vercel.app/login`
+
+**Resultado esperado:** como en la API (que usa helmet): `Content-Security-Policy`, `X-Frame-Options` o
+`frame-ancestors`, `X-Content-Type-Options: nosniff`, `Referrer-Policy` y `Permissions-Policy`.
+**Resultado obtenido:** solo `Strict-Transport-Security`, que Vercel agrega por defecto.
+
+**Causa raíz:** `vercel.json` solo define la reescritura de rutas de la SPA; no tiene un bloque `headers`.
+
+**Corrección (ronda 9):** bloque `headers` en `frontend/vercel.json` con:
+
+- `Content-Security-Policy`: `default-src 'self'`, scripts solo propios, `connect-src` limitado al propio sitio y a la
+  API de Render (se verificó que el build de producción usa exactamente esa URL), `frame-ancestors 'none'`,
+  `object-src 'none'`, `base-uri` y `form-action` propios. Imágenes `data:`/`blob:` para la vista previa del comprobante.
+- `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`,
+  `Permissions-Policy` (sin cámara, micrófono, ubicación ni pagos) y `Cross-Origin-Opener-Policy: same-origin`.
+
+**Regresión:** SEC-37 (Playwright, proyecto `seguridad-prod`) revisa las cabeceras en `/login`, `/` y una ruta
+interna, y que la app cargue sin violaciones de la CSP. Se ejecuta contra producción después de desplegar:
+`pnpm pw:prod`. Estado: **pendiente de despliegue**.
+
+---
+
+## DEF-009 — Contraste de color insuficiente
+
+| Campo | Valor |
+| --- | --- |
+| Severidad / Prioridad | Media / Alta (texto difícil de leer para personas con baja visión o bajo el sol; incumple WCAG 2.1 AA 1.4.3) |
+| Componente | Tokens de color en `frontend/src/index.css`; etiquetas de `BottomNav.tsx` |
+| Versión | Rama `qa/ronda-9` antes de la corrección (igual a producción `504f26e`) |
+| Detectado | 2026-11-12, ACC-01 (axe-core en Playwright) falló en las 4 pantallas auditadas |
+| Requisito | RNF-08 |
+
+**Pasos para reproducir:** `pnpm exec playwright test --project=chromium playwright/tests/accesibilidad`.
+
+**Resultado esperado:** relación de contraste ≥ 4.5:1 para texto normal.
+**Resultado obtenido (axe):**
+
+| Elemento | Color | Fondo | Contraste |
+| --- | --- | --- | --- |
+| Texto secundario (`muted-foreground`): etiquetas, fechas, "tu parte" | `#64809c` | blanco / pastel | 3.65 – 4.11 |
+| Montos en rojo ("debes", "Le debes") | `#ef4444` | blanco | 3.76 |
+| Montos en verde ("te deben") | `#10b981` | blanco | 2.53 |
+| Etiquetas de la barra inferior (Inicio, Grupos…) | `#72aec5` | blanco | 2.44 |
+| Iniciales del avatar celeste | `#14789f` | `#e3f4fd` | 4.41 |
+
+**Causa raíz:** la paleta se eligió por estética (tonos pastel claros) sin verificar contraste.
+
+**Corrección:** `muted-foreground` `#4d6985` (5.0 – 5.7:1), `destructive` `#c62828` (5.6:1), `success` `#047857`
+(5.5:1), `sky-foreground` `#0f6a8c` (5.4:1) y la barra inferior usa `muted-foreground`. En modo oscuro se definieron
+rojo y verde claros propios para no perder contraste sobre fondo oscuro.
+
+**Regresión:** ACC-01 — axe 0 violaciones en las 4 pantallas y Lighthouse Accesibilidad 100
+(`evidencias/playwright-ronda9-compat-a11y.txt`, `evidencias/lighthouse-ronda9/`). CMP-01 (15/15) y la suite E2E
+(34/34) siguen pasando.
+
+---
+
+## DEF-010 — Nombres accesibles que no coinciden con el texto visible
+
+| Campo | Valor |
+| --- | --- |
+| Severidad / Prioridad | Baja / Media (afecta a quien usa control por voz: dice lo que ve y el botón no responde; WCAG 2.1 2.5.3) |
+| Componente | `BottomNav.tsx` (contadores), `HomePage.tsx` (avatar → Perfil), `GroupDetailPage.tsx` (tarjetas de cuentas) |
+| Versión | Rama `qa/ronda-9` antes de la corrección |
+| Detectado | 2026-11-12, ACC-01 (axe-core, regla `label-content-name-mismatch`) |
+| Requisito | RNF-08 |
+
+**Resultado obtenido:** el `aria-label` reemplazaba el texto visible. Por ejemplo, el avatar mostraba "PW" pero se
+llamaba "Perfil"; la tarjeta de una cuenta mostraba descripción, monto y fecha pero se llamaba solo "Ver cuenta X".
+
+**Corrección:** el nombre accesible sale del texto visible, y la información extra se agrega con texto solo para
+lectores de pantalla (`sr-only`): ", debes en 1 grupo" en la barra, "Perfil" junto al avatar (marcado `aria-hidden`) y
+"Ver cuenta" al inicio de cada tarjeta. Las pruebas de Cypress que usaban esos `aria-label` se actualizaron.
+
+**Regresión:** ACC-01 — 0 violaciones; E2E-14, E2E-24, E2E-26 y E2E-31 — **Pasan** (`evidencias/cypress-ronda9-regresion.txt`).
 
 ---
 

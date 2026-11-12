@@ -1,0 +1,27 @@
+$ playwright test --project=chromium --project=firefox --project=webkit --project=mobile-chrome --project=mobile-safari
+
+Running 17 tests using 3 workers
+
+[ACC-01] login: 21 reglas OK, 0 violaciones []
+  ok  2 [chromium] › playwright\tests\accesibilidad\acc-01-axe.spec.ts:23:3 › ACC-01 accesibilidad (axe-core, WCAG 2.1 AA) › ACC-01a inicio de sesión (628ms)
+  ok  1 [chromium] › playwright\tests\compat\cmp-01-flujo-principal.spec.ts:9:3 › CMP-01 compatibilidad del flujo principal › CMP-01a inicia sesión con la interfaz y llega a Inicio con montos en quetzales (1.3s)
+[ACC-01] inicio: 18 reglas OK, 0 violaciones []
+  ok  4 [chromium] › playwright\tests\compat\cmp-01-flujo-principal.spec.ts:21:3 › CMP-01 compatibilidad del flujo principal › CMP-01b registra un almuerzo con propina en 4 toques y ve su situación en el grupo (5.3s)
+[ACC-01] grupo: 20 reglas OK, 0 violaciones []
+  ok  5 [chromium] › playwright\tests\compat\cmp-01-flujo-principal.spec.ts:45:3 › CMP-01 compatibilidad del flujo principal › CMP-01c quien debe ve la deuda en Inicio y 'Pagar' abre el pago directo (6.3s)
+[ACC-01] formulario-gasto: 26 reglas OK, 0 violaciones []
+  ok  3 [chromium] › playwright\tests\accesibilidad\acc-01-axe.spec.ts:29:3 › ACC-01 accesibilidad (axe-core, WCAG 2.1 AA) › ACC-01b Inicio con deudas, detalle de grupo y formulario de gasto (8.4s)
+  ok  6 [firefox] › playwright\tests\compat\cmp-01-flujo-principal.spec.ts:9:3 › CMP-01 compatibilidad del flujo principal › CMP-01a inicia sesión con la interfaz y llega a Inicio con montos en quetzales (3.6s)
+  ok  9 [webkit] › playwright\tests\compat\cmp-01-flujo-principal.spec.ts:9:3 › CMP-01 compatibilidad del flujo principal › CMP-01a inicia sesión con la interfaz y llega a Inicio con montos en quetzales (1.3s)
+  ok  7 [firefox] › playwright\tests\compat\cmp-01-flujo-principal.spec.ts:21:3 › CMP-01 compatibilidad del flujo principal › CMP-01b registra un almuerzo con propina en 4 toques y ve su situación en el grupo (7.9s)
+  ok  8 [firefox] › playwright\tests\compat\cmp-01-flujo-principal.spec.ts:45:3 › CMP-01 compatibilidad del flujo principal › CMP-01c quien debe ve la deuda en Inicio y 'Pagar' abre el pago directo (8.1s)
+  ok 10 [webkit] › playwright\tests\compat\cmp-01-flujo-principal.spec.ts:21:3 › CMP-01 compatibilidad del flujo principal › CMP-01b registra un almuerzo con propina en 4 toques y ve su situación en el grupo (6.1s)
+  ok 12 [mobile-chrome] › playwright\tests\compat\cmp-01-flujo-principal.spec.ts:9:3 › CMP-01 compatibilidad del flujo principal › CMP-01a inicia sesión con la interfaz y llega a Inicio con montos en quetzales (979ms)
+  ok 11 [webkit] › playwright\tests\compat\cmp-01-flujo-principal.spec.ts:45:3 › CMP-01 compatibilidad del flujo principal › CMP-01c quien debe ve la deuda en Inicio y 'Pagar' abre el pago directo (5.6s)
+  ok 15 [mobile-safari] › playwright\tests\compat\cmp-01-flujo-principal.spec.ts:9:3 › CMP-01 compatibilidad del flujo principal › CMP-01a inicia sesión con la interfaz y llega a Inicio con montos en quetzales (1.1s)
+  ok 13 [mobile-chrome] › playwright\tests\compat\cmp-01-flujo-principal.spec.ts:45:3 › CMP-01 compatibilidad del flujo principal › CMP-01c quien debe ve la deuda en Inicio y 'Pagar' abre el pago directo (5.8s)
+  ok 14 [mobile-chrome] › playwright\tests\compat\cmp-01-flujo-principal.spec.ts:21:3 › CMP-01 compatibilidad del flujo principal › CMP-01b registra un almuerzo con propina en 4 toques y ve su situación en el grupo (5.8s)
+  ok 16 [mobile-safari] › playwright\tests\compat\cmp-01-flujo-principal.spec.ts:21:3 › CMP-01 compatibilidad del flujo principal › CMP-01b registra un almuerzo con propina en 4 toques y ve su situación en el grupo (5.7s)
+  ok 17 [mobile-safari] › playwright\tests\compat\cmp-01-flujo-principal.spec.ts:45:3 › CMP-01 compatibilidad del flujo principal › CMP-01c quien debe ve la deuda en Inicio y 'Pagar' abre el pago directo (5.4s)
+
+  17 passed (31.2s)

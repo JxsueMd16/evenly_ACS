@@ -1,0 +1,8 @@
+$ node playwright/lighthouse.mjs
+login              Accesibilidad 100  ·  Buenas prácticas 100  
+inicio             Accesibilidad 100  ·  Buenas prácticas 100  
+grupo              Accesibilidad 100  ·  Buenas prácticas 100  
+formulario-gasto   Accesibilidad 100  ·  Buenas prácticas 100  
+
+Criterio: Accesibilidad ≥ 90 en todas las pantallas → PASA
+Reportes en C:\Users\josue\OneDrive\Escritorio\evenly\docs\evidencias\lighthouse-ronda9

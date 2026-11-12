@@ -1,9 +1,11 @@
 # Documentación de QA — Evenly
 
-Proyecto Final — Aseguramiento de la Calidad del Software (UMG). Avance 2: avance funcional.
+Proyecto Final — Aseguramiento de la Calidad del Software (UMG). Entrega final.
 
 | Documento | Contenido |
 | --- | --- |
+| [plan-de-pruebas.md](plan-de-pruebas.md) | Plan formal: alcance, objetivos, requisitos, estrategia, entorno, criterios de entrada/salida, defectos, métricas, cronograma y riesgos |
+| [requisitos-ux.md](requisitos-ux.md) | Requisitos de experiencia de usuario (UX-01 a UX-10) con criterios de aceptación y estado |
 | [casos-de-prueba.md](casos-de-prueba.md) | Todos los casos de prueba (funcionales, límite, negativos, no funcionales, seguridad) con su resultado por ronda |
 | [matriz-trazabilidad.md](matriz-trazabilidad.md) | Requisitos → casos de prueba → estado de cobertura |
 | [pruebas-seguridad.md](pruebas-seguridad.md) | Casos de ciberseguridad ejecutados: validación de entradas, control de acceso, datos sensibles |
@@ -48,6 +50,21 @@ pnpm dev            # http://localhost:5173
 # 5. Pruebas E2E con Cypress (backend y frontend corriendo)
 cd frontend && pnpm cy:run       # headless
 cd frontend && pnpm cy:open      # interfaz gráfica
+
+# 6. Compatibilidad (CMP-01) y accesibilidad con axe (ACC-01) en Playwright
+cd frontend && pnpm exec playwright install chromium firefox webkit   # solo la primera vez
+cd frontend && pnpm pw:test      # Chromium, Firefox, WebKit, Pixel 5 e iPhone 13
+cd frontend && pnpm pw:report    # reporte HTML
+
+# 7. Lighthouse con sesión iniciada (ACC-01): build de producción servido en 4173
+cd frontend && pnpm build && pnpm preview --port 4173   # otra terminal
+cd frontend && pnpm lighthouse   # guarda los reportes en docs/evidencias/lighthouse-ronda9/
+
+# 8. Prueba de carga (PERF-01): 20 conexiones durante 30 s, solo lecturas (no usar contra producción)
+cd backend && pnpm test:load
+
+# 9. Cabeceras de seguridad en producción (SEC-37), después de desplegar
+cd frontend && pnpm pw:prod
 ```
 
 > **Cypress desde la terminal de VS Code:** VS Code define `ELECTRON_RUN_AS_NODE=1` y Cypress falla con
@@ -76,7 +93,7 @@ dependen del seed y se pueden repetir.
 2. Importa también `docs/api/evenly-local.postman_environment.json` (y el de producción cuando exista la URL de Render).
 3. Opcional: Import → OpenAPI → `docs/api/openapi.yaml` para tener la documentación de cada endpoint y sus esquemas.
 4. La colección está pensada para correr en orden (las carpetas 01→07 comparten variables como `tokenA`, `groupId`).
-5. Al agregar casos, usa el siguiente ID libre (`API-48`, `SEC-18`, `E2E-19`…) y agrégalo a `casos-de-prueba.md` y a la matriz.
+5. Al agregar casos, usa el siguiente ID libre (`API-96`, `SEC-38`, `E2E-35`, `UT-15`…) y agrégalo a `casos-de-prueba.md` y a la matriz.
 
 ## Para Picon (E2E / Cypress)
 

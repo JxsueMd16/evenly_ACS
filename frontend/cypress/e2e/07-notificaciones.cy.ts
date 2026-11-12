@@ -28,7 +28,7 @@ describe("Notificaciones en tiempo real (SSE)", () => {
 
     cy.contains(`${otro.name} te envió una solicitud de amistad`).should("be.visible")
     cy.get('[data-testid="badge-friends"]').should("have.text", "1")
-    cy.get('a[aria-label="Amigos: 1 solicitud de amistad"]').should("exist")
+    cy.contains("a", "Amigos").should("contain.text", "1 solicitud de amistad")
     cy.location("pathname").should("eq", "/groups")
   })
 

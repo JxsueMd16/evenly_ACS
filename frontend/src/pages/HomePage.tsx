@@ -66,8 +66,11 @@ export function HomePage() {
           >
             <Bell className="size-5" />
           </Link>
-          <Link to="/profile" aria-label="Perfil">
-            <UserAvatar user={user} />
+          <Link to="/profile">
+            <span aria-hidden="true">
+              <UserAvatar user={user} />
+            </span>
+            <span className="sr-only">Perfil</span>
           </Link>
         </div>
       </header>

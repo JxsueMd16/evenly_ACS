@@ -125,7 +125,7 @@ describe("Montos exactos y propina (UX-04, UX-05)", () => {
       cy.get("#bill-name").type("Almuerzo con propina")
       cy.contains("button", "Guardar cuenta").click()
 
-      cy.get('[aria-label="Ver cuenta Almuerzo con propina"]').click()
+      cy.get('[data-testid="bill-Almuerzo con propina"]').click()
       cy.get('[data-testid="detail-tip"]').should("contain.text", "120.00").and("contain.text", "12.00")
     })
   })

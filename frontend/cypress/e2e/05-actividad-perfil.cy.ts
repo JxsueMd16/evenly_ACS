@@ -35,4 +35,20 @@ describe("Actividad y perfil", () => {
       cy.contains("Te deben").should("contain.text", "30.00")
     })
   })
+
+  it("E2E-34 'Cómo funciona Evenly' en Perfil abre la guía y se puede recorrer hasta el final (DEF-006)", () => {
+    cy.loginAs(owner)
+    cy.visit("/profile")
+    cy.contains("button", "Cómo funciona Evenly").click()
+    cy.get('[role="dialog"][aria-labelledby="welcome-title"]').should("be.visible")
+    cy.contains("button", "Siguiente").click()
+    cy.contains("button", "Siguiente").click()
+    cy.contains("button", "Siguiente").click()
+    cy.contains("button", "Empezar").click()
+    cy.get('[aria-labelledby="welcome-title"]').should("not.exist")
+    // No vuelve a aparecer al recargar.
+    cy.reload()
+    cy.contains("Cuentas que pagaste").should("be.visible")
+    cy.get('[aria-labelledby="welcome-title"]').should("not.exist")
+  })
 })

@@ -27,3 +27,8 @@ dist-ssr
 cypress/screenshots
 cypress/videos
 cypress/downloads
+
+# Playwright
+playwright/test-results/
+playwright/report/
+playwright/.auth/

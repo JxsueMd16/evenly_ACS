@@ -1,0 +1,26 @@
+[
+  {
+    "pantalla": "login",
+    "accesibilidad": 100,
+    "buenasPracticas": 100,
+    "auditoriasFallidas": []
+  },
+  {
+    "pantalla": "inicio",
+    "accesibilidad": 100,
+    "buenasPracticas": 100,
+    "auditoriasFallidas": []
+  },
+  {
+    "pantalla": "grupo",
+    "accesibilidad": 100,
+    "buenasPracticas": 100,
+    "auditoriasFallidas": []
+  },
+  {
+    "pantalla": "formulario-gasto",
+    "accesibilidad": 100,
+    "buenasPracticas": 100,
+    "auditoriasFallidas": []
+  }
+]

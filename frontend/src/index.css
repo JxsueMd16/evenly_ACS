@@ -7,13 +7,14 @@
   --color-background: #ffffff;
   --color-foreground: #142030;
   --color-muted: #eef4fa;
-  --color-muted-foreground: #64809c;
+  /* DEF-009: los tonos de texto cumplen WCAG AA (≥ 4.5:1) sobre blanco y sobre los fondos pastel. */
+  --color-muted-foreground: #4d6985;
 
   /* Pastel section accents — all within the celeste/azul family, no purple. */
   --color-ice: #eaf1fb;
   --color-ice-foreground: #33587f;
   --color-sky: #e3f4fd;
-  --color-sky-foreground: #14789f;
+  --color-sky-foreground: #0f6a8c;
   --color-pink: #fdedf5;
   --color-pink-foreground: #b5407a;
 
@@ -35,9 +36,9 @@
   --color-ring: #0369a1;
 
   /* Semantic */
-  --color-destructive: #ef4444;
+  --color-destructive: #c62828;
   --color-destructive-foreground: #ffffff;
-  --color-success: #10b981;
+  --color-success: #047857;
   --color-success-foreground: #ffffff;
   --color-warning: #f59e0b;
 
@@ -77,6 +78,10 @@
 
   --color-card: #101f30;
   --color-card-foreground: #eaf3fb;
+  --color-destructive: #f87171;
+  --color-destructive-foreground: #1f0707;
+  --color-success: #34d399;
+  --color-success-foreground: #04170f;
   --color-border: #1c3350;
   --color-input: #1c3350;
   --color-ring: #38bdf8;
