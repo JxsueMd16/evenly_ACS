@@ -121,7 +121,7 @@ export function GroupPayments({
                 </p>
                 <p className="flex items-center gap-1 text-xs text-muted-foreground">
                   {methodIcon(p)} {methodLabel(p)} ·{" "}
-                  {new Date(p.createdAt).toLocaleDateString("es-MX", { day: "numeric", month: "short" })}
+                  {new Date(p.createdAt).toLocaleDateString("es-GT", { day: "numeric", month: "short" })}
                   {p.hasEvidence && (p.fromUserId === currentUserId || p.toUserId === currentUserId) && (
                     <button
                       type="button"

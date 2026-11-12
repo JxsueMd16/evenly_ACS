@@ -1,0 +1,10 @@
+$ vitest run
+
+ RUN  v5.0.2 C:/Users/josue/OneDrive/Escritorio/evenly/backend
+
+
+ Test Files  3 passed (3)
+      Tests  31 passed (31)
+   Start at  19:53:39
+   Duration  459ms (transform 46%, worker 25%, import 21%, tests 7%)
+

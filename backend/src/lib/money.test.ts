@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { hasAtMostTwoDecimals, splitEqually, toCents } from "./money.js";
+import { hasAtMostTwoDecimals, splitEqually, splitProportionally, toCents } from "./money.js";
 
 describe("toCents", () => {
   it("convierte sin errores de punto flotante", () => {
@@ -36,5 +36,30 @@ describe("splitEqually", () => {
 
   it("devuelve vacío sin participantes", () => {
     expect(splitEqually(100, [])).toEqual([]);
+  });
+});
+
+describe("splitProportionally", () => {
+  it("reparte en proporción exacta", () => {
+    expect(
+      splitProportionally(1000, [
+        { userId: "a", cents: 5000 },
+        { userId: "b", cents: 3000 },
+        { userId: "c", cents: 2000 },
+      ]).map((s) => s.cents),
+    ).toEqual([500, 300, 200]);
+  });
+
+  it("la suma siempre es igual al total (mayor residuo)", () => {
+    const parts = splitProportionally(100, [
+      { userId: "a", cents: 1 },
+      { userId: "b", cents: 1 },
+      { userId: "c", cents: 1 },
+    ]);
+    expect(parts.map((s) => s.cents)).toEqual([34, 33, 33]);
+  });
+
+  it("con pesos en cero reparte en partes iguales", () => {
+    expect(splitProportionally(10, [{ userId: "a", cents: 0 }, { userId: "b", cents: 0 }]).map((s) => s.cents)).toEqual([5, 5]);
   });
 });

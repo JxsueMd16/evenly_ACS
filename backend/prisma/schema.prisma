@@ -85,6 +85,9 @@ model Usuario {
   pagosEnviados    Pago[]           @relation("PagoDeudor")
   pagosRecibidos   Pago[]           @relation("PagoAcreedor")
 
+  recordatoriosEnviados  RecordatorioCobro[] @relation("RecordatorioAcreedor")
+  recordatoriosRecibidos RecordatorioCobro[] @relation("RecordatorioDeudor")
+
   membresias    MiembroGrupo[]
   gruposCreados Grupo[]        @relation("GrupoCreador")
   gastosPagados Gasto[]        @relation("GastoPagador")
@@ -134,7 +137,25 @@ model Grupo {
   gastos    Gasto[]
   pagos     Pago[]
 
+  recordatorios RecordatorioCobro[]
+
   @@index([creadoPorId])
+}
+
+/// Recordatorio de cobro (UX-08): quien tiene saldo a favor le recuerda a quien
+/// le debe. Se guarda para limitar a uno por deuda cada 24 horas.
+model RecordatorioCobro {
+  id         String   @id @default(cuid())
+  grupoId    String
+  acreedorId String
+  deudorId   String
+  createdAt  DateTime @default(now())
+
+  grupo    Grupo   @relation(fields: [grupoId], references: [id], onDelete: Cascade)
+  acreedor Usuario @relation("RecordatorioAcreedor", fields: [acreedorId], references: [id], onDelete: Cascade)
+  deudor   Usuario @relation("RecordatorioDeudor", fields: [deudorId], references: [id], onDelete: Cascade)
+
+  @@index([grupoId, acreedorId, deudorId, createdAt])
 }
 
 model MiembroGrupo {
@@ -156,6 +177,8 @@ model Gasto {
   grupoId       String
   descripcion   String
   montoCentavos Int
+  /// Propina incluida en montoCentavos (0 si no hubo).
+  propinaCentavos Int        @default(0)
   categoria     Categoria    @default(grupo)
   tipoDivision  TipoDivision @default(equal)
   pagadoPorId   String

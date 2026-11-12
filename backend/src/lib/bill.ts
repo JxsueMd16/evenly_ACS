@@ -9,8 +9,13 @@
  *               · normal: se asignan unidades a cada persona (deben asignarse todas).
  *               · compartida: el subtotal se reparte en partes iguales entre quienes la consumieron.
  * - itemized: montos manuales por persona (deben sumar el total).
+ *
+ * Propina (opcional): un porcentaje entero del subtotal (0–30 %) que se reparte
+ * en proporción a lo que le tocó a cada quien. El total guardado la incluye.
  */
-import { MAX_AMOUNT, splitEqually } from "./money.js";
+import { MAX_AMOUNT, splitEqually, splitProportionally } from "./money.js";
+
+export const MAX_TIP_PERCENT = 30;
 
 export type SplitType = "equal" | "items" | "itemized";
 
@@ -30,10 +35,16 @@ export interface BillInput {
   lines: BillLine[];
   /** Montos por persona, solo en modo itemized. */
   manualShares?: { userId: string; cents: number | undefined }[];
+  /** Porcentaje de propina sobre el subtotal (0 o ausente = sin propina). */
+  tipPercent?: number | undefined;
 }
 
 export interface BillResult {
+  /** Subtotal + propina. */
   totalCents: number;
+  /** Suma de los ítems o monto ingresado, sin propina. */
+  subtotalCents: number;
+  tipCents: number;
   shares: { userId: string; cents: number }[];
 }
 
@@ -54,6 +65,29 @@ export function lineSubtotal(line: Pick<BillLine, "quantity" | "unitPriceCents">
 }
 
 export function computeBill(input: BillInput): BillResult {
+  const tipPercent = input.tipPercent ?? 0;
+  if (!Number.isInteger(tipPercent) || tipPercent < 0 || tipPercent > MAX_TIP_PERCENT) {
+    throw new BillError("INVALID_TIP", `La propina debe ser un porcentaje entero entre 0 y ${MAX_TIP_PERCENT}.`);
+  }
+  const base = computeSubtotal(input);
+  const tipCents = Math.round((base.totalCents * tipPercent) / 100);
+  const totalCents = base.totalCents + tipCents;
+  if (totalCents > MAX_AMOUNT * 100) {
+    throw new BillError("TOTAL_TOO_LARGE", `El total no puede ser mayor a ${MAX_AMOUNT.toLocaleString("en-US")}.`);
+  }
+  if (tipCents === 0) return { totalCents, subtotalCents: base.totalCents, tipCents, shares: base.shares };
+
+  const tipShares = splitProportionally(tipCents, base.shares);
+  return {
+    totalCents,
+    subtotalCents: base.totalCents,
+    tipCents,
+    shares: base.shares.map((s, i) => ({ userId: s.userId, cents: s.cents + tipShares[i]!.cents })),
+  };
+}
+
+/** Reparto del subtotal, sin propina. */
+function computeSubtotal(input: BillInput): { totalCents: number; shares: { userId: string; cents: number }[] } {
   const { splitType, participantIds, lines } = input;
   if (participantIds.length === 0) throw new BillError("NO_PARTICIPANTS", "Selecciona al menos un participante.");
   if (new Set(participantIds).size !== participantIds.length) {

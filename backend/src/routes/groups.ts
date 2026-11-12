@@ -26,7 +26,12 @@ const groupInclude = {
     orderBy: { joinedAt: "asc" },
   },
   gastos: {
-    select: { pagadoPorId: true, montoCentavos: true, items: { select: { usuarioId: true, montoCentavos: true } } },
+    select: {
+      pagadoPorId: true,
+      montoCentavos: true,
+      createdAt: true,
+      items: { select: { usuarioId: true, montoCentavos: true } },
+    },
   },
   pagos: {
     where: { estado: "CONFIRMADO" },
@@ -58,6 +63,10 @@ function toGroupDto(group: LoadedGroup, viewerId: string) {
     myBalance: fromCents(net.get(viewerId) ?? 0),
     expenseCount: group.gastos.length,
     totalSpent: fromCents(group.gastos.reduce((sum, g) => sum + g.montoCentavos, 0)),
+    /** Última cuenta registrada (o la creación del grupo): ordena "recientes" al agregar un gasto. */
+    lastActivityAt: new Date(
+      Math.max(group.createdAt.getTime(), ...group.gastos.map((g) => g.createdAt.getTime())),
+    ).toISOString(),
   };
 }
 

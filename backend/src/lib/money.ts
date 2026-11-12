@@ -29,3 +29,27 @@ export function splitEqually(totalCents: number, userIds: string[]): { userId: s
   const remainder = totalCents - base * userIds.length;
   return userIds.map((userId, index) => ({ userId, cents: base + (index < remainder ? 1 : 0) }));
 }
+
+/**
+ * Reparte `totalCents` en proporción a `weights` (por ejemplo, la propina según
+ * lo que consumió cada quien). Usa el método del mayor residuo: la suma de las
+ * partes siempre es exactamente `totalCents`.
+ * 1000 con pesos [5000, 3000, 2000] => [500, 300, 200].
+ */
+export function splitProportionally(totalCents: number, weights: { userId: string; cents: number }[]): { userId: string; cents: number }[] {
+  const weightSum = weights.reduce((sum, w) => sum + w.cents, 0);
+  if (weights.length === 0) return [];
+  if (weightSum <= 0) return splitEqually(totalCents, weights.map((w) => w.userId));
+
+  const exact = weights.map((w) => (totalCents * w.cents) / weightSum);
+  const parts = exact.map(Math.floor);
+  let remainder = totalCents - parts.reduce((a, b) => a + b, 0);
+  // Los centavos que faltan van a quienes tienen el mayor residuo (empate: orden original).
+  const order = exact.map((value, index) => ({ index, fraction: value - Math.floor(value) })).sort((a, b) => b.fraction - a.fraction || a.index - b.index);
+  for (const { index } of order) {
+    if (remainder === 0) break;
+    parts[index]! += 1;
+    remainder -= 1;
+  }
+  return weights.map((w, i) => ({ userId: w.userId, cents: parts[i]! }));
+}

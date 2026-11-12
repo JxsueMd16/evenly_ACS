@@ -32,7 +32,8 @@ export interface Notice {
     | "expense-added"
     | "payment-reported"
     | "payment-confirmed"
-    | "payment-rejected";
+    | "payment-rejected"
+    | "payment-reminder";
   message: string;
   /** Ruta del frontend a la que lleva el aviso. */
   link?: string;

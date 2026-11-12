@@ -47,11 +47,12 @@ export function cn(...inputs: ClassValue[]) {
 
 export type CurrencyCode = "USD" | "GTQ"
 
-export function formatCurrency(amount: number, currency: CurrencyCode = "USD") {
-  return new Intl.NumberFormat("es-MX", {
+/** Quetzales: "Q 1,234.50" · Dólares: "USD 1,234.50". */
+export function formatCurrency(amount: number, currency: CurrencyCode = "GTQ") {
+  return new Intl.NumberFormat("es-GT", {
     style: "currency",
     currency,
-    currencyDisplay: "code",
+    currencyDisplay: currency === "GTQ" ? "symbol" : "code",
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(amount)

@@ -19,8 +19,10 @@ describe("Cuentas por ítems y cuenta rápida", () => {
       cy.visit(`/groups/${group.id}`)
       cy.contains("a", "Nueva cuenta").click()
 
+      cy.contains("button", "Cambiar").click()
       cy.contains("button", "Comida").click()
       cy.get("#bill-name").type("Almuerzo sábado")
+      cy.contains("button", "Detallar por ítems").click()
       // 2 × Churrasco 25, 1 × Churrasco 15, 4 × Bebida 5
       cy.get('[aria-label="Descripción ítem 1"]').type("Churrasco 25")
       cy.get('[aria-label="Precio ítem 1"]').type("25")
@@ -55,16 +57,19 @@ describe("Cuentas por ítems y cuenta rápida", () => {
     })
   })
 
-  it("E2E-27 cuenta rápida sin grupo con un ítem compartido", () => {
+  it("E2E-27 cuenta con personas sueltas (sin grupo) y un ítem compartido", () => {
     cy.loginAs(josue)
     cy.visit("/add-expense")
-    cy.contains("Cuenta rápida").click()
+    // UX-02: una sola pantalla "¿Con quién fue?", sin elegir "tipo de cuenta".
+    cy.contains("h1", "¿Con quién fue?").should("be.visible")
+    cy.contains(/cuenta rápida|tipo de cuenta/i).should("not.exist")
 
     cy.get("#quick-search").type(alexis.email)
     cy.contains("button", alexis.name).click()
-    cy.contains("button", "Continuar con 1 persona").click()
+    cy.contains("button", `Continuar con ${alexis.name.split(" ")[0]}`).click()
 
     cy.get("#bill-name").type("Pizza viernes")
+    cy.contains("button", "Detallar por ítems").click()
     cy.get('[aria-label="Descripción ítem 1"]').type("Pizza grande")
     cy.get('[aria-label="Precio ítem 1"]').type("99.99")
     cy.contains("button", "Por ítems").click()
@@ -75,7 +80,7 @@ describe("Cuentas por ítems y cuenta rápida", () => {
     cy.get(`[data-testid="share-${alexis.id}"]`).should("contain.text", "49.99")
     cy.contains("button", "Guardar cuenta").click()
 
-    cy.contains("Cuenta rápida guardada").should("be.visible")
+    cy.contains("Cuenta guardada").should("be.visible")
     cy.contains("Cuenta rápida ·").should("be.visible")
     cy.visit("/groups")
     cy.contains("Cuentas rápidas").parent().should("contain.text", "Pizza viernes")

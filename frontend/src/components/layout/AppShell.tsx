@@ -4,6 +4,7 @@ import { toast } from "sonner"
 import { connectNotifications } from "@/lib/notificationStream"
 import { useAuthStore } from "@/store/authStore"
 import { useNotificationsStore } from "@/store/notificationsStore"
+import { WelcomeTour } from "@/components/WelcomeTour"
 import { BottomNav } from "./BottomNav"
 
 /**
@@ -54,6 +55,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         {children}
       </main>
       <BottomNav />
+      <WelcomeTour />
     </div>
   )
 }

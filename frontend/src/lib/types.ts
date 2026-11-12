@@ -39,7 +39,10 @@ export interface Expense {
   id: string
   groupId: string
   description: string
+  /** Total pagado, propina incluida. */
   amount: number
+  /** Propina incluida en `amount` (0 si no hubo). */
+  tip: number
   paidById: string
   paidBy: User
   splitType: SplitType
@@ -65,6 +68,8 @@ export interface Group {
   myBalance: number
   expenseCount: number
   totalSpent: number
+  /** Última cuenta registrada o, si no hay, la creación del grupo. */
+  lastActivityAt: string
 }
 
 export interface MemberBalance {
@@ -161,4 +166,18 @@ export interface Payment {
   hasEvidence: boolean
   createdAt: string
   respondedAt: string | null
+}
+
+/** Una deuda entre el usuario y otra persona en un grupo (GET /debts). */
+export interface DebtItem {
+  group: { id: string; name: string; isQuick: boolean }
+  /** La otra persona: a quien le debes o quien te debe. */
+  user: User
+  amount: number
+}
+
+export interface DebtsOverview {
+  owe: DebtItem[]
+  /** `canRemindAt`: null si ya puedes recordarle; si no, desde cuándo podrás. */
+  owedToMe: (DebtItem & { canRemindAt: string | null })[]
 }

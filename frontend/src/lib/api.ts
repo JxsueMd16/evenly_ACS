@@ -9,6 +9,7 @@ import type {
   GroupDetail,
   InvitePreview,
   BankAccount,
+  DebtsOverview,
   Payment,
   PaymentInfo,
   PaymentMethod,
@@ -247,6 +248,8 @@ export interface BillInput {
   paidById: string
   splitType: SplitType
   amount?: number
+  /** Propina en porcentaje del subtotal (0–30). */
+  tipPercent?: number
   lines: {
     description: string
     quantity: number
@@ -393,4 +396,16 @@ export async function getPaymentHistory(): Promise<ActivityItem[]> {
 export function overallBalance(groups: Group[]): number {
   const cents = groups.reduce((sum, g) => sum + Math.round(g.myBalance * 100), 0)
   return cents / 100
+}
+
+/* ------------------------------ Deudas ------------------------------ */
+
+/** Lo que debes y lo que te deben, por persona y grupo (UX-06). */
+export function getDebts() {
+  return request<DebtsOverview>("/debts")
+}
+
+/** Le recuerda a `userId` que te debe en ese grupo. Máximo uno cada 24 h por deuda (UX-08). */
+export function remindDebt(groupId: string, userId: string) {
+  return request<{ canRemindAt: string }>("/debts/remind", { method: "POST", body: { groupId, userId } })
 }

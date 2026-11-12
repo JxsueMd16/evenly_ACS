@@ -10,6 +10,7 @@ import { PasswordInput } from "@/components/PasswordInput"
 import { PasswordChecklist } from "@/components/PasswordChecklist"
 import { isStrongPassword } from "@/lib/password"
 import { useAuthStore } from "@/store/authStore"
+import { useSettingsStore } from "@/store/settingsStore"
 
 export function RegisterPage() {
   const register = useAuthStore((s) => s.register)
@@ -47,6 +48,8 @@ export function RegisterPage() {
     try {
       await register(name, email, password)
       toast.success(`¡Bienvenido a Evenly, ${name.split(" ")[0]}!`)
+      // Primera vez en la app: se muestra la bienvenida (UX-10).
+      useSettingsStore.getState().setWelcomeOpen(true)
       navigate(from, { replace: true })
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "No se pudo crear la cuenta.")
